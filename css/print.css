@@ -1,0 +1,57 @@
+
+/* @page {
+    size: landscape;
+    
+  } */
+  
+/* body { 
+    writing-mode: tb-rl;
+} */
+
+@page {
+      margin-left: 20mm;
+      margin-right: 20mm;
+      margin-top: 40mm;
+      margin-bottom: 50mm;
+  
+}
+    
+@page :left {
+      margin-left: 30mm;
+}
+
+@page :right {
+      margin-right: 30mm;
+}
+
+table { page-break-inside: avoid;}
+
+h1, h2 { page-break-before: always; }
+
+
+
+@media print {
+  .report-action {
+    display: none;
+  }
+
+  #print_btn {
+    display: none;
+  }
+  
+  @page {
+    size: landscape;
+  }
+
+  #entrys-search {
+    display: none;
+  }
+
+  .form-control {
+    width: 100%;
+  }
+
+  .row div{
+    width: 100%;
+  }
+}
