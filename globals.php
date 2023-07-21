@@ -10,6 +10,7 @@ $timezone = new DateTimeZone('America/Sao_Paulo');
 $agora = new DateTime('now', $timezone);
 $hora_atual = $agora->format('H');
 $msg_saudacao = "";
+$current_date = $agora->format("Y-m-d");
 
 if($hora_atual > 0 && $hora_atual <= 12){
     $msg_saudacao = "Bom dia!";

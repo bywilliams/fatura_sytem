@@ -81,6 +81,10 @@ html ::-webkit-scrollbar-track {
   background: #073d3e;
 }
 
+input[type="radio"] { 
+    accent-color: #0E8388;
+}
+
 /*----------------------------------------*/
 
 /* ---------------------------------------------------
@@ -196,8 +200,8 @@ html ::-webkit-scrollbar-track {
 #profile-image-container {
     width: 150px;
     height: 150px;
-    border: 6px solid #116D6E;
-    border-radius: 100%;
+    /* border: 6px solid #116D6E; */
+    border-radius: 10px;
     background-size: cover;
     background-position: center;
     margin: 15px auto;
@@ -454,11 +458,6 @@ hr.dashed {
     font-size: 25px;
 }
 
-.agendada {
-    color: #FFD95A;
-    font-size: 25px;
-}
-
 .info div {
     position: relative;
     display: inline-block;
@@ -469,13 +468,17 @@ hr.dashed {
     position: relative;
 }
 
-#latest_moviments .fa-trash-can {
+#latest_moviments .fa-trash-can, .fa-file-pen, .fa-receipt, .fa-copy { 
     font-size: 25px;
+
+}
+
+#latest_moviments .fa-trash-can {
     color: #DF2E38;
 }
 
 #latest_moviments .fa-file-pen {
-    font-size: 25px;
+   
     color: #DC8449;
 }
 

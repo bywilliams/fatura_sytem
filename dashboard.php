@@ -73,6 +73,7 @@ $popup = $popupDao->popup($userData->id);
             </h5>
             <!-- User Greet -->
             <span id="DisplayClock" onload="showTime()"></span>
+            <br>
             <?= $msg_saudacao; ?>
         </div>
 
@@ -83,12 +84,12 @@ $popup = $popupDao->popup($userData->id);
     <!-- Page Content  -->
     <div id="content">
 
-        <nav class="navbar navbar-expand-lg navbar-light nav-toggle" style="background-color: #ccc;">
+        <nav class="navbar navbar-expand-lg nav-toggle" style="background-color: #999;">
             <div class="container-fluid">
                 <button type="button" id="sidebarCollapse" class="btn btn-outline-dark" onclick="mudaIconeToogle()">
                     <i class="fa-solid fa-arrows-left-right fa-1x"></i>
                 </button>
-                <h5 class=" text-dark ml-auto pt-2">Mês:
+                <h5 class=" text-white ml-auto pt-2">Mês:
                     <?= $nome_mes_atual ?>
                 </h5>
             </div>
@@ -96,7 +97,7 @@ $popup = $popupDao->popup($userData->id);
 
         <div class="row">
             <div class="container-fluid">
-                <iframe src="dashboard-main.php" name="myFrame" id="myFrame" fullscreen="allow" frameborder="0" width="100%" onload="resizeIframe(this)"></iframe>
+                <iframe src="dashboard-main.php" name="myFrame" id="myFrame" fullscreen="allow" frameborder="0" width="100%"></iframe>
             </div>
         </div>
     </div>

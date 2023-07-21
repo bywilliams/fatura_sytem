@@ -87,7 +87,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
     <div class="container-fluid">
 
         <!-- Balance Warning if expenses user is above 50% -->
-        <div class="offset-md-3 col-md-6">
+        <!-- <div class="offset-md-3 col-md-6">
             <?php if ($resultExpensePercent > 50) : ?>
                 <div class="mt-3" style="display: inline-flex">
                     <i class="fa-solid fa-triangle-exclamation fa-2x text-warning"></i>
@@ -98,7 +98,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                     </span>
                 </div>
             <?php endif; ?>
-        </div>
+        </div> -->
         <!-- End Balance Warning if expenses user is above 50% -->
 
         <!-- Section Revenue, Enpenses , balance and shortcuts -->
@@ -106,7 +106,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
             <div class="card-div mb-3 my-3 text-center">
                 <div class="row">
                     <div class="col-lg-3 col-md-6">
-                        <div class="card mb-3 shadow">
+                        <div class="card mb-3 ">
                             <div class="card-header">
                                 <h4 class="my-0 font-weight-normal">Receita Mensal</h4>
                             </div>
@@ -120,7 +120,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6">
-                        <div class="card mb-3 shadow">
+                        <div class="card mb-3 ">
                             <div class="card-header">
                                 <h4 class="my-0 font-weight-normal">Despesa Mensal</h4>
                             </div>
@@ -134,7 +134,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6">
-                        <div class="card mb-3 shadow">
+                        <div class="card mb-3 ">
                             <div class="card-header">
                                 <h4 class="my-0 font-weight-normal">Saldo
                                     <a href="#!" id="btn"><i class="fa-solid fa-eye-slash" id="eye_icon" style="float: right"></i></a>
@@ -149,13 +149,11 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6">
-                        <div class="card mb-3 shadow">
+                        <div class="card mb-3">
                             <div class="card-header">
                                 <h4 class="my-0 font-weight-normal">Atalhos</h4>
                             </div>
                             <div class="card-body">
-                                <h1 class="card-title pricing-card-title text-success"> <small class="text-muted"></small>
-                                </h1>
                                 <ul class="list-group">
                                     <li class="list-group-item d-flex ">
                                         <strong>Cadastrar lembrete: </strong>
@@ -200,11 +198,9 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
         </section>
         <!-- Section Revenue, Enpenses , balance and shortcuts -->
 
-
-
         <!-- Cash Inflow | Cash outflow form  -->
         <section>
-            <div class="actions p-4 mb-4 bg-light rounded shadow-sm">
+            <div class="actions p-4 mb-4 bg-light rounded">
                 <form action="<?= $BASE_URL ?>moviment_process.php" method="post">
                     <input type="hidden" name="type" value="create">
                     <div class="row">
@@ -214,7 +210,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         </div>
                         <div class="col-lg-2">
                             <h4 class="font-weight-normal">Emissão</h4>
-                            <input class="form-control" type="date" name="" id="">
+                            <input class="form-control" type="date" name="emissao" id="emissao" value="<?= $current_date ?>">
                         </div>
                         <div class="col-lg-2">
                             <h4 class="font-weight-normal">Valor</h4>
@@ -227,7 +223,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         <div class="col-lg-2 text-center">
                             <h4 class="font-weight-normal">Tipo</h4>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="type_action" id="entry" value="1">
+                                <input class="form-check-input" type="radio" name="type_action" id="entry" value="1" checked>
                                 <label class="form-check-label" for="inlineRadio1">Boleto</label>
                             </div>
                             <div class="form-check form-check-inline">
@@ -278,7 +274,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
         <section>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="actions mb-4 py-3 bg-light rounded shadow-sm">
+                    <div class="actions mb-4 py-3 bg-light rounded">
                         <h4 class="text-center my-3">Meus Lembretes
                             <span class="d-inline-block" tabindex="3" data-toggle="tooltip" title="Adicionar novo lembrete">
                                 <a href="#reminder_modal_create" data-toggle="modal" data-target="#reminder_modal_create">
@@ -311,27 +307,29 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
         <!-- End My reminders container -->
 
         <!--  latest financial moviments -->
-        <div class="row">
+        <section class="row">
             <!-- latest 5 moviments -->
-            <div class="col-md-12">
+            <div class="col-md-12" id="latest_moviments">
 
-                <div class="actions mb-5 py-2 px-3 bg-light rounded shadow-sm">
-                    <h4 class="font-weight-normal text-center my-3" id="latest-text">Últimas 5 movimentações</h4>
+                <div class="actions mb-5 py-2 px-5 bg-light rounded">
+                    <h4 class="font-weight-normal text-center my-3" id="latest-text">Últimos 5 registros</h4>
                     <hr class="hr">
                     <div class="row d-block text-right my-2 px-3 info">
-                        <div> <i class="fa-solid fa-clock agendada "></i> <span> Agendada </span> </div>
-                        <div> <i class="fa-solid fa-circle-up entrada"> </i><span> Entrada </span> </div>
-                        <div> <i class="fa-solid fa-circle-down saida"> </i><span> Saída </span> </div>
+                        <div>  <i class="fa-solid fa-copy fa-2x text-info"></i> <span> Copiar </span> </div>
+                        <div>  <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status </span> </div>
+                        <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
+                        <div>  <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
                     </div>
                     <!-- <hr class="dashed"> -->
-                    <div class="row" id="latest_moviments">
+                    <div class="row">
 
                         <table class="table table-hover table-bordered">
                             <thead class="thead-dark">
                                 <th>id</th>
-                                <th>Descrição</th>
-                                <th>Valor</th>
                                 <th>Data</th>
+                                <th>Referência</th>
+                                <th>Valor</th>
+                                <th>Vencimento</th>
                                 <th>Conta</th>
                                 <th>Anotação</th>
                                 <th>Ação</th>
@@ -344,6 +342,9 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                 </strong></span>
                                         </td>
                                         <td>
+                                            <span> <?= $financialMoviment->create_at ?> </span>
+                                        </td>
+                                        <td>
                                             <span class="table_description"> <strong> <?= $financialMoviment->description ?>
                                                 </strong></span>
                                         </td>
@@ -351,27 +352,25 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                             <span> R$ <?= $financialMoviment->value ?></span>
                                         </td>
                                         <td>
-                                            <span> <?= $financialMoviment->create_at ?> </span>
+                                            <span> <?= $financialMoviment->update_at ?> </span>
                                         </td>
                                         <td>
                                             <?php if ($financialMoviment->type == 1) : ?>
-                                                <?php if ($financialMoviment->scheduled == "S" && $financialMoviment->create_at > date("d-m-Y")) : ?>
-                                                    <i class="fa-solid fa-clock agendada"></i>
-                                                <?php else : ?>
-                                                    <i class="fa-solid fa-circle-up entrada"></i>
-                                                <?php endif; ?>
+                                                <img src="<?= $BASE_URL ?>assets/home/logo-bradesco.png" width="30" height="30" alt="">
                                             <?php else : ?>
-                                                <?php if ($financialMoviment->scheduled == "S" && $financialMoviment->create_at > date("d-m-Y")) : ?>
-                                                    <i class="fa-solid fa-clock agendada"></i>
-                                                <?php else : ?>
-                                                    <i class="fa-solid fa-circle-down saida"></i>
-                                                <?php endif; ?>
+                                                <img src="<?= $BASE_URL ?>assets/home/logo-banco-do-brasil.png" width="30" height="30" alt="">
                                             <?php endif; ?>
                                         </td>
                                         <td>
                                             <span> <?= $financialMoviment->category ?> </span>
                                         </td>
                                         <td>
+                                            <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
+                                                <i class="fa-solid fa-copy text-info"></i>
+                                            </a>
+                                            <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
+                                                <i class="fa-solid fa-receipt text-sucsess"></i>
+                                            </a>
                                             <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
                                                 <i class="fa-solid fa-file-pen"></i></a>
                                             <a href="#" data-toggle="modal" data-target="#del_latest_finance_moviment<?= $financialMoviment->id ?>" title="Deletar">
@@ -405,7 +404,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                 </div>
             </div>
 
-        </div>
+        </section>
 
         <!-- Modal forms -->
 
@@ -563,6 +562,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
 </body>
 <?php require_once("templates/footer.php"); ?>
 <script>
+
     // tooltip
     $(function() {
         $('[data-toggle="tooltip"]').tooltip()

@@ -6,7 +6,7 @@
 //     // Destrói a sessão atual
 //     session_unset();
 //     session_destroy();
-//     echo '<script>window.top.location.href = "auth_login.php";</script>';
+//     echo '<script>window.top.location.href = "index.php";</script>';
 //     exit;
 
 // } else {

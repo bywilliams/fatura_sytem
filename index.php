@@ -34,7 +34,7 @@ if (!empty($flashMessage)) {
                 <div class="text-center mb-3">
                    <img src="<?= $BASE_URL ?>assets/fatura.svg" width="60%" alt="">
                 </div>
-                <h3>Acesse sua conta</h3>
+                <h3>Login</h3>
                 <form action="<?= $BASE_URL ?>auth_process.php" method="POST">
                     <input type="hidden" name="type" value="login">
                     <div class="form-group">

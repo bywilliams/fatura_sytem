@@ -1,10 +1,4 @@
-# <center>Finance Control</center>
-
-
-
-:heavy_exclamation_mark: Projeto ainda em fase de desenvolvimento :exclamation:
-
-
+# <center>Fatura System</center>
 
 ![Badge](https://img.shields.io/static/v1?label=bootstrap&message=PHP8.2&color=white&style=for-the-badge&logo=bootstrap)
 
@@ -35,11 +29,6 @@ Agora será mostrado como está o projeto no momento.
 ![finance control](assets/admin.png)
 &nbsp;
 
-### Instalação
-- Clone este repositorio atráves do terminal, VS Code
-
-### Deploy do projeto
-###### Quer testar está aplicação? acesse o link https://financecontrol.epizy.com faça um cadastro simples, nenhuma informação pessoal é requisitada e os seus dados são cryptografados. 
 
 ## Autor
 
