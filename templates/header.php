@@ -6,7 +6,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Controle Financeiro fácil e eficiente é aqui na Finance Control" />
+    <meta name="description" content="Sistema de controle de Faturamento" />
     <meta name="author" content="William Silva" />
 
     <!-- Bootstrap CSS -->
@@ -25,7 +25,7 @@
     <!-- AnyChart outra opção para gráficos  -->
     <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js" type="text/javascript"></script>
 
-    <title>Finance Control</title>
+    <title>Fatura System</title>
     
 </head>
 

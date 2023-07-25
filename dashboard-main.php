@@ -86,21 +86,6 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
 
     <div class="container-fluid">
 
-        <!-- Balance Warning if expenses user is above 50% -->
-        <!-- <div class="offset-md-3 col-md-6">
-            <?php if ($resultExpensePercent > 50) : ?>
-                <div class="mt-3" style="display: inline-flex">
-                    <i class="fa-solid fa-triangle-exclamation fa-2x text-warning"></i>
-                    <span class="warning-text-expense">
-                        <strong>Cuidado despesas já são <?= $resultExpensePercent ?>% da sua renda!
-                            Até 50% é o indicado para a saúde financeira.
-                        </strong>
-                    </span>
-                </div>
-            <?php endif; ?>
-        </div> -->
-        <!-- End Balance Warning if expenses user is above 50% -->
-
         <!-- Section Revenue, Enpenses , balance and shortcuts -->
         <section>
             <div class="card-div mb-3 my-3 text-center">
@@ -307,103 +292,105 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
         <!-- End My reminders container -->
 
         <!--  latest financial moviments -->
-        <section class="row">
-            <div class="col-md-12" id="latest_moviments">
-
-                <div class="actions mb-5 py-2 px-5 bg-light rounded">
-                    <h4 class="font-weight-normal text-center my-3" id="latest-text">Últimos 5 registros</h4>
-                    <hr class="hr">
-                    <div class="row d-block text-right my-2 px-3 info">
-                        <div>  <i class="fa-solid fa-copy fa-2x text-info"></i> <span> Copiar </span> </div>
-                        <div>  <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status </span> </div>
-                        <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
-                        <div>  <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
-                    </div>
-                    <!-- <hr class="dashed"> -->
-                    <div class="row">
-
-                        <table class="table table-hover table-bordered">
-                            <thead class="thead-dark">
-                                <th>id</th>
-                                <th>Data</th>
-                                <th>Referência</th>
-                                <th>Valor</th>
-                                <th>Vencimento</th>
-                                <th>Conta</th>
-                                <th>Anotação</th>
-                                <th>Ação</th>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($latestFinancialMoviments as $financialMoviment) : ?>
-                                    <tr class="pb-2">
-                                        <td>
-                                            <span class="table_description"> <strong> <?= $financialMoviment->id ?>
-                                                </strong></span>
-                                        </td>
-                                        <td>
-                                            <span> <?= $financialMoviment->create_at ?> </span>
-                                        </td>
-                                        <td>
-                                            <span class="table_description"> <strong> <?= $financialMoviment->description ?>
-                                                </strong></span>
-                                        </td>
-                                        <td>
-                                            <span> R$ <?= $financialMoviment->value ?></span>
-                                        </td>
-                                        <td>
-                                            <span> <?= $financialMoviment->update_at ?> </span>
-                                        </td>
-                                        <td>
-                                            <?php if ($financialMoviment->type == 1) : ?>
-                                                <img src="<?= $BASE_URL ?>assets/home/logo-bradesco.png" width="30" height="30" alt="">
-                                            <?php else : ?>
-                                                <img src="<?= $BASE_URL ?>assets/home/logo-banco-do-brasil.png" width="30" height="30" alt="">
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <span> <?= $financialMoviment->category ?> </span>
-                                        </td>
-                                        <td>
-                                            <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
-                                                <i class="fa-solid fa-copy text-info"></i>
-                                            </a>
-                                            <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
-                                                <i class="fa-solid fa-receipt text-sucsess"></i>
-                                            </a>
-                                            <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
-                                                <i class="fa-solid fa-file-pen"></i></a>
-                                            <a href="#" data-toggle="modal" data-target="#del_latest_finance_moviment<?= $financialMoviment->id ?>" title="Deletar">
-                                                <i class="fa-solid fa-trash-can"></i></a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                    <div class="offset-md-3 col-md-6 pb-3 text-center icons_latest">
-                        <div class="row">
-                            <div class="col-md-6 col-sm-12 my-2 ver_entradas">
-                                <a href="<?= $BASE_URL ?>financial_entry_report.php">
-                                    <i class="fa-solid fa-plus"></i>
-                                    &nbsp; Ver todas Entradas
-                                </a>
-                            </div>
-
-                            <div class="col-md-6 col-sm-12 my-2 ver_saidas">
-                                <a href="<?= $BASE_URL ?>financial_exit_report.php">
-                                    <i class="fa-solid fa-minus"></i>
-                                    &nbsp; Ver todas Saídas
-                                </a>
-                            </div>
+        <section>
+            <div class="row">
+                <div class="col-md-12" id="latest_moviments">
+    
+                    <div class="actions mb-5 py-2 px-5 bg-light rounded">
+                        <h4 class="font-weight-normal text-center my-3" id="latest-text">Últimos 5 registros</h4>
+                        <hr class="hr">
+                        <div class="row d-block text-right my-2 px-3 info">
+                            <div>  <i class="fa-solid fa-copy fa-2x text-info"></i> <span> Copiar </span> </div>
+                            <div>  <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status </span> </div>
+                            <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
+                            <div>  <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
                         </div>
-
+                        <!-- <hr class="dashed"> -->
+                        <div class="row">
+    
+                            <table class="table table-hover table-bordered">
+                                <thead class="thead-dark">
+                                    <th>id</th>
+                                    <th>Data</th>
+                                    <th>Referência</th>
+                                    <th>Valor</th>
+                                    <th>Vencimento</th>
+                                    <th>Conta</th>
+                                    <th>Anotação</th>
+                                    <th>Ação</th>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($latestFinancialMoviments as $financialMoviment) : ?>
+                                        <tr class="pb-2">
+                                            <td>
+                                                <span class="table_description"> <strong> <?= $financialMoviment->id ?>
+                                                    </strong></span>
+                                            </td>
+                                            <td>
+                                                <span> <?= $financialMoviment->create_at ?> </span>
+                                            </td>
+                                            <td>
+                                                <span class="table_description"> <strong> <?= $financialMoviment->description ?>
+                                                    </strong></span>
+                                            </td>
+                                            <td>
+                                                <span> R$ <?= $financialMoviment->value ?></span>
+                                            </td>
+                                            <td>
+                                                <span> <?= $financialMoviment->update_at ?> </span>
+                                            </td>
+                                            <td>
+                                                <?php if ($financialMoviment->type == 1) : ?>
+                                                    <img src="<?= $BASE_URL ?>assets/home/logo-bradesco.png" width="30" height="30" alt="">
+                                                <?php else : ?>
+                                                    <img src="<?= $BASE_URL ?>assets/home/logo-banco-do-brasil.png" width="30" height="30" alt="">
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <span> <?= $financialMoviment->category ?> </span>
+                                            </td>
+                                            <td>
+                                                <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
+                                                    <i class="fa-solid fa-copy text-info"></i>
+                                                </a>
+                                                <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
+                                                    <i class="fa-solid fa-receipt text-sucsess"></i>
+                                                </a>
+                                                <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $financialMoviment->id ?>" title="Editar">
+                                                    <i class="fa-solid fa-file-pen"></i></a>
+                                                <a href="#" data-toggle="modal" data-target="#del_latest_finance_moviment<?= $financialMoviment->id ?>" title="Deletar">
+                                                    <i class="fa-solid fa-trash-can"></i></a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+    
+                        </div>
+    
+                        <div class="offset-md-3 col-md-6 pb-3 text-center icons_latest">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 my-2 ver_entradas">
+                                    <a href="<?= $BASE_URL ?>financial_entry_report.php">
+                                        <i class="fa-solid fa-plus"></i>
+                                        &nbsp; Ver todas Entradas
+                                    </a>
+                                </div>
+    
+                                <div class="col-md-6 col-sm-12 my-2 ver_saidas">
+                                    <a href="<?= $BASE_URL ?>financial_exit_report.php">
+                                        <i class="fa-solid fa-minus"></i>
+                                        &nbsp; Ver todas Saídas
+                                    </a>
+                                </div>
+                            </div>
+    
+                        </div>
                     </div>
                 </div>
             </div>
-
         </section>
+        <!--  End latest financial moviments -->
 
         <!-- Modal forms -->
 

@@ -32,30 +32,6 @@ Class UserDAO implements UserDAOInterface{
         $user->levels_access_id = $data['levels_access_id'];
         $user->register_date = $data['register_date'];
 
-        switch ($user->sits_user_id) {
-            case 1:
-                $user->sits_user_id = "Ativo";
-                break;
-            case 2:
-                $user->sits_user_id = "Inativo";
-                break;
-            case 3:
-                $user->sits_user_id = "Aguardando";
-                break;
-        }
-
-        switch ($user->levels_access_id) {
-            case 1:
-                $user->levels_access_id = "Super Administrador";
-                break;
-            case 2:
-                $user->levels_access_id = "Gerente";
-                break;
-            case 3:
-                $user->levels_access_id = "Usuário";
-                break;
-        }
-
         return $user;
 
     } 
@@ -117,7 +93,6 @@ Class UserDAO implements UserDAOInterface{
     public function verifyToken($protected = false){
 
        
-
         if (!empty($_SESSION['token'])) {
             
             // pega o token
@@ -199,7 +174,6 @@ Class UserDAO implements UserDAOInterface{
         }
 
     } 
-
 
     public function findByEmail($email){
 

@@ -13,20 +13,23 @@
     <h1 class="text-center my-5">Adicionar usuários</h1>
      <!-- Register Form -->
      <div class="col-md-8 offset-md-2 login-form-2 rounded">
-                <h4 class="text-white text-center">Criar Conta</h4>
+               
                 <form action="<?= $BASE_URL ?>auth_process.php" method="POST">
                     <input type="hidden" name="type" value="register">
                     <div class="form-group">
+                        <label for="email" class="text-white">E-mail:</label>
                         <input type="email" class="form-control" name="email" placeholder="E-mail *" value="<?php if (isset($_SESSION['email'])) {
                                 echo $_SESSION['email'];
                             } ?>" />
                     </div>
                     <div class="form-group">
+                        <label class="text-white" for="nome">Nome:</label>
                         <input type="text" class="form-control" name="name" id="" placeholder="Nome *" value="<?php if (isset($_SESSION['name'])) {
                                 echo $_SESSION['name'];
                             } ?>">
                     </div>
                     <div class="form-group">
+                        <label class="text-white" for="lastname">Sobrenome:</label>
                         <input type="text" class="form-control" name="lastname" id="" placeholder="Sobrenome *" value="<?php if (isset($_SESSION['lastname'])) {
                                 echo $_SESSION['lastname'];
                             } ?>">
@@ -35,6 +38,7 @@
                         <small id="alert_psw" class="text-warning">A senha deve ter 8 caracteres, sendo 1 letra
                             maiúscula, 1 minúscula, 1 número e 1 simbolo.</small>
                         <div class="pwd" style="position: relative">
+                            <label class="text-white" for="password">Senha:</label>
                             <input type="password" class="form-control" id="password" name="password"
                                 placeholder="Digite a senha *" value="" />
                             <div class="p-viewer" onclick="show_password()">
@@ -44,6 +48,7 @@
                     </div>
                     <div class="form-group">
                         <div class="pwd" style="position: relative">
+                            <label class="text-white" for="confirmPassword">Confirmação da senha:</label>
                             <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                                 placeholder="Confirme a senha *" value="" />
                             <div class="p-viewer" onclick="show_password()">
