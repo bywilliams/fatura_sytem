@@ -1,6 +1,6 @@
 <?php
-    require_once("templates/header_iframe.php");
     require_once("globals.php");
+    require_once("templates/header_iframe.php");
     require_once("connection/conn.php");
     require_once("dao/RemindersDAO.php");
 

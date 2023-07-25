@@ -85,6 +85,10 @@ input[type="radio"] {
     accent-color: #0E8388;
 }
 
+input[type="select"] { 
+    accent-color: #0E8388;
+}
+
 /*----------------------------------------*/
 
 /* ---------------------------------------------------
@@ -157,7 +161,7 @@ input[type="radio"] {
 
 .login-form-2 {
     padding: 4%;
-    background: #949594;;
+    background: #363636;;
     box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
 }
 
@@ -247,8 +251,8 @@ input[type="radio"] {
 
 #sidebar ul li a {
     color: #fff;
-    padding: 10px;
-    font-size: 1.1em;
+    padding: 15px;
+    font-size: 1.3em;
     display: block;
 }
 
@@ -276,9 +280,9 @@ a[data-toggle="collapse"] {
 }
 
 ul ul a {
-    font-size: 0.9em !important;
+    font-size: 1.1em !important;
     padding-left: 30px !important;
-    /* background: #567189; */
+    background: #2C3333;
 }
 
 a.download {

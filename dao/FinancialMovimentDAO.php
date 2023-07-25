@@ -71,7 +71,7 @@
             $initial_date = date("Y-m-01 00:00:00");
             $current_date = date("Y-m-d H:i:s");
 
-            $stmt = $this->conn->query("SELECT MAX(VALUE) AS maior_valor, description FROM tb_finances 
+            $stmt = $this->conn->query("SELECT MAX(VALUE) AS maior_valor, description FROM tb_invoices 
                 WHERE create_at BETWEEN '$initial_date' AND '$current_date' 
                 AND TYPE= 1 AND users_id = $id 
                 GROUP BY value DESC LIMIT 1"
@@ -103,7 +103,7 @@
            
            
 
-            $stmt = $this->conn->query("SELECT MIN(VALUE) AS menor_valor, description FROM tb_finances 
+            $stmt = $this->conn->query("SELECT MIN(VALUE) AS menor_valor, description FROM tb_invoices 
                 WHERE create_at BETWEEN '$initial_date' AND '$current_date' 
                 AND TYPE = 1 
                 AND users_id = $id 
@@ -134,7 +134,7 @@
             $initial_date = date("Y-m-01 00:00:00");
             $current_date = date("Y-m-d H:i:s");
 
-            $stmt = $this->conn->query("SELECT MAX(VALUE) AS maior_valor, description FROM tb_finances 
+            $stmt = $this->conn->query("SELECT MAX(VALUE) AS maior_valor, description FROM tb_invoices 
             WHERE create_at BETWEEN '$initial_date' AND '$current_date' 
             AND TYPE = 2 AND users_id = $id 
             GROUP BY value DESC LIMIT 1");
@@ -163,7 +163,7 @@
             $initial_date = date("Y-m-01 00:00:00");
             $current_date = date("Y-m-d H:i:s");
 
-            $stmt = $this->conn->query("SELECT MIN(VALUE) AS menor_valor, description FROM tb_finances 
+            $stmt = $this->conn->query("SELECT MIN(VALUE) AS menor_valor, description FROM tb_invoices 
             WHERE create_at BETWEEN '$initial_date' AND '$current_date' 
             AND TYPE = 2 AND users_id = $id 
             GROUP BY value ASC LIMIT 1");
@@ -189,7 +189,7 @@
             $financialMoviments = [];
             $mes = date('m');
 
-            $stmt = $this->conn->query("SELECT * FROM tb_finances WHERE MONTH(create_at) = '$mes' AND users_id = $id ORDER BY id DESC LIMIT 5");
+            $stmt = $this->conn->query("SELECT * FROM tb_invoices WHERE MONTH(create_at) = '$mes' AND users_id = $id ORDER BY id DESC LIMIT 5");
 
             $stmt->execute();
 
@@ -216,7 +216,7 @@
 
             $stmt = $this->conn->query("SELECT 
             id, description, obs, value, expense, type, category, create_at, update_at, users_id 
-            FROM tb_finances 
+            FROM tb_invoices 
             WHERE create_at BETWEEN '$initial_date' AND '$current_date' AND users_id = $id AND type = 2 AND category IS NOT NULL 
             ORDER BY id 
             DESC LIMIT $resultsPerPage OFFSET $offset;");
@@ -246,7 +246,7 @@
 
             $stmt = $this->conn->query("SELECT 
             id, description, obs, value, expense, type, category, create_at, update_at, users_id 
-            FROM tb_finances 
+            FROM tb_invoices 
             WHERE create_at BETWEEN '$initial_date' AND '$current_date' AND users_id = $id AND type = 1 AND category IS NOT NULL 
             ORDER BY id 
             DESC limit $resultsPerPage OFFSET $offset");
@@ -274,7 +274,7 @@
             $initial_date = date("Y-m-01 00:00:00");
             $current_date = date("Y-m-d H:i:s");
 
-            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM tb_finances 
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM tb_invoices 
             WHERE create_at BETWEEN '$initial_date' AND '$current_date' AND users_id = $id AND type = '$type' AND category IS NOT NULL 
             ORDER BY id
             ");
@@ -292,7 +292,7 @@
             $initial_date = date("Y-m-01 00:00:00");
             $current_date = date("Y-m-d H:i:s");
 
-            $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_finances
+            $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_invoices
             WHERE create_at BETWEEN '$initial_date' AND '$current_date'
             AND users_id = $id 
             AND type = 1"); 
@@ -312,7 +312,7 @@
 
             $stmt = $this->conn->query("SELECT 
             id, description, obs, value, expense, type, category, scheduled, create_at, update_at, users_id 
-            FROM tb_finances 
+            FROM tb_invoices 
             WHERE MONTH(create_at) = '6' AND users_id = $id AND type = 1 AND category IS NOT NULL AND scheduled = 'S' 
             ORDER BY id DESC LIMIT 10");
 
@@ -337,7 +337,7 @@
             $initial_date = date("Y-m-01 00:00:00");
             $current_date = date("Y-m-d H:i:s");
 
-            $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_finances
+            $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_invoices
             WHERE create_at BETWEEN '$initial_date' AND '$current_date'
             AND users_id = $id 
             AND type = 2");
@@ -357,7 +357,7 @@
 
             $stmt = $this->conn->query("SELECT 
             id, description, obs, value, expense, type, category, scheduled, create_at, update_at, users_id 
-            FROM tb_finances 
+            FROM tb_invoices 
             WHERE MONTH(create_at) = '6' AND users_id = $id AND type = 2 AND category IS NOT NULL AND scheduled = 'S' 
             ORDER BY id DESC LIMIT 10");
 
@@ -382,10 +382,10 @@
             $initial_date = date("Y-m-01 00:00:00");
             $current_date = date("Y-m-d H:i:s");
 
-            $stmt = $this->conn->query("SELECT (SELECT SUM(value) FROM tb_finances 
+            $stmt = $this->conn->query("SELECT (SELECT SUM(value) FROM tb_invoices 
             WHERE create_at BETWEEN '$initial_date' AND '$current_date' AND users_id = $id AND TYPE = 1)
              - 
-            (SELECT SUM(value) FROM tb_finances 
+            (SELECT SUM(value) FROM tb_invoices 
             WHERE create_at BETWEEN '$initial_date' AND '$current_date' AND users_id = $id AND TYPE = 2) 
             AS total_balance");
             $stmt->execute();
@@ -404,7 +404,7 @@
            
             $stmt = $this->conn->query("SELECT 
             id, description, obs, value, expense, type, category, create_at, update_at, users_id 
-            FROM tb_finances 
+            FROM tb_invoices 
             WHERE users_id = $id AND type = $type AND category IS NOT NULL $sql 
             ORDER BY value DESC");
             $stmt->execute();
@@ -427,7 +427,7 @@
 
             $reportEntryData = [];
 
-            $stmt = $this->conn->query("SELECT id, description, obs, value, expense, type, category, create_at, update_at, users_id FROM tb_finances WHERE users_id = $id AND type = $type AND category IS NOT NULL $sql ORDER BY value DESC");
+            $stmt = $this->conn->query("SELECT id, description, obs, value, expense, type, category, create_at, update_at, users_id FROM tb_invoices WHERE users_id = $id AND type = $type AND category IS NOT NULL $sql ORDER BY value DESC");
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
@@ -449,7 +449,7 @@
             $cashInflowMonthsArray = [];
 
             $stmt = $this->conn->query("SELECT SUM(value) 
-                FROM tb_finances 
+                FROM tb_invoices 
                 WHERE type = 1
                 AND users_id = $id
                 group by YEAR(create_at),MONTH(create_at)
@@ -470,7 +470,7 @@
 
             $cashOutflowMonthsArray = [];
 
-            $stmt = $this->conn->query("SELECT SUM(value) from tb_finances 
+            $stmt = $this->conn->query("SELECT SUM(value) from tb_invoices 
                 WHERE type = 2
                 AND users_id = $id
                 group by YEAR(create_at),MONTH(create_at)
@@ -492,7 +492,7 @@
 
         public function create(FinancialMoviment $financialMoviment) {
 
-            $stmt = $this->conn->prepare("INSERT INTO tb_finances (
+            $stmt = $this->conn->prepare("INSERT INTO tb_invoices (
                 id, description, obs, value, type, expense, category, scheduled, create_at, users_id
             ) VALUES(
                 :id, :description, :obs, :value, :type, :expense, :category, :scheduled, :create_at, :users_id
@@ -521,7 +521,7 @@
 
         public function update(FinancialMoviment $financialMoviment) {
 
-            $stmt = $this->conn->prepare("UPDATE tb_finances SET
+            $stmt = $this->conn->prepare("UPDATE tb_invoices SET
                 description = :description,
                 obs = :obs,
                 value = :value,
@@ -549,7 +549,7 @@
             // Checa se existe id
             if ($id) {
                 
-                $stmt = $this->conn->prepare("DELETE FROM tb_finances WHERE id = :id");
+                $stmt = $this->conn->prepare("DELETE FROM tb_invoices WHERE id = :id");
                 $stmt->bindParam(":id", $id);
 
                 if ($stmt->execute()) {
@@ -576,7 +576,7 @@
 
                 # -------------- Entradas ------------------------- #
                 // Query a partir do mês atual em forma descrente ex: 03, 02, 01
-                $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_finances WHERE MONTH(create_at) = $mes AND users_id = $id AND TYPE = 1");
+                $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_invoices WHERE MONTH(create_at) = $mes AND users_id = $id AND TYPE = 1");
                 $stmt->execute();
                 $entradas = $stmt->fetchAll();
 
@@ -591,7 +591,7 @@
                         //echo "mes $mes possui valor <br>";
                     }else {
                         // echo "mes $mes não possui valor <br>";
-                        $stmt = $this->conn->prepare("INSERT INTO tb_finances (
+                        $stmt = $this->conn->prepare("INSERT INTO tb_invoices (
                             description, value, type, create_at, users_id
                         ) VALUES(
                             :description, :value, :type, :create_at, :users_id
@@ -612,7 +612,7 @@
                 }
 
                 #-------------------- Saídas ------------------------------------#
-                $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_finances WHERE MONTH(create_at) = $mes AND users_id = $id AND TYPE = 2");
+                $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_invoices WHERE MONTH(create_at) = $mes AND users_id = $id AND TYPE = 2");
                 $stmt->execute();
                 $saidas = $stmt->fetchAll();
                 
@@ -625,7 +625,7 @@
                         //echo "mes $mes possui valor <br>";
                     }else {
                         //echo "mes $mes não possui valor <br>";
-                        $stmt = $this->conn->prepare("INSERT INTO tb_finances (
+                        $stmt = $this->conn->prepare("INSERT INTO tb_invoices (
                             description, value, type, create_at, users_id
                         ) VALUES(
                             :description, :value, :type, :create_at, :users_id

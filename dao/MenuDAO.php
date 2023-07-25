@@ -61,7 +61,7 @@ Class MenuDAO implements MenuDAOInterface{
         $stmt = $this->conn->query("SELECT 
         class_icon_submenu, url_submenu, submenu_name, main_menu_id 
         FROM menu 
-        WHERE main_menu_id = $id"
+        WHERE main_menu_id = $id ORDER BY idmenu ASC"
         );
         
         $stmt->execute();

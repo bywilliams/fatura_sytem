@@ -256,15 +256,22 @@ Class UserDAO implements UserDAOInterface{
         }
 
     } 
-    public function destroyToken(){
 
-        // Remove o tokeen da Session
-        $_SESSION["token"] = "";
+    public function getAllLevelAcess() {
+        $levels_acess = [];
 
-        // Redireciona e apresenta a mensaem de sucesso
-        $this->message->setMessage("Loggout efetuado com sucesso.", "success", "index.php");
+        $stmt = $this->conn->query("SELECT id, nome FROM levels_access");
+        $stmt->execute();
 
-    } 
+        if($stmt->rowCount() > 0) {
+            $data = $stmt->fetchAll();
+            foreach($data as $level_acess) {
+                $levels_acess[] = $level_acess;
+            }
+        }
+
+        return $levels_acess;
+    }
     
     public function changePassword(User $user){
 
@@ -303,5 +310,15 @@ Class UserDAO implements UserDAOInterface{
         }
 
     }  
+
+    public function destroyToken(){
+
+        // Remove o tokeen da Session
+        $_SESSION["token"] = "";
+
+        // Redireciona e apresenta a mensaem de sucesso
+        $this->message->setMessage("Loggout efetuado com sucesso.", "success", "index.php");
+
+    } 
 
 }
