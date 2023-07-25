@@ -53,10 +53,6 @@ if (!empty($flashMessage)) {
                         <input type="submit" class="btnSubmit" value="Entrar" />
                     </div>
                 </form>
-                <!-- <div class=" text-center">
-                    <button href="#" class="btn btn-outline-warning" data-toggle="modal"
-                        data-target="#recoveryModal">Esqueceu a senha?</button>
-                </div> -->
             </div>
             <!-- End Login Form -->
 

@@ -10,22 +10,21 @@ $userDao = new UserDAO($conn, $BASE_URL);
 $popupDao = new PopupDAO($conn, $BASE_URL);
 $message = new Message($BASE_URL);
 
-$_SESSION['email_login'] = $_POST['email_login'];
-$_SESSION['email'] = $_POST['email'];
-$_SESSION['name'] = $_POST['name'];
-$_SESSION['lastname'] = $_POST['lastname'];
-$_SESSION['password'] = $_POST['password'];
-$_SESSION['confirmPassword'] = $_POST['confirmPassword'];
-
 $type = filter_input(INPUT_POST, "type");
 
 if ($type === "register") {
+
+    $_SESSION['email'] = $_POST['email'];
+    $_SESSION['name'] = $_POST['name'];
+    $_SESSION['lastname'] = $_POST['lastname'];
 
     $email = $_POST["email"];
     $name = $_POST["name"];
     $lastname = $_POST["lastname"];
     $password = $_POST["password"];
     $confirmPassword = $_POST["confirmPassword"];
+    $sits_user_id = $_POST["sits_user_id"];
+    $levels_access_id = $_POST["levels_access_id"];
 
     // verificação minima de dados
     if ($email && $name && $lastname && $password) {
@@ -47,30 +46,20 @@ if ($type === "register") {
                     $user->lastname = $lastname;
                     $user->email = $email;
                     $user->password = $final_password;
+                    $user->sits_user_id = $sits_user_id;
+                    $user->levels_access_id = $levels_access_id;
                     $user->token = $userToken;
 
-                    $auth = true;
-
-                    $_SESSION['email_login'] = "";
-                    $_SESSION['email'] = "";
-                    $_SESSION['name'] = "";
-                    $_SESSION['lastname'] = "";
-                    $_SESSION['password'] = "";
-                    $_SESSION['confirmPassword'] = "";
-                    $_SESSION['last_login'] = time();
+                    $auth = false;
 
                     // criação e login automático
                     try {
+                        unset($_POST);
                         $userDao->create($user, $auth);
                     } catch (\PDOException $e) {
+                        echo "Houve um erro ao cadastrar informações, consulte o administrador do site";
                         //echo "Error: " . $e->getMessage();
                     }
-
-                    // inserção do usuário no sistema de popups
-                    $userData = $userDao->findByEmail($email); // pega informações do user
-                    $popupDao->createPopup($userData->id, $email, 1); // 1 refere-se ao popup de boas vindas
-                    $popupDao->createPopup($userData->id, $email, 2); // 2 reefere-se ao popup de informações sobre o sistema
-                    $popupDao->createPopup($userData->id, $email, 3); // 3 reefere-se ao popup indívidual do user (ex: vencimento de mensalidade)
 
                 }else {
                     // envia mensagem de erro, usuário já existe

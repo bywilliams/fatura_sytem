@@ -220,7 +220,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             <h4 class="font-weight-normal">Anotação</h4>
                             <input type="text" name="value" id="value" class="form-control money" placeholder="importante:">
                         </div>
-                        <div class="col-lg-2 text-center">
+                        <div class="col-lg-3 text-center">
                             <h4 class="font-weight-normal">Tipo</h4>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="type_action" id="entry" value="1" checked>
@@ -308,7 +308,6 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
 
         <!--  latest financial moviments -->
         <section class="row">
-            <!-- latest 5 moviments -->
             <div class="col-md-12" id="latest_moviments">
 
                 <div class="actions mb-5 py-2 px-5 bg-light rounded">

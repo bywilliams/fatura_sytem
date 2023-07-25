@@ -32,6 +32,30 @@ Class UserDAO implements UserDAOInterface{
         $user->levels_access_id = $data['levels_access_id'];
         $user->register_date = $data['register_date'];
 
+        switch ($user->sits_user_id) {
+            case 1:
+                $user->sits_user_id = "Ativo";
+                break;
+            case 2:
+                $user->sits_user_id = "Inativo";
+                break;
+            case 3:
+                $user->sits_user_id = "Aguardando";
+                break;
+        }
+
+        switch ($user->levels_access_id) {
+            case 1:
+                $user->levels_access_id = "Super Administrador";
+                break;
+            case 2:
+                $user->levels_access_id = "Gerente";
+                break;
+            case 3:
+                $user->levels_access_id = "Usuário";
+                break;
+        }
+
         return $user;
 
     } 
@@ -39,9 +63,9 @@ Class UserDAO implements UserDAOInterface{
     public function create(User $user, $authUser = false){
 
         $stmt = $this->conn->prepare("INSERT INTO users (
-            name, lastname, email, password, token, register_date
+            name, lastname, email, password, token, sits_user_id, levels_access_id, register_date
         ) VALUES (
-            :name, :lastname, :email, :password, :token, NOW()
+            :name, :lastname, :email, :password, :token, :sits_user_id, :levels_access_id, NOW()
         )");
 
         $stmt->bindParam(":name", $user->name);
@@ -49,11 +73,11 @@ Class UserDAO implements UserDAOInterface{
         $stmt->bindParam(":email", $user->email);
         $stmt->bindParam(":password", $user->password);
         $stmt->bindParam(":token", $user->token);
+        $stmt->bindParam(":sits_user_id", $user->sits_user_id);
+        $stmt->bindParam(":levels_access_id", $user->levels_access_id);
 
-        $stmt->execute();
-
-        if ($authUser) {
-            $this->setTokenSession($user->token);
+        if ($stmt->execute()) {
+            $this->message->setMessage("Usuário cadastrado com sucesso!", "success", "back");
         }
 
     }
@@ -231,6 +255,29 @@ Class UserDAO implements UserDAOInterface{
         }
 
     } 
+
+    public function findAllUsers() {
+
+        $usersArray = [];
+        $stmt = $this->conn->query("SELECT 
+        id, name, lastname,email, image, token, sits_user_id, levels_access_id, register_date 
+        FROM users");
+
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            
+            $data = $stmt->fetchAll();
+
+            foreach ($data as $user){
+
+                $usersArray[] = $this->buildUser($user);
+            
+            }
+        }
+        return $usersArray;
+
+    }
 
     public function findByToken($token){
 
