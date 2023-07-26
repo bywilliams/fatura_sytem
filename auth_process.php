@@ -54,8 +54,11 @@ if ($type === "register") {
 
                     // criação e login automático
                     try {
-                        unset($_POST);
                         $userDao->create($user, $auth);
+                        $_SESSION['email'] = $_POST['email'];
+                        $_SESSION['name'] = "";
+                        $_SESSION['lastname'] = "";
+                        $_SESSION['email'] = "";
                     } catch (\PDOException $e) {
                         echo "Houve um erro ao cadastrar informações, consulte o administrador do site";
                         //echo "Error: " . $e->getMessage();

@@ -1,5 +1,5 @@
 <?php
-
+require_once("templates/header.php");
 require_once("globals.php");
 require_once("connection/conn.php");
 require_once("utils/check_password.php");
@@ -15,19 +15,16 @@ $type = filter_input(INPUT_POST, "type");
 
 if ($type == "update") {
 
-    $name = filter_input(INPUT_POST, "name");
-    $lastname = filter_input(INPUT_POST, "lastname");
-    $email = filter_input(INPUT_POST, "email");
-    $bio = filter_input(INPUT_POST, "bio");
+    $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
     $user = new  User();
     $userData = $userDao->verifyToken();
 
     // Preencher os dados do usuário
-    $userData->name = $name;
-    $userData->lastname = $lastname;
-    $userData->email = $email;
-    $userData->bio = $bio;
+    $userData->name = $data['name'];
+    $userData->lastname = $data['lastname'];
+    $userData->email = $data['email'];
+    $userData->bio = $data['bio'];
 
     // Upload da imagem
     if (isset($_FILES["image"]) && !empty($_FILES["image"]["tmp_name"])) {
@@ -67,6 +64,58 @@ if ($type == "update") {
     $userDao->update($userData);
 
 
+}else if($type == "edit_user_admin") {
+
+    $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+
+    $userData = array(
+        'user_id' => $data['user_id'],
+        'sits_user_id' => $data['sits_user_id'],
+        'levels_access_id' => $data['levels_access_id']
+    );
+    
+    // New element
+    //$arr['zero'] = 0;
+
+    // Checa se o input de inserir um novo password possui valor 
+    if($data['new_password']) {
+
+        if($data['password']) {
+    
+            if($data['password'] == $data['confirmPassword']) {
+    
+                if (password_strength($data['password'])) { 
+    
+                    $new_password = password_hash($data['password'], PASSWORD_DEFAULT);
+                    $userData['password'] = $new_password;
+    
+                }else {
+                    
+                    $message->setMessage("A senha deve possuir ao menos 8 caracteres, sendo pelo menos 1 letra maiúscula, 1 minúscula, 1 número e 1 simbolo.", "error", "back");
+                }
+                
+            }else {
+                $message->setMessage("As senhas não são iguais.", "error", "back");
+            }
+    
+        }else {
+            $message->setMessage("Prencha o campo senha e confirmação de senha para poder altera-la", "error", "back");
+        }
+
+    }else {
+        // Se o input de nova senha não possuir valor  mantem a mesma senha já cadastrada
+        $userData['password'] = $data['password'];
+    }
+
+    // por fim faz o update dos dados
+    try{
+        $userDao->adminUserUpdate($userData);
+    }catch(PDOException $e) {
+        echo "Error ao editar o usuário, consulte o administrador do sistema";
+        //echo "Error updating " . $e->getMessage();
+    }
+    
+    
 }else if($type == "changePassword"){
     
     $password = filter_input(INPUT_POST, "password");

@@ -20,59 +20,49 @@
             <input type="hidden" name="type" value="create">
             <!-- <input type="hidden" name="csrf_token" value="<?= $token ?>"> -->
             <div class="row text-center">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Titular do Cartão:</h4>
+                        <h4 class="font-weight-normal">Razão Social:</h4>
                         <input type="text" name="name_card" id="name_card" class="form-control"
-                            placeholder="Insira o nome como está no cartão" value="<?= $_SESSION['name_card'] ?>">
+                            placeholder="Empresa LTDA" value="<?= $_SESSION['name_card'] ?>">
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Numero do Cartão:</h4>
+                        <h4 class="font-weight-normal">CNPJ:</h4>
                         <input type="tel" name="cc" id="cc" class="form-control" maxlength="19"
-                            placeholder="1234 5678 9876 5432" value="<?= $_SESSION['card_number'] ?>">
+                            placeholder="34.567.000/0001-01" value="<?= $_SESSION['card_number'] ?>">
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Validade:</h4>
-                        <input type="month" name="expired_card" id="expired_card" class="form-control"
-                            value="<?= $_SESSION['expired_card'] ?>">
+                        <h4 class="font-weight-normal">Agência:</h4>
+                        <input type="number" name="expired_card" id="expired_card" class="form-control"
+                            value="<?= $_SESSION['expired_card'] ?>" placeholder="0001">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <h4 class="font-weight-normal">Conta:</h4>
+                        <input type="number" name="expired_card" id="expired_card" class="form-control"
+                            value="<?= $_SESSION['expired_card'] ?>" placeholder="010101-01">
                     </div>
                 </div>
             </div>
             <div class="row offset-sm-1 text-center">
-                <div class="col-md-3">
+                <div class="col-md-5">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Fecha dia:</h4>
-                        <Select class="form-control" name="close_day">
-                            <option value=""></option>
-                            <?php foreach ($days as $day): ?>
-                                <option value="<?=$day?>"><?=$day?></option>
-                            <?php endforeach ?>
-                        </Select>
+                        <h4 class="font-weight-normal">Logo:</h4>
+                        <input class="form-control" type="file" name="" id="">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Vence dia:</h4>
-                        <Select class="form-control" name="due_day">
-                            <option value=""></option>
-                            <?php foreach ($days as $day): ?>
-                                <option value="<?=$day?>"><?=$day?></option>
-                            <?php endforeach ?>
-                        </Select>
+                        <h4 class="font-weight-normal">Cor do card:</h4>
+                        <input class="form-control" type="color" name="" id="">
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <h4 class="font-weight-normal">Limite do Cartão:</h4>
-                        <input type="text" name="limit_value" id="credit_value money" class="form-control money"
-                            placeholder="4.000" value="<?= $_SESSION['limit_value'] ?>">
-                    </div>
-                </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <input type="submit" class="btn btn-lg btn-success" value="Adicionar"></input>
                 </div>
             </div>

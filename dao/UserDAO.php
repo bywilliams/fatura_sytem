@@ -90,6 +90,32 @@ Class UserDAO implements UserDAOInterface{
 
     }
 
+    public function adminUserUpdate($userData, $redirect = true){
+
+        $stmt = $this->conn->prepare("UPDATE users SET
+           password = :password,
+           sits_user_id = :sits_user_id,
+           levels_access_id = :levels_access_id
+            WHERE id = :id        
+        ");
+
+        $userData['password'] != null ?  $stmt->bindParam(":password", $userData['password']) : "";
+        $stmt->bindParam(":password", $userData['password']);
+        $stmt->bindParam(":sits_user_id", $userData['sits_user_id']);
+        $stmt->bindParam(":levels_access_id", $userData['levels_access_id']);
+        $stmt->bindParam(":id", $userData['user_id']);
+
+        $stmt->execute();
+        
+        if ($redirect) {
+            
+            // redireciona para a dashboard
+            $this->message->setMessage("Dados do usuário atualizados com sucesso!", "success", "back");
+
+        }
+
+    }
+
     public function verifyToken($protected = false){
 
        
@@ -234,7 +260,7 @@ Class UserDAO implements UserDAOInterface{
 
         $usersArray = [];
         $stmt = $this->conn->query("SELECT 
-        id, name, lastname,email, image, token, sits_user_id, levels_access_id, register_date 
+        id, name, lastname,email, password, image, token, sits_user_id, levels_access_id, register_date 
         FROM users");
 
         $stmt->execute();

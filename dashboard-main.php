@@ -305,7 +305,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
                             <div>  <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
                         </div>
-                        <!-- <hr class="dashed"> -->
+
                         <div class="row">
     
                             <table class="table table-hover table-bordered">

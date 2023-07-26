@@ -18,7 +18,7 @@ $levels_acess = $userDao->getAllLevelAcess();
     <section>
         <div class="row px-5 admin-users-list">
 
-            <table class="table table-hover table-bordered text-center">
+            <table class="table table-hover table-bordered text-center shadow">
 
                 <thead class="table-dark">
                     <tr>
@@ -76,71 +76,127 @@ $levels_acess = $userDao->getAllLevelAcess();
 
 </div>
 
-<?php foreach ($users as $user) : ?>
+<?php foreach ($users as $user) :  ?>
 
     <!-- Modal eidtar usuário-->
     <div class="modal fade" id="editUser<?= $user->id ?>" tabindex="-1" role="dialog" aria-labelledby="editUser<?= $user->id ?>" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Editar <?=$user->getFullName($user) ?></h5>
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Editar <?= $user->getFullName($user) ?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span class="text-danger" aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="sits_usuario_id">Situação:</label>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" name="sits_user_id" type="checkbox" value="1" <?= $user->sits_user_id == 1 ? "checked" : "" ?>>
-                            <label class="form-check-label" for="inlineCheckbox1">Ativo</label>
+                    <form action="<?= $BASE_URL ?>user_process.php" method="post">
+                        <input type="hidden" name="type" value="edit_user_admin">
+                        <input type="hidden" name="user_id" value="<?=$user->id?>">
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="sits_user_id" id="sits_user_id" type="checkbox" value="1" <?= $user->sits_user_id == 1 ? "checked" : "" ?>>
+                                <label class="form-check-label" for="inlineCheckbox1">Ativo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="sits_user_id" id="sits_user_id" type="checkbox" value="2" <?= $user->sits_user_id == 2 ? "checked" : "" ?>>
+                                <label class="form-check-label" for="inlineCheckbox2">Inativo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="sits_user_id" id="sits_user_id" type="checkbox" value="3" <?= $user->sits_user_id == 3 ? "checked" : "" ?>>
+                                <label class="form-check-label" for="inlineCheckbox3">Aguardando</label>
+                            </div>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" name="sits_user_id" type="checkbox" value="2" <?= $user->sits_user_id == 2 ? "checked" : "" ?>>
-                            <label class="form-check-label" for="inlineCheckbox2">Inativo</label>
+                        <div class="form-group">
+                            <label for="levels_acess_id">Nível de acesso:</label>
+                            <select class="form-control" name="levels_access_id" id="levels_acess_id">
+                                <option value="">Selecione</option>
+                                <?php foreach ($levels_acess as $level_acess) : ?>
+                                    <?php if ($user->levels_access_id == $level_acess['id']) : ?>
+                                        <option value="<?= $level_acess['id'] ?>" selected>
+                                            <?= $level_acess['nome'] ?>
+                                        </option>
+                                    <?php else : ?>
+                                        <option value="<?= $level_acess['id'] ?>">
+                                            <?= $level_acess['nome'] ?>
+                                        </option>
+                                    <?php endif ?>
+                                <?php endforeach ?>
+                            </select>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" name="sits_user_id" type="checkbox" value="3" <?= $user->sits_user_id == 3 ? "checked" : "" ?>>
-                            <label class="form-check-label" for="inlineCheckbox3">Aguardando</label>
+                        <div class="form-group">
+                            <label for="need_password">Precisa de uma nova senha?</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="new_password" id="new_password<?=$user->id?>" value="S" onclick="showPasswordDiv(<?=$user->id?>)">
+                                <label class="form-check-label" for="inlineCheckbox1">Sim</label>
+                            </div>
+                            <!-- <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="need_password" name="new_password" type="checkbox" value="N" checked>
+                                <label class="form-check-label" for="inlineCheckbox2">Não</label>
+                            </div> -->
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="levels_acess_id">Nível de acesso:</label>
-                        <select class="form-control" name="levels_acess_id" id="">
-                            <option value="">Selecione</option>
-                            <?php foreach($levels_acess as $level_acess): ?>
-                                <?php if ($user->levels_access_id == $level_acess['id']): ?>
-                                    <option value="<?= $level_acess['id']?>" selected> 
-                                        <?= $level_acess['nome'] ?> 
-                                    </option>
-                                <?php else: ?>
-                                    <option value="<?= $level_acess['id']?>"> 
-                                        <?= $level_acess['nome'] ?> 
-                                    </option>
-                                <?php endif ?>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="new_password">Nova senha</label>
-                        <input class="form-control" type="password" name="password" id="" placeholder="digite uma nova senha">
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm_new_password">Confirme a nova senha</label>
-                        <input class="form-control" type="password" name="confirmPassword" id="" placeholder="confirme a nova senha">
-                    </div>
+                        <div class="password_div<?=$user->id?>" style="display: none">
+                            <div class="form-group ">
+                                <label for="new_password">Nova senha</label>
+                                <input class="form-control" type="password" name="password" id="password" placeholder="digite uma nova senha" value="<?=$user->password?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_new_password">Confirme a nova senha</label>
+                                <input class="form-control" type="password" name="confirmPassword" id="confirmPassword" placeholder="confirme a nova senha" value="<?=$user->password?>">
+                            </div>
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                     <input type="submit" class="btn btn-primary" value="Salvar"></input>
                 </div>
+                </form>
             </div>
         </div>
     </div>
     <!-- Fim Modal eidtar usuário-->
 <?php endforeach; ?>
 
-
-
-
 <?php require_once("templates/footer.php"); ?>
+
+
+<script>
+     
+    // Função para mostrar ou ocultar div com inputs de senhas
+    function showPasswordDiv (i) {
+
+        // Define um evento de clique para o input com id "ne_password"
+        $("#new_password"+ i).click(function() {
+            
+            // Obtém o valor atual do atributo "checked" do checkbox
+            var isChecked = $(this).prop("checked");
+
+            if (isChecked) {
+                
+                $(".password_div" + i).show();
+            }else {
+               
+                $(".password_div" + i).hide();
+            }
+        });
+    }
+   
+
+
+    // the selector will match all input controls of type :checkbox
+    // and attach a click event handler 
+    $("input:checkbox").on('click', function() {
+    // in the handler, 'this' refers to the box clicked on
+    var $box = $(this);
+    if ($box.is(":checked")) {
+        // the name of the box is retrieved using the .attr() method
+        // as it is assumed and expected to be immutable
+        var group = "input:checkbox[name='" + $box.attr("name") + "']";
+        // the checked state of the group/box on the other hand will change
+        // and the current value is retrieved using .prop() method
+        $(group).prop("checked", false);
+        $box.prop("checked", true);
+    } else {
+        $box.prop("checked", false);
+    }
+    });
+</script>
