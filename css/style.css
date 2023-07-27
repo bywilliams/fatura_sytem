@@ -186,7 +186,7 @@ input[type="select"] {
 .p-viewer {
     z-index: 9999;
     position: absolute;
-    top: 19.5%;
+    top: 55.9%;
     right: 7px;
     cursor: pointer;
 }
@@ -579,71 +579,11 @@ table {
     width: 100%;
     height: 270px;
     border: 2px solid rgba(255, 255, 255, 0.2);
+    background: #000;
     border-radius: 10px;
     z-index: 1;
     overflow: hidden;
     position: relative;
-}
-
-.amex {
-    background: #999999;
-    background: linear-gradient(180deg, #999999 0%, #666666 100%);
-}
-
-.visa {
-    background: rgb(199, 12, 17);
-    background: linear-gradient(180deg, rgba(199, 12, 17, 1) 0%, rgba(111, 6, 6, 1) 100%);
-}
-
-.diners {
-    background: #D4D5D7;
-    background: linear-gradient(180deg, #ededed 0%, #bdbdbd 100%);
-}
-
-
-.master-card {
-    background: rgb(55, 55, 60);
-    background: linear-gradient(180deg, rgba(55, 55, 60, 1) 0%, rgba(0, 0, 0, 1) 100%);
-}
-
-.master-card-icon {
-    background-image: url("../assets/home/dashboard-main/mastercard.png");
-    width: 75px;
-    height: 45px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    float: right;
-}
-
-.visa-icon {
-    background-image: url("../assets/home/dashboard-main/visa.png");
-    width: 75px;
-    height: 45px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    float: right;
-}
-
-.amex-icon {
-    background-image: url("../assets/home/dashboard-main/amex_card.png");
-    width: 75px;
-    height: 45px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    float: right;
-}
-
-.diners-icon {
-    background-image: url("../assets/home/dashboard-main/diners.png");
-    width: 56px;
-    height: 45px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    float: right;
 }
 
 .card_logo {
@@ -673,6 +613,16 @@ table {
     display: flex;
     justify-content: space-between;
     padding: 0 10px;
+}
+
+.card_crinfo p {
+    color: #fff;
+}
+
+#card_name small {
+    color: #fff;
+    position: absolute;
+    left: 13px;
 }
 
 #card_name {

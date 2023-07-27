@@ -10,9 +10,9 @@ $levels_acess = $userDao->getAllLevelAcess();
 
 ?>
 
-<div class="container-fluid my-5">
+<div class="container my-5">
 
-    <h1 class="text-center text-secondary">Lista de Funcionários</h1>
+    <h1 class="text-center text-secondary my-5">Lista de Funcionários <i class="fa-solid fa-users-between-lines"></i></h1>
 
     <!-- Tabela lista de usuários -->
     <section>
@@ -22,7 +22,7 @@ $levels_acess = $userDao->getAllLevelAcess();
 
                 <thead class="table-dark">
                     <tr>
-                        <th scope="col">Foto</th>
+                        <!-- <th scope="col">Foto</th> -->
                         <th scope="col">Id</th>
                         <th scope="col">Nome</th>
                         <th scope="col">E-mail</th>
@@ -35,7 +35,7 @@ $levels_acess = $userDao->getAllLevelAcess();
                 <tbody>
                     <?php foreach ($users as $user) : ?>
                         <tr>
-                            <th scope="row">
+                            <!-- <th scope="row">
 
                                 <?php if ($user->image != "") : ?>
                                     <a href="<?= $BASE_URL ?>assets/home/avatar/<?= $user->image ?>">
@@ -44,7 +44,7 @@ $levels_acess = $userDao->getAllLevelAcess();
                                 <?php else : ?>
                                     <div id="profile-image-container" style="background-image: url('<?= $BASE_URL ?>assets/home/user.png')"> </div>
                                 <?php endif ?>
-                            </th>
+                            </th> -->
                             <td class="align-middle"><?= $user->id ?></td>
                             <td class="align-middle"><?= $user->getFullName($user) ?></td>
                             <td class="align-middle"><?= $user->email ?></td>

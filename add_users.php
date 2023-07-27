@@ -10,7 +10,7 @@
 ?>
 
 <div class="container">
-    <h1 class="text-center my-5">Adicionar usuários</h1>
+    <h1 class="text-center text-secondary my-5">Adicionar usuário <i class="fa-solid fa-circle-user"></i></h1>
      <!-- Register Form -->
      <div class="col-md-8 offset-md-2 login-form-2 rounded">
                
