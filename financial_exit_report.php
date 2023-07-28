@@ -39,7 +39,7 @@ $total_out_value = 0;
 </style>
 
 <div class="container-fluid">
-    <h1 class="text-center my-5">Relatório de despesas <img src="<?= $BASE_URL ?>assets/home/dashboard-main/empty-wallet.png" width="64" height="64" alt=""></h1>
+    <h1 class="text-center my-5">Despesas <img src="<?= $BASE_URL ?>assets/home/dashboard-main/empty-wallet.png" width="64" height="64" alt=""></h1>
     <div class="entrys-search" id="entrys-search">
         <form method="POST">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
@@ -53,7 +53,6 @@ $total_out_value = 0;
                 <div class="col-md-2">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por valor:</h4>
-                        <!-- <input class="form-control" type="number" name="values" id="values" placeholder="ex: até 500"> -->
                         <select class="form-control" name="values_exit" id="values_exit">
                             <option value="">Selecione</option>
                             <option value="500">até R$ 500,00</option>

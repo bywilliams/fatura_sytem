@@ -20,7 +20,6 @@ $entryFinancialScheduled = $financialMovimentDao->getAllCashInflowScheduled($use
 <div class="container">
     <h1 class="text-center my-5">Despesas <i class="fa-solid fa-calendar-minus text-danger"></i></i></h1>
 
-
     <!-- Cash Inflow | Cash outflow form  -->
     <section>
        
@@ -29,25 +28,20 @@ $entryFinancialScheduled = $financialMovimentDao->getAllCashInflowScheduled($use
                 <input type="hidden" name="type" value="create">
                 <input type="hidden" name="type_action" value="1">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h4 class="font-weight-normal">Descriçao</h4>
                         <input type="text" name="description" id="description" class="form-control" placeholder="Ex: salário">
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <h4 class="font-weight-normal">Valor</h4>
                         <input type="text" name="value" id="value" class="form-control money" placeholder="Ex: 80,00:">
                     </div>
-                    <div class="col-md-3" id="category">
-                        <h4 class="font-weight-normal">Categoria</h4>
-                        <select class="form-control" name="category" id="category_entry">
-                            <option value="">Selecione</option>
-                            <?php foreach ($entry_categorys as $category) : ?>
-                                <option value="<?= $category->id ?>"> <?= $category->category_name ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+                    <!-- <div class="col-md-3" id="category">
+                        <h4 class="font-weight-normal">Registrada em</h4>
+                        <input class="form-control" type="date" name="" id="">
+                    </div> -->
                     <div class="col-md-3">
-                        <h4>Data</h4>
+                        <h4>Data da despesa</h4>
                         <input class="form-control " type="date" name="date_scheduled" id="">
                     </div>
                     <div class="col-md-1 button">

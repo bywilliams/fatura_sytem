@@ -48,7 +48,10 @@
                 <a href="<?= $BASE_URL ?>add_users.php" target="myFrame">Cadastrar usuários</a>
             </li>
             <li>
-                <a href="<?= $BASE_URL ?>users.php" target="myFrame">Ver todos usuários</a>
+                <a href="<?= $BASE_URL ?>accounts_list.php" target="myFrame">Ver Contas</a>
+            </li>
+            <li>
+                <a href="<?= $BASE_URL ?>users.php" target="myFrame">Ver usuários</a>
             </li>
             <li>
                 <a href="<?= $BASE_URL ?>invoices.php" target="myFrame">Ver faturas</a>

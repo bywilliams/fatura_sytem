@@ -93,6 +93,7 @@ $levels_acess = $userDao->getAllLevelAcess();
                         <input type="hidden" name="type" value="edit_user_admin">
                         <input type="hidden" name="user_id" value="<?=$user->id?>">
                         <div class="form-group">
+                            <label for="sits_user_id">Situação do funcionário:</label>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" name="sits_user_id" id="sits_user_id" type="checkbox" value="1" <?= $user->sits_user_id == 1 ? "checked" : "" ?>>
                                 <label class="form-check-label" for="inlineCheckbox1">Ativo</label>

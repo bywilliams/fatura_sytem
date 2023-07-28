@@ -39,11 +39,12 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
 </style>
 
 <div class="container-fluid">
-    <h1 class="text-center my-5">Relatório de receitas
-        <img src="<?= $BASE_URL ?>assets/home/dashboard-main/full-wallet.png" width="64" height="64" alt="">
+    <h1 class="text-center my-5">Todas as faturas
+        <!-- <img src="<?= $BASE_URL ?>assets/home/dashboard-main/full-wallet.png" width="64" height="64" alt=""> -->
+        <i class="fa-solid fa-file-invoice"></i>
     </h1>
 
-    <div class="entrys-search" id="entrys-search">
+    <!-- <div class="entrys-search" id="entrys-search">
         <form method="POST">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
             <div class="row">
@@ -56,7 +57,6 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
                 <div class="col-md-2">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por valor:</h4>
-                        <!-- <input class="form-control" type="number" name="values" id="values" placeholder="ex: até 500"> -->
                         <select class="form-control" name="values_entry" id="values_entry">
                             <option value="">Selecione</option>
                             <option value="500">até R$ 500,00</option>
@@ -98,13 +98,11 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
                 </div>
                 <div class="col-md-1">
 
-                    <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir
-                        <!-- <i class="fa-solid fa-print"></i> -->
-                    </button>
+                    <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir </button>
                 </div>
             </div>
         </form>
-    </div>
+    </div> -->
 
     <div class="table_report my-3" id="search_entry"></div>
 
@@ -115,11 +113,12 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Descrição</th>
-                    <th scope="col">Valor</th>
                     <th scope="col">Data</th>
-                    <th scope="col">Categoria</th>
-                    <th scope="col">Observação</th>
+                    <th scope="col">Referência</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Vencimento</th>
+                    <th scope="col">Conta</th>
+                    <th scope="col">Anotação</th>
                     <th scope="col" class="report-action">Ação</th>
                 </tr>
             </thead>
@@ -133,6 +132,9 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
                             <?= $entryFinancialMovimentItem->id ?>
                         </th>
                         <td>
+                            01/07/2023 09:15
+                        </td>
+                        <td>
                             <?= $entryFinancialMovimentItem->description ?>
                         </td>
                         <td>
@@ -142,7 +144,7 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
                             <?= $entryFinancialMovimentItem->create_at ?>
                         </td>
                         <td>
-                            <?= $entryFinancialMovimentItem->category ?>
+                            010101-01
                         </td>
 
                         <td>
@@ -200,9 +202,6 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
         <!-- End pagination buttons -->
     </div>
 
-    <!-- <div class="container">
-        <div id="container_graph" style="width: 100%; height: 500px"></div>
-    </div> -->
 
     <!-- Finance all revenue moviment modal -->
     <?php foreach ($entryFinancialMoviments as $entryFinancialMovimentItem) : ?>
@@ -374,46 +373,6 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
         });
     });
 
-    anychart.onDocumentReady(function() {
-
-        // set the data
-        var data = [{
-                x: 'White',
-                value: 223553265,
-
-            },
-            {
-                x: 'Black or African American',
-                value: 38929319
-            },
-            {
-                x: 'American Indian and Alaska Native',
-                value: 2932248
-            },
-
-        ];
-
-        // create the chart
-        var chart = anychart.pie();
-
-        // set the chart title
-        chart.title('Entradas por categorias');
-
-        // add the data
-        chart.data(data);
-
-        // sort elements
-        chart.sort('desc');
-
-        // set legend position
-        chart.legend().position('right');
-        // set items layout
-        chart.legend().itemsLayout('vertical');
-
-        // display the chart in the container
-        chart.container('container_graph');
-        chart.draw();
-    });
 </script>
 
 <script src="js/ajax_finance_entrys_request.js"></script>

@@ -86,7 +86,7 @@
                     </div>
                 </form>
             </div>
-            <!-- End Register Form -->
+    <!-- End Register Form -->
 
 </div>
 <?php require_once("templates/footer.php"); ?>
