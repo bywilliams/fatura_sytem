@@ -35,16 +35,6 @@ $levels_acess = $userDao->getAllLevelAcess();
                 <tbody>
                     <?php foreach ($users as $user) : ?>
                         <tr>
-                            <!-- <th scope="row">
-
-                                <?php if ($user->image != "") : ?>
-                                    <a href="<?= $BASE_URL ?>assets/home/avatar/<?= $user->image ?>">
-                                        <div id="profile-image-container" style="background-image: url('<?= $BASE_URL ?>assets/home/avatar/<?= $user->image ?>')"> </div>
-                                    </a>
-                                <?php else : ?>
-                                    <div id="profile-image-container" style="background-image: url('<?= $BASE_URL ?>assets/home/user.png')"> </div>
-                                <?php endif ?>
-                            </th> -->
                             <td class="align-middle"><?= $user->id ?></td>
                             <td class="align-middle"><?= $user->getFullName($user) ?></td>
                             <td class="align-middle"><?= $user->email ?></td>
@@ -60,7 +50,7 @@ $levels_acess = $userDao->getAllLevelAcess();
                             <td class="align-middle" id="latest_moviments">
                                 <a href="#" data-toggle="modal" data-target="#editUser<?= $user->id ?>" title="Editar">
                                     <i class="fa-solid fa-file-pen"></i></a>
-                                <a href="#" data-toggle="modal" data-target=".editUser<?= $user->id ?>" title="Deletar">
+                                <a href="#" data-toggle="modal" data-target="#user_del<?= $user->id ?>" title="Deletar">
                                     <i class="fa-solid fa-trash-can"></i></a>
                                 </a>
                             </td>
@@ -156,6 +146,29 @@ $levels_acess = $userDao->getAllLevelAcess();
     </div>
     <!-- Fim Modal eidtar usuário-->
 <?php endforeach; ?>
+
+<!-- Usuário modal delete -->
+<?php foreach ($users as $user) : ?>
+    <div class="modal fade" tabindex="-1" id="user_del<?= $user->id ?>">
+        <div class="modal-dialog modal-dialog-top">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <p>Tem certeza que deseja excluir o usuário <br> <?= $user->getFullName($user)  ?>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+                    <form action="<?= $BASE_URL ?>user_process.php" method="POST">
+                        <input type="hidden" name="type" value="delete">
+                        <input type="hidden" name="id" value="<?= $user->id?>">
+                        <input type="hidden" name="current_file" value="<?= $user->image ?>">
+                        <button type="submit" class="btn btn-primary">Sim</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+<!-- End usuário modal delete -->
 
 <?php require_once("templates/footer.php"); ?>
 

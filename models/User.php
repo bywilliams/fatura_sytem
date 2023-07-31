@@ -1,6 +1,8 @@
 <?php
-
+require_once("traits/generates.php");
 class User {
+
+    use Generates;
 
     public $id;
     public $email;
@@ -22,10 +24,6 @@ class User {
         return bin2hex(random_bytes(50)); // random cria a string, bin2hex modifica a String deixando mais complexa
     }
 
-    public function imageGenerateName (){
-        return bin2hex(random_bytes(60)) . ".jpg";
-    }
-
 
 }
 
@@ -43,4 +41,5 @@ interface UserDAOInterface {
     public function destroyToken(); // destroy a sessão através do token
     public function changePassword(User $user); #irá mudar o password
     public function recoveryPassword($email, $password); # função para recuperar password
+    public function deleteUser ($id); #irá deletar usuário
 }

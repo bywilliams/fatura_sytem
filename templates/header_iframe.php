@@ -7,6 +7,7 @@ require_once("models/Message.php");
 require_once("models/User.php");
 require_once("dao/UserDAO.php");
 require_once("dao/MenuDAO.php");
+
 // require_once("utils/check_inactivity.php");
 
 $message = new Message($BASE_URL);

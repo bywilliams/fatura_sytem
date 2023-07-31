@@ -130,7 +130,7 @@
 
     <!-- Reeminder modal delete -->
     <?php foreach ($allReminders as $reminder_del) : ?>
-            <div class="modal" tabindex="-1" id="modal_del_reminder<?= $reminder_del->id ?>">
+            <div class="modal fade" tabindex="-1" id="modal_del_reminder<?= $reminder_del->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body text-center">

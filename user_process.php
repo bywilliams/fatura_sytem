@@ -3,8 +3,10 @@ require_once("templates/header.php");
 require_once("globals.php");
 require_once("connection/conn.php");
 require_once("utils/check_password.php");
-require_once("dao/UserDAO.php");
 require_once("models/Message.php");
+require_once("traits/generates.php");
+require_once("dao/UserDAO.php");
+
 
 $userDao = new UserDAO($conn, $BASE_URL);
 
@@ -149,6 +151,34 @@ if ($type == "update") {
 
         $message->setMessage("Prencha o campo senha e confirmação de senha para poder altera-la", "error", "back");
         
+    }
+
+}else if ($type == "delete") {
+
+    $id = filter_input(INPUT_POST, "id");
+
+    try{
+        
+        // PEGA NOME DA IMAGEM E CAMINHO
+        $img = $_POST["current_file"];
+        $path = './assets/home/avatar/' . $img;
+
+        // Checa se existe o arquivo de imagem na pasta, se existir deleta 
+        if (file_exists($path)):
+            // deleta imagem anterior
+            unlink($path);
+        else :
+            echo "<script>
+            alert('Ops, algo deu errado, arquivo não encontrado!');
+            </script>";
+        endif;
+
+        // Deleta registro no BD
+        $userDao->deleteUser($id);
+
+    }catch(PDOException $e) {
+        echo "erro ao deletar conta, consulte o administrador do sistema";
+        //echo "erro ao deletar conta" . $e->getMessage();
     }
 
 }

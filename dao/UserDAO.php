@@ -368,4 +368,15 @@ Class UserDAO implements UserDAOInterface{
 
     } 
 
+    public function deleteUser($id) {
+
+        $stmt = $this->conn->prepare("DELETE FROM users WHERE id = :id");
+        $stmt->bindParam(":id", $id);
+
+        if($stmt->execute()) {
+            $this->message->setMessage("Usuário excluído com sucesso", "success", "back");
+        }
+
+    }
+
 }

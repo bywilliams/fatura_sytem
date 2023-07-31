@@ -5,6 +5,7 @@ isset($_SESSION['razao']) ? $_SESSION['razao'] : "";
 isset($_SESSION['cnpj']) ? $_SESSION['cnpj'] : "";
 isset($_SESSION['ag']) ? $_SESSION['ag'] : "";
 isset($_SESSION['cc']) ? $_SESSION['cc'] : "";
+isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
 
 
 ?>
@@ -12,32 +13,32 @@ isset($_SESSION['cc']) ? $_SESSION['cc'] : "";
 <div class="container-fluid">
     <h1 class="text-center my-5 text-secondary">Adicionar conta <i class="fa-solid fa-building-columns"></i></h1>
     <div class="container actions p-5 mb-4 bg-light rounded-3 shadow-sm">
-        <form action="<?= $BASE_URL ?>cards_process.php" method="POST">
+        <form action="<?= $BASE_URL ?>account_process.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="type" value="create">
             <!-- <input type="hidden" name="csrf_token" value="<?= $token ?>"> -->
             <div class="row text-center">
                 <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Razão Social:</h4>
-                        <input type="text" name="razao" id="razao" class="form-control" placeholder="Empresa LTDA" value="<?= $_SESSION['razao'] ?>">
+                        <input type="text" name="razao" id="razao" class="form-control" placeholder="Empresa LTDA" value="<?= $_SESSION['razao'] ?>" required>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">CNPJ:</h4>
-                        <input type="tel" name="cnpj" id="cnpj" class="form-control" maxlength="19" placeholder="34.567.000/0001-01" value="<?= $_SESSION['cnpj'] ?>">
+                        <input type="tel" name="cnpj" id="cnpj" class="form-control" maxlength="19" placeholder="34.567.000/0001-01" value="<?= $_SESSION['cnpj'] ?>" required>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Agência:</h4>
-                        <input type="number" name="ag" id="ag" class="form-control" value="<?= $_SESSION['ag'] ?>" placeholder="0001">
+                        <input type="number" name="ag" id="ag" class="form-control" value="<?= $_SESSION['ag'] ?>" placeholder="0001" title="Apenas números" required>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Conta:</h4>
-                        <input type="text" name="cc" id="cc" class="form-control" value="<?= $_SESSION['cc'] ?>" placeholder="010101-01">
+                        <input type="number" name="cc" id="cc" class="form-control" value="<?= $_SESSION['cc'] ?>" placeholder="010101-01" title="Apenas números" required>
                     </div>
                 </div>
             </div>
@@ -45,19 +46,19 @@ isset($_SESSION['cc']) ? $_SESSION['cc'] : "";
                 <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-nrmal">Chave Pix:</h4>
-                        <input class="form-control"  type="text" name="pix" id="pix" placeholder="123.456.789-10">
+                        <input class="form-control" type="text" name="pix" id="pix" placeholder="123.456.789-10" value="<?= $_SESSION['pix'] ?>" required>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Logo:</h4>
-                        <input class="form-control" type="file" name="logo" id="logo">
+                        <input class="form-control" type="file" name="image" id="logo" required>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Cor do card:</h4>
-                        <input class="form-control" type="color" name="color" id="color">
+                        <h4 class="font-weight-normal">Cor:</h4>
+                        <input class="form-control" type="color" name="color" id="color" value="<?= $_SESSION['color'] ?>" required>
                     </div>
                 </div>
                 <div class="col-md-1">
@@ -122,6 +123,29 @@ isset($_SESSION['cc']) ? $_SESSION['cc'] : "";
     //         $(this).val(this.value.replace(regexp, ' '));
     //     }
     // });
+
+     // Referência para o input do tipo "number"
+    var inputNumber1 = $("#cc");
+    var inputNumber2 = $("#ag");
+
+    // Função para verificar se o valor contém apenas números
+    function validateNumberInput(input) {
+        var inputValue = input.val();
+        var regex = /^\d+$/;
+        if (!regex.test(inputValue)) {
+            input.val("");
+        }
+    }
+
+    // Evento "input" para ambos os inputs
+    inputNumber1.on("input", function() {
+        validateNumberInput(inputNumber1);
+    });
+
+    inputNumber2.on("input", function() {
+        validateNumberInput(inputNumber2);
+    });
+
 
 
     // Auto Preenchimento do cartão exemplo

@@ -2,11 +2,14 @@
 require_once("templates/header_iframe.php");
 require_once("globals.php");
 require_once("connection/conn.php");
-// require_once("dao/CardsDAO.php");
+require_once("models/BankAccounts.php");
+require_once("dao/BankAccountsDAO.php");
 
-// $cardDao = new CardsDAO($conn, $BASE_URL);
-// // traz todos os cartões do usuário
-// $cards = $cardDao->getAllCards($userData->id);
+$bankAccout = new BankAccounts();
+$bankAccountsDao = new BankAccountsDAO($conn, $BASE_URL);
+
+// traz todos os cartões do usuário
+$accounts = $bankAccountsDao->getAllBankAccounts();
 
 ?>
 
@@ -18,53 +21,52 @@ require_once("connection/conn.php");
 
         <!-- Each Card  -->
         <div class="row card_example" id="cards-page">
+            <?php foreach ($accounts as $account) : ?>
+                <div class="col-md-4  my-3">
+                    <div class="card-credit shadow" id="card-credit-bg" style="background: <?= $account->card_color ?>">
 
-            <div class="col-md-4  my-3">
-                <div class="card-credit shadow" id="card-credit-bg">
-
-                    <div id="flag_icon" class="" alt=""></div>
-
-                    <div class="card_info">
-                        <div class="bg-white rounded" style="display: inline-block">
-                            <img src="<?= $BASE_URL ?>assets/home/logo-santander.png" alt="">
-                        </div>
-                        <p class="mt-3" id="card_number"> CNPJ: 34.567.432/0001-01</p>
-                    </div>
-
-                    <div class="card_crinfo">
-                        <p id="card_name">
-                            <small> Razão social: </small> <br>
-                            Banco Santander
-                        </p>
-
-                        <div class="form-group d-flex text-center">
-                            <div class="px-3">
-                                <small class="text-light">Agencia</small>
-                                <p id="agencia">0001</p>
+                        <div class="card_info">
+                            <div class="bg-white rounded" style="display: inline-block">
+                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $account->logo_img ?>" alt="">
                             </div>
-                            <div>
-                                <small class="text-light">Conta</small>
-                                <p id="conta">010101-01</p>
+                            <p class="mt-3" id="card_number"> CNPJ <?= $account->cnpj ?></p>
+                        </div>
+                        <div class="card_pix">
+                            <p class="text-white ml-2" id="chave_pix">Pix: <?= $account->pix ?></p>
+                        </div>
+
+                        <div class="card_crinfo">
+                            <p id="card_name">
+                                <small> Razão social: </small> <br>
+                                <?= $account->razao_social ?>
+                            </p>
+
+                            <div class="form-group d-flex text-center">
+                                <div class="px-3">
+                                    <small class="text-light">Agencia</small>
+                                    <p id="agencia"><?= $account->agencia ?></p>
+                                </div>
+                                <div>
+                                    <small class="text-light">Conta</small>
+                                    <p id="conta"><?= $account->conta ?></p>
+                                </div>
                             </div>
                         </div>
+
                     </div>
-
+                    <div class="text-center my-2">
+                        <a href="#" data-toggle="modal" data-target="#card_modal_edit<?= $account->id?>" title="Editar">
+                            <i class="fa-solid fa-file-pen"></i>
+                        </a>
+                        <a href="#" data-toggle="modal" data-target="#card_del<?= $account->id ?>"><i class="fa-solid fa-trash-can"></i></a>
+                    </div>
                 </div>
-                <div class="text-center my-2">
-                    <!-- <p>Limíte de crédito R$<?= $card->limit_value ?> </p>
-                        <p> <strong> Fecha dia: </strong> <?= $card->close_day ?> <br>
-                        <strong> Vence dia: </strong> <?= $card->due_day ?></p> -->
-                    <a href="#" data-toggle="modal" data-target="#exampleModalCenter" title="Editar">
-                        <i class="fa-solid fa-file-pen"></i>
-                    </a>
-                    <a href="" data-toggle="modal" data-target="#modal_del_cards<?= $card->id ?>"><i class="fa-solid fa-trash-can"></i></a>
-                </div>
-            </div>
+            <?php endforeach ?>
 
 
-            <!-- <?php if (count($cards) === 0) : ?>
-                <h4 class="col text-center">Nenhuma Cartão cadastrado</h4>
-            <?php endif; ?>  -->
+            <?php if (count($accounts) === 0) : ?>
+                <h4 class="col text-center">Nenhuma conta cadastrada</h4>
+            <?php endif; ?>
 
 
         </div>
@@ -72,19 +74,88 @@ require_once("connection/conn.php");
     <!-- Each Card  -->
 </div>
 
+<!-- Card modal edit -->
+    <?php foreach($accounts as $account): ?>
+    <div class="modal fade" id="card_modal_edit<?= $account->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-top" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar conta</h5>
+                    <button type="button" class="close" data-dismiss="modal" arial-label="fechar">
+                        <span arial-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= $BASE_URL ?>account_process.php?id=<?= $account->id ?>" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="<?= $account->id ?>">
+                        <input type="hidden" name="type" value="update">
+                        <div class="form-group">
+                            <label for="razao">Razão Social:</label>
+                            <input type="text" name="razao" id="razap" class="form-control" value="<?= $account->razao_social ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="cnpj">CNPJ:</label>
+                            <input type="text" name="cnpj" id="cnpj" class="form-control" value="<?= $account->cnpj ?>">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="ag">Agência:</label>
+                                    <input type="text" name="ag" id="ag" class="form-control" value="<?= $account->agencia ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="cc">Conta:</label>
+                                    <input type="text" name="cc" id="cc" class="form-control" value="<?= $account->conta ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="pix">Chave Pix:</label>
+                                    <input type="text" name="pix" id="pix" class="form-control" value="<?= $account->pix ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="color">Cor:</label>
+                                    <input type="color" name="color" id="color" class="form-control" value="<?= $account->card_color ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="logo">Logo:</label>
+                            <input type="hidden" name="current_file" value="<?= $account->logo_img ?>">
+                            <input class="form-control" type="file" name="image" id="image" value="<?= $account->logo_img ?>">
+                        </div>
+                        <input type="submit" value="Atualizar" class="btn btn-lg btn-success" onclick="scrollToTop()">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endforeach ?>
+<!-- End Card modal edit -->
+
 <!-- Card modal delete -->
-<?php foreach ($cards as $card) : ?>
-    <div class="modal" tabindex="-1" id="modal_del_cards<?= $card->id ?>">
-        <div class="modal-dialog modal-dialog-centered">
+<?php foreach ($accounts as $account) : ?>
+    <div class="modal fade" tabindex="-1" id="card_del<?= $account->id ?>">
+        <div class="modal-dialog modal-dialog-top">
             <div class="modal-content">
                 <div class="modal-body text-center">
                     <p>Tem certeza que deseja excluir o registro?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
-                    <form action="<?= $BASE_URL ?>cards_process.php" method="POST">
+                    <form action="<?= $BASE_URL ?>account_process.php" method="POST">
                         <input type="hidden" name="type" value="delete">
-                        <input type="hidden" name="id" value="<?= $card->id ?>">
+                        <input type="hidden" name="id" value="<?= $account->id?>">
+                        <input type="hidden" name="current_file" value="<?= $account->logo_img ?>">
                         <button type="submit" class="btn btn-primary">Sim</button>
                     </form>
                 </div>

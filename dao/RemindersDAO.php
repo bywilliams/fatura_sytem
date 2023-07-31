@@ -139,12 +139,12 @@
 
         public function updateReminder(Reminders $reminder){
             $stmt = $this->conn->prepare("UPDATE tb_reminders SET
-                                        title = :title, 
-                                        description = :description,
-                                        reminder_date = :reminder_date,
-                                        visualized = :visualized,
-                                        modified = NOW()
-                                        WHERE users_id = :users_id AND id = :id
+                title = :title, 
+                description = :description,
+                reminder_date = :reminder_date,
+                visualized = :visualized,
+                modified = NOW()
+                WHERE users_id = :users_id AND id = :id
             "); 
             $stmt->bindParam(":title", $reminder->title);
             $stmt->bindParam(":description", $reminder->description);
