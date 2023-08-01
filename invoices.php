@@ -108,7 +108,7 @@ $entryFinancialMoviments = $financialMovimentDao->getAllEntryFinancialMoviment($
 
     <!-- table div thats receive all entrys without customize inputs parameters  -->
     <div class="table_report" id="table_report_entry">
-        <h3 class="text-center text-secondary">Resultados do mês</h3>
+        <h3 class="text-center text-secondary">Resultados:</h3>
         <table class="table table-hover table-striped table-bordered">
             <thead class="thead-dark">
                 <tr>

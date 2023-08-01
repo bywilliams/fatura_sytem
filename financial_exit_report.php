@@ -1,20 +1,16 @@
 <?php
 require_once("templates/header_iframe.php");
-require_once("dao/FinancialMovimentDAO.php");
-require_once("dao/CategorysDAO.php");
+require_once("utils/config.php");
+require_once("dao/ExpenseDAO.php");
 
-$financialMovimentDao = new FinancialMovimentDAO($conn, $BASE_URL);
-$categorysDao = new CategorysDAO($conn);
+$expensesDao = new ExpenseDAO($conn, $BASE_URL);
 
-// Traz todas as categorias disponiveis para despesas
-$exit_categorys = $categorysDao->getAllExitCategorys();
-
-// Traz os registros de saída da query personalizada 
-$sql = "";
-$getOutReports = $financialMovimentDao->getReports($sql, 2, $userData->id);
+// // Traz os registros de saída da query personalizada 
+// $sql = "";
+// $getOutReports = $expensesDao->getReports($sql,  $userData->id);
 
 /* paginação do relatório  */
-$totalRegistros = $financialMovimentDao->countTypeFinancialCurrentMonth($userData->id, 2);
+$totalRegistros = $expensesDao->countTypeExpensesCurrentMonth($userData->id);
 
 $resultsPerPage = 10;
 $numberPages = ceil($totalRegistros / $resultsPerPage);
@@ -24,86 +20,90 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 // calcula o indice do primeiro registro da página atual
 $offset = ($page - 1) * $resultsPerPage;
 
+$sql = "";
+$expense_id = 
+$name_expense = 
+$value_expense =
+$month_expense = "";
+
+
+if ($_POST) {
+    //echo "pesquisa enviada";
+    $sql = "";
+
+    if (isset($_POST['expense_id']) && $_POST['expense_id'] != '') { 
+        $expense_id = $_POST['expense_id'];
+        $sql .= "AND id = $expense_id";
+    }
+
+    if (isset($_POST['name_expense']) && $_POST['name_expense'] != '') {
+        $name_expense = $_POST['name_expense'];
+        $name_expense_encrypted = encryptData($name_expense, $encryptionKey);
+        $sql .= " AND description LIKE '%$name_expense_encrypted%'";
+    }
+
+    if (isset($_POST['value_expense']) && $_POST['value_expense'] != '') {
+        $value_expense = $_POST['value_expense'];
+        $sql .= " AND value <= $value_expense";
+    }
+
+    if (isset($_POST['month_expense']) && $_POST['month_expense'] != '') { 
+        $month_expense = $_POST['month_expense'];
+        
+        $month_querie = substr($_POST['month_expense'], -2);
+        $month_expense_final = encryptData($month_querie, $encryptionKey);
+        $sql .= " AND month_reference LIKE '%%$month_expense_final%%' ";
+    }
+
+   // echo $sql . "<br>";
+}
+
+//echo $expense_id, $name_expense, $value_expense, $month_expense;
+
 // Traz total de saídas do usuário default ou com paginação
-$outFinancialMoviments = $financialMovimentDao->getAllOutFinancialMoviment($userData->id, $resultsPerPage, $offset);
+$expensesUser = $expensesDao->getAllExpensesToPagination($userData->id, $sql, $resultsPerPage, $offset);
 $total_out_value = 0;
 
 ?>
-<link rel="stylesheet" href="css/print.css">
-<style>
-    input[type="date"]::-webkit-inner-spin-button,
-    input[type="date"]::-webkit-calendar-picker-indicator {
-        display: none !important;
-        -webkit-appearance: none !important;
-    }
-</style>
 
 <div class="container-fluid">
     <h1 class="text-center my-5">Despesas <img src="<?= $BASE_URL ?>assets/home/dashboard-main/empty-wallet.png" width="64" height="64" alt=""></h1>
     <div class="entrys-search" id="entrys-search">
         <form method="POST">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row">
+            <div class="row offset-sm-1">
                 <div class="col-md-2">
+                    <div class="form-group">
+                        <h4 class="font-weight-normal">Por id:</h4>
+                        <input type="number" name="expense_id" id="expense_id" class="form-control" placeholder="Ex: 10" value="<?= $expense_id ?>">
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por nome:</h4>
-                        <input type="text" name="name_search_exit" id="name_search_exit" class="form-control" placeholder="Ex: salário">
+                        <input type="text" name="name_expense" id="name_expense" class="form-control" placeholder="Ex: salário" value="<?= $name_expense ?>">
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por valor:</h4>
-                        <select class="form-control" name="values_exit" id="values_exit">
+                        <select class="form-control" name="value_expense" id="value_expense">
                             <option value="">Selecione</option>
-                            <option value="500">até R$ 500,00</option>
-                            <option value="1500">de R$ 500 até R$ 1.500,00</option>
-                            <option value="3000">de R$ 1.500 até R$ 3.000,00</option>
-                            <option value="5000">R$ 3.000 até R$ 5.000,00</option>
-                            <option value="10000">Acima de R$ 5.000,00</option>
+                            <option value="100" <?= $value_expense == 100 ? 'selected' : "" ?>>até R$ 100,00</option>
+                            <option value="1000" <?= $value_expense == 1000 ? 'selected' : "" ?>>até R$ 1.000,00</option>
+                            <option value="3000" <?= $value_expense == 3000 ? 'selected' : "" ?>>até R$ 3.000,00</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-6">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">De:</h4>
-                        <input type="text" name="from_date_exit" id="from_date_exit" class="form-control placeholder" placeholder="__/__/____">
-                        <div class="p-date" onclick="show_password()">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-6">
-                    <div class="form-group">
-                        <h4 class="font-weight-normal">Até:</h4>
-                        <input type="text" name="to_date_exit" id="to_date_exit" class="form-control placeholder" placeholder="__/__/____">
-                        <div class="p-date" onclick="show_password()">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <h4 class="font-weight-normal">Categoria:</h4>
-                        <select class="form-control" name="category_exit" id="category_exit">
-                            <option value="">Selecione</option>
-                            <?php foreach ($exit_categorys as $category) : ?>
-                                <option value="<?= $category->id ?>"> <?= $category->category_name ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <h4 class="font-weight-normal">Por mês:</h4>
+                        <input type="month" name="month_expense" id="month_expense" class="form-control" value="<?= $month_expense ?>">
                     </div>
                 </div>
                 <div class="col-md-1">
-                    <div class="form-group">
-                        <h4 class="font-weight-normal">Despesa:</h4>
-                        <select class="form-control" name="expense_type" id="expense_type">
-                                <option value=""></option>
-                                <option value="F">Fixa</option>
-                                <option value="V">Variada</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-1">
-                    <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button>
+                    <input class="btn btn-lg btn-success" type="submit" value="Buscar">
+                    <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
             </div>
         </form>
@@ -113,50 +113,38 @@ $total_out_value = 0;
 
     <!-- table div thats receive all expenses without customize inputs parameters  -->
     <div class="table_report" id="table_report_exit">
-        <h3 class="text-center text-secondary">Resultados do mês</h3>
+        <h3 class="text-center text-secondary">Resultados:</h3>
         <table class="table table-hover table-striped table-bordered">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Descrição</th>
                     <th scope="col">Valor</th>
-                    <th scope="col">Data</th>
-                    <th scope="col">Despesa</th>
-                    <th scope="col">Categoria</th>
-                    <th scope="col">Observação</th>
+                    <th scope="col">Registrada em</th>
+                    <th scope="col">Data da despesa</th>
                     <th scope="col" class="report-action">Ação</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($outFinancialMoviments as $outFinancialMovimentItem) : ?>
-                    <?php $value = str_replace('.', '', $outFinancialMovimentItem->value);
-                    $total_out_value += (float) $value; ?>
+                <?php foreach ($expensesUser as $expense) : 
+                    // Bloco a seguir decripta as datas e converte o formato
+                    $dt_registered = decryptData($expense->dt_registered, $encryptionKey);
+                    $dt_expense = decryptData($expense->dt_expense, $encryptionKey);
+                    $dt_registered_final = date("d-m-Y H:i:s", strtotime($dt_registered));
+                    $dt_expense_final = date("d-m-Y", strtotime($dt_expense));
+
+                    $value = str_replace('.', '', $expense->value);
+                    $total_out_value += (float) $value; 
+                    ?>
                     <tr>
-                        <th scope="row"><?= $outFinancialMovimentItem->id ?></th>
-                        <td><?= $outFinancialMovimentItem->description ?></td>
-                        <td><?= $outFinancialMovimentItem->value ?></td>
-                        <td><?= $outFinancialMovimentItem->create_at ?></td>
-                        <td><?= $outFinancialMovimentItem->expense ?></td>
-                        <td><?= $outFinancialMovimentItem->category ?></td>
-                        <td>
-                            <?php if($outFinancialMovimentItem->obs != ""): ?>
-                            <a href="#!" id="grupos<?= $outFinancialMovimentItem->id ?>" onclick="openTooltip(<?= $outFinancialMovimentItem->id ?>)"> <img src="<?= $BASE_URL ?>assets/home/dashboard-main/message_alert.gif" alt="message_alert" title="ver observação" width="33" height="30"> </a>
-                            <div class="tooltip_" id="tooltip_<?= $outFinancialMovimentItem->id ?>">
-                                <div id="conteudo">
-                                    <div class="bloco" style="display: flex; justify-content: space-between">
-                                        <h5>Observação</h5>
-                                        <a href="#!" id="close<?= $outFinancialMovimentItem->id ?>"><i class="fa-solid fa-xmark"></i></a>
-                                    </div>
-                                    <div class="bloco">
-                                        <small><?= $outFinancialMovimentItem->obs ?></small>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php endif; ?>
-                        </td>
-                        <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $outFinancialMovimentItem->id ?>" title="Editar">
+                        <th scope="row"><?= $expense->id ?></th>
+                        <td><?= decryptData($expense->description, $encryptionKey) ?></td>
+                        <td><?= $expense->value ?></td>
+                        <td><?= $dt_registered_final ?></td>
+                        <td><?= $dt_expense_final ?></td>
+                        <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $expense->id ?>" title="Editar">
                                 <i class="fa-solid fa-file-pen"></i></a>
-                            <a href="#" data-toggle="modal" data-target="#modal_del_finance_moviment<?= $outFinancialMovimentItem->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
+                            <a href="#" data-toggle="modal" data-target="#modal_del_finance_moviment<?= $expense->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

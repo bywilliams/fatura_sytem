@@ -1,6 +1,7 @@
 <?php
 require_once("templates/header_iframe.php");
 require_once("globals.php");
+require_once("utils/config.php");
 require_once("connection/conn.php");
 require_once("models/BankAccounts.php");
 require_once("dao/BankAccountsDAO.php");
@@ -29,26 +30,26 @@ $accounts = $bankAccountsDao->getAllBankAccounts();
                             <div class="bg-white rounded" style="display: inline-block">
                                 <img src="<?= $BASE_URL ?>assets/home/contas/<?= $account->logo_img ?>" alt="">
                             </div>
-                            <p class="mt-3" id="card_number"> CNPJ <?= $account->cnpj ?></p>
+                            <p class="mt-3" id="card_number"> CNPJ <?= decryptData($account->cnpj, $encryptionKey) ?></p>
                         </div>
                         <div class="card_pix">
-                            <p class="text-white ml-2" id="chave_pix">Pix: <?= $account->pix ?></p>
+                            <p class="text-white ml-2" id="chave_pix">Pix: <?= decryptData($account->pix, $encryptionKey)?></p>
                         </div>
 
                         <div class="card_crinfo">
                             <p id="card_name">
                                 <small> Razão social: </small> <br>
-                                <?= $account->razao_social ?>
+                                <?= decryptData($account->razao_social, $encryptionKey) ?>
                             </p>
 
                             <div class="form-group d-flex text-center">
                                 <div class="px-3">
                                     <small class="text-light">Agencia</small>
-                                    <p id="agencia"><?= $account->agencia ?></p>
+                                    <p id="agencia"><?= decryptData($account->agencia,$encryptionKey)?></p>
                                 </div>
                                 <div>
                                     <small class="text-light">Conta</small>
-                                    <p id="conta"><?= $account->conta ?></p>
+                                    <p id="conta"><?= decryptData($account->conta, $encryptionKey) ?></p>
                                 </div>
                             </div>
                         </div>

@@ -22,11 +22,11 @@
             $bankAccount = new BankAccounts();
 
             $bankAccount->id = $data['id'];
-            $bankAccount->razao_social = decryptData($data['razao_social'], $encryptionKey);
-            $bankAccount->cnpj = decryptData($data['cnpj'], $encryptionKey);
-            $bankAccount->agencia = decryptData($data['agencia'], $encryptionKey);
-            $bankAccount->conta = decryptData($data['conta'], $encryptionKey);
-            $bankAccount->pix = decryptData($data['pix'], $encryptionKey);
+            $bankAccount->razao_social = $data['razao_social'];
+            $bankAccount->cnpj = $data['cnpj'];
+            $bankAccount->agencia = $data['agencia'];
+            $bankAccount->conta = $data['conta'];
+            $bankAccount->pix = $data['pix'];
             $bankAccount->logo_img = $data['logo_img'];
             $bankAccount->card_color = $data['card_color'];
             $bankAccount->created_at = $data['created_at'];
@@ -115,8 +115,8 @@
 
         }
 
-        public function destroyBankAccount($id) {
 
+        public function destroyBankAccount($id) {
 
             if ($id) {
                 
@@ -128,7 +128,6 @@
                 }
 
             }
-
 
         }
 

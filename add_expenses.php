@@ -1,40 +1,44 @@
 <?php
 require_once("templates/header_iframe.php");
 require_once("globals.php");
+require_once("utils/config.php");
 require_once("connection/conn.php");
-require_once("dao/CategorysDAO.php");
+require_once("dao/ExpenseDAO.php");
 require_once("dao/FinancialMovimentDAO.php");
 
 // Traz todas as categorias disponiceis para entradas
 $categorysDao = new CategorysDAO($conn);
 $entry_categorys = $categorysDao->getAllEntryCategorys();
 
-$financialMovimentDao = new FinancialMovimentDAO($conn, $BASE_URL);
+// Traz despesas do usuário
+$expenseDao = new ExpenseDAO($conn, $BASE_URL);
+$expensesUser = $expenseDao->getAllUserExpense($userData->id);
 
-$entryFinancialScheduled = $financialMovimentDao->getAllCashInflowScheduled($userData->id);
+// Sessions
+isset($_SESSION['description']) ? $_SESSION['description'] : "";
+isset($_SESSION['value']) ? $_SESSION['value'] : "";
+isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
 
 ?>
 
-
-
 <div class="container">
-    <h1 class="text-center my-5">Despesas <i class="fa-solid fa-calendar-minus text-danger"></i></i></h1>
+    <h1 class="text-center my-5">Cadastrar Despesas <i class="fa-solid fa-calendar-minus text-danger"></i></i></h1>
 
     <!-- Cash Inflow | Cash outflow form  -->
     <section>
        
         <div class="actions p-5 mb-4 bg-light rounded-3 shadow-sm">
-            <form action="<?= $BASE_URL ?>moviment_process.php" method="post">
+            <form action="<?= $BASE_URL ?>expense_process.php" method="post">
                 <input type="hidden" name="type" value="create">
                 <input type="hidden" name="type_action" value="1">
                 <div class="row">
                     <div class="col-md-4">
                         <h4 class="font-weight-normal">Descriçao</h4>
-                        <input type="text" name="description" id="description" class="form-control" placeholder="Ex: salário">
+                        <input type="text" name="description" id="description" class="form-control" placeholder="Ex: salário" value="<?= $_SESSION['description'] ?>" required>
                     </div>
                     <div class="col-md-4">
                         <h4 class="font-weight-normal">Valor</h4>
-                        <input type="text" name="value" id="value" class="form-control money" placeholder="Ex: 80,00:">
+                        <input type="text" name="value" id="value" class="form-control money" placeholder="Ex: 80,00:" value="<?= $_SESSION['value'] ?>" required>
                     </div>
                     <!-- <div class="col-md-3" id="category">
                         <h4 class="font-weight-normal">Registrada em</h4>
@@ -42,7 +46,7 @@ $entryFinancialScheduled = $financialMovimentDao->getAllCashInflowScheduled($use
                     </div> -->
                     <div class="col-md-3">
                         <h4>Data da despesa</h4>
-                        <input class="form-control " type="date" name="date_scheduled" id="">
+                        <input class="form-control " type="date" name="date_expense" id="date_expense" value="<?= $_SESSION['date_expense'] ?>" required>
                     </div>
                     <div class="col-md-1 button">
                         <label for="submit">
@@ -59,9 +63,9 @@ $entryFinancialScheduled = $financialMovimentDao->getAllCashInflowScheduled($use
     </section>
     <!-- Cash Inflow | Cash outflow form  -->
 
-    <h4 class="font-weight-normal mt-5">Últimas 10 despesas</h4>
+    <h4 class="font-weight-normal mt-5">Últimas 10 despesas do mês</h4>
 
-    <?php if (count($entryFinancialScheduled) > 0) : ?>
+    <?php if (count($expensesUser) > 0) : ?>
         <div class="table_report" id="table_report_entry">
             <table class="table table-bordered table-hover table-striped">
                 <thead class="thead-dark">
@@ -71,32 +75,42 @@ $entryFinancialScheduled = $financialMovimentDao->getAllCashInflowScheduled($use
                         <th scope="col">Valor</th>
                         <th scope="col">Registrada em</th>
                         <th scope="col">Data da despesa</th>
+                        <th scope="col">Ação</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($entryFinancialScheduled as $entryFinancialMovimentItem) : ?>
-                        <?php $value = str_replace('.', '', $entryFinancialMovimentItem->value);
-                        $total_entry_value += (float) $value; ?>
+                    <?php foreach ($expensesUser as $expense) : 
+                    
+                            // Bloco a seguir decripta as datas e converte o formato
+                            $dt_registered = decryptData($expense->dt_registered, $encryptionKey);
+                            $dt_expense = decryptData($expense->dt_expense, $encryptionKey);
+                            $dt_registered_final = date("d-m-Y H:i:s", strtotime($dt_registered));
+                            $dt_expense_final = date("d-m-Y", strtotime($dt_expense));
+                            
+                            // Código abaixo soma os valores das despesas
+                            $value = str_replace('.', '', $expense->value);
+                            $total_entry_value += (float) $value;?>
 
                         <tr>
                             <td scope="row">
-                                <?= $entryFinancialMovimentItem->id ?>
+                                <?= $expense->id ?>
                             </td>
                             <td>
-                                <?= $entryFinancialMovimentItem->description ?>
+                                <?= decryptData($expense->description, $encryptionKey) ?>
                             </td>
                             <td>
-                                <?= $entryFinancialMovimentItem->value ?>
+                                <?= $expense->value ?>
                             </td>
                             <td>
-                                25/07/2023
+                                <?= $dt_registered_final ?>
                             </td>
                             <td>
-                                <?= $entryFinancialMovimentItem->update_at ?>
+                                <?= $dt_expense_final ?>
                             </td>
-                            <!-- <td>
-                                <?= $entryFinancialMovimentItem->category ?>
-                            </td> -->
+                            <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $expense->id ?>" title="Editar">
+                                <i class="fa-solid fa-file-pen"></i></a>
+                            <a href="#" data-toggle="modal" data-target="#modal_del_finance_moviment<?= $expense->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
+                        </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -112,7 +126,7 @@ $entryFinancialScheduled = $financialMovimentDao->getAllCashInflowScheduled($use
     <?php else : ?>
         <div class="col-md-12">
             <div iv class=" bg-light rounded-3 shadow-sm my-3 py-3">
-                <h5 class="py-2 text-center text-info">Ainda não há receitas agendadas.</h5>
+                <h5 class="py-2 text-center text-info">Ainda não há despesas cadastradas.</h5>
             </div>
         </div>
     <?php endif ?>
