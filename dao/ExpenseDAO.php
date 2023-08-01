@@ -1,7 +1,7 @@
 <?php 
 require_once("models/Expense.php");
 require_once("models/Message.php");
-
+require_once("utils/config.php");
 
     class ExpenseDAO implements ExpenseDAOInterface {
 
@@ -17,8 +17,6 @@ require_once("models/Message.php");
         
 
         public function buildExpense ($data) {
-
-            require_once("utils/config.php");
 
             $expense = new Expense();
 
@@ -82,6 +80,24 @@ require_once("models/Message.php");
 
         public function updateUserExpense(Expense $expense) {
 
+            $stmt = $this->conn->prepare("UPDATE tb_expenses SET
+            description = :description,
+            value = :value,
+            dt_expense = :dt_expense,
+            dt_updated = :dt_updated
+            WHERE id = :id
+            ");
+
+            $stmt->bindParam(":description", $expense->description, PDO::PARAM_STR);
+            $stmt->bindParam(":value", $expense->value);
+            $stmt->bindParam(":dt_expense", $expense->dt_expense, PDO::PARAM_STR);
+            $stmt->bindParam(":dt_updated", $expense->dt_updated, PDO::PARAM_STR);
+            $stmt->bindParam(":id", $expense->id, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                $this->message->setMessage("Despesa atualizada com sucesso", "success", "back");
+            }
+
         }
 
         public function getReports($sql, $id) {
@@ -113,10 +129,6 @@ require_once("models/Message.php");
             
             $outFinancialMoviments = [];
 
-            // // defini o período do dia 01 ao dia atual do sistema
-            // $initial_date = date("Y-m-01 00:00:00");
-            // $current_date = date("Y-m-d H:i:s");
-
             $stmt = $this->conn->query("SELECT 
             id, description, value, dt_registered, dt_expense, dt_updated 
             FROM tb_expenses 
@@ -143,10 +155,6 @@ require_once("models/Message.php");
 
             $countResults = 0;
 
-            // // defini o período do dia 01 ao dia atual do sistema
-            // $initial_date = date("Y-m-01 00:00:00");
-            // $current_date = date("Y-m-d H:i:s");
-
             $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM tb_expenses 
             WHERE user_id = $id 
             ORDER BY id
@@ -159,8 +167,84 @@ require_once("models/Message.php");
 
         }
 
+        public function getBiggestExpense($id) {
 
-        public function destroyUserExpee($id) {
+            $bigExpenses = [];
+
+            $mes = date("m");
+
+            $stmt = $this->conn->prepare("SELECT MAX(VALUE) AS value, description FROM tb_expenses 
+                WHERE MONTH(month_reference) = '$mes' 
+                AND user_id = :user_id 
+                GROUP BY value DESC LIMIT 1
+            ");
+
+            $stmt->bindParam(":user_id", $id);
+
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetch();
+                $bigExpenses[] = $this->buildExpense($data);
+            }
+
+            return $bigExpenses;
+
+        }
+
+        public function getLowerExpense($id) {
+            
+            $lowerExpense = [];
+
+            $mes = date("m");
+
+            $stmt = $this->conn->prepare("SELECT MIN(VALUE) AS value, description FROM tb_expenses 
+                WHERE MONTH(month_reference) = '$mes' 
+                AND user_id = :user_id 
+                GROUP BY value ASC LIMIT 1
+            ");
+
+            $stmt->bindParam(":user_id", $id);
+
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetch();
+                $lowerExpense[] = $this->buildExpense($data);
+            }
+
+            return $lowerExpense;
+        }
+
+        public function getAllCashOutflow($id) {
+
+            $mes = date("m");
+
+            $stmt = $this->conn->query("SELECT SUM(value) as sum FROM tb_expenses
+            WHERE MONTH(month_reference) = '$mes'
+            AND user_id = $id 
+            ");
+            $stmt->execute();
+
+            if($stmt->rowCount() > 0) {
+                $row = $stmt->fetch();
+                $sum = number_format($row['sum'], 2, ',', '.');
+                return $sum;
+            }
+
+        }
+
+
+        public function destroyUserExpense($id) {
+
+            if($id) {
+
+                $stmt = $this->conn->prepare("DELETE FROM tb_expenses WHERE id = :id");
+                $stmt->bindParam(":id", $id);
+
+                if ($stmt->execute()) {
+                    $this->message->setMessage("Despesa deletada com sucesso", "success", "back");
+                }
+
+            }
 
         }
 

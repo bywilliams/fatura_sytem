@@ -6,9 +6,6 @@ require_once("connection/conn.php");
 require_once("dao/ExpenseDAO.php");
 require_once("dao/FinancialMovimentDAO.php");
 
-// Traz todas as categorias disponiceis para entradas
-$categorysDao = new CategorysDAO($conn);
-$entry_categorys = $categorysDao->getAllEntryCategorys();
 
 // Traz despesas do usuário
 $expenseDao = new ExpenseDAO($conn, $BASE_URL);
@@ -107,9 +104,9 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
                             <td>
                                 <?= $dt_expense_final ?>
                             </td>
-                            <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $expense->id ?>" title="Editar">
+                            <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#expenseEditModal<?= $expense->id ?>" title="Editar">
                                 <i class="fa-solid fa-file-pen"></i></a>
-                            <a href="#" data-toggle="modal" data-target="#modal_del_finance_moviment<?= $expense->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
+                            <a href="#" data-toggle="modal" data-target="#modal_del_expense<?= $expense->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
                         </td>
                         </tr>
                     <?php endforeach; ?>
@@ -132,5 +129,66 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
     <?php endif ?>
 
 </div>
+
+  <!-- Expense expense moviment Edit modal -->
+  <?php foreach ($expensesUser as $expense) : ?>
+        <div class="modal fade" id="expenseEditModal<?= $expense->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-top" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar <?= decryptData($expense->description, $encryptionKey) ?></h5>
+                        <button type="button" class="close_reports" data-dismiss="modal" arial-label="fechar">
+                            <span arial-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="<?= $BASE_URL ?>expense_process.php?id=<?= $expense->id ?>" method="post">
+                            <input type="hidden" name="type" value="update">
+                            <input type="hidden" name="id" value="<?= $expense->id ?>">
+                            <div class="form-group">
+                                <label for="description">Descriçao:</label>
+                                <input type="text" name="description" id="" class="form-control" placeholder="Insira uma nova descrição" value="<?= decryptData($expense->description, $encryptionKey) ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="value">Valor:</label>
+                                <input type="text" name="value" id="" class="form-control money" placeholder="Insira um novo valor" value="<?= $expense->value ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="obs">Data da despesa:</label>
+                                <input type="date" class="form-control" name="date_expense" id="date_expense" value="<?= date("Y-m-d", strtotime(decryptData($expense->dt_expense, $encryptionKey))) ?>" required>
+                            </div>
+                            <input type="submit" value="Enviar" class="btn btn-lg btn-success">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <!-- End Expense moviment Edit modal -->
+
+    <!-- Modal para confirmação de exclusão de registro financeiro -->
+    <?php foreach ($expensesUser as $expense) : ?>
+        <div class="modal fade" tabindex="-1" id="modal_del_expense<?= $expense->id ?>">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <p>Tem certeza que deseja excluir o registro?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
+                        <form action="<?= $BASE_URL ?>expense_process.php" method="POST">
+                            <input type="hidden" name="type" value="delete">
+                            <input type="hidden" name="id" value="<?= $expense->id ?>">        
+                            <button type="submit" class="btn btn-primary">Sim</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <!-- Fim Modal para cofnirmação de exclusão de registro financeiro -->
 
     <?php require_once("templates/footer.php"); ?>

@@ -92,23 +92,23 @@ $accounts = $bankAccountsDao->getAllBankAccounts();
                         <input type="hidden" name="type" value="update">
                         <div class="form-group">
                             <label for="razao">Razão Social:</label>
-                            <input type="text" name="razao" id="razap" class="form-control" value="<?= $account->razao_social ?>">
+                            <input type="text" name="razao" id="razap" class="form-control" value="<?= decryptData($account->razao_social, $encryptionKey) ?>">
                         </div>
                         <div class="form-group">
                             <label for="cnpj">CNPJ:</label>
-                            <input type="text" name="cnpj" id="cnpj" class="form-control" value="<?= $account->cnpj ?>">
+                            <input type="text" name="cnpj" id="cnpj" class="form-control" value="<?= decryptData($account->cnpj, $encryptionKey) ?>">
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="ag">Agência:</label>
-                                    <input type="text" name="ag" id="ag" class="form-control" value="<?= $account->agencia ?>">
+                                    <input type="text" name="ag" id="ag" class="form-control" value="<?= decryptData($account->agencia, $encryptionKey) ?>">
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="cc">Conta:</label>
-                                    <input type="text" name="cc" id="cc" class="form-control" value="<?= $account->conta ?>">
+                                    <input type="text" name="cc" id="cc" class="form-control" value="<?= decryptData($account->conta, $encryptionKey) ?>">
                                 </div>
                             </div>
                         </div>
@@ -116,7 +116,7 @@ $accounts = $bankAccountsDao->getAllBankAccounts();
                             <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="pix">Chave Pix:</label>
-                                    <input type="text" name="pix" id="pix" class="form-control" value="<?= $account->pix ?>">
+                                    <input type="text" name="pix" id="pix" class="form-control" value="<?= decryptData($account->pix, $encryptionKey) ?>">
                                 </div>
                             </div>
                             <div class="col-md-4">

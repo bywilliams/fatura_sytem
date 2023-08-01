@@ -37,17 +37,8 @@ if ($type == "create") {
         $expense->user_id = $userData->id;
         $expense->dt_registered = encryptData($current_date, $encryptionKey);
         $expense->dt_expense = encryptData($data['date_expense'], $encryptionKey);
-        $expense->month_reference = encryptData((date("m", strtotime($data['date_expense']))), $encryptionKey);
-
-
-        //echo date("m", strtotime($data['date_expense'])); exit;
-
-        //echo $expense->dt_registered . "<br>" . $expense->dt_expense; exit;
-        // echo decryptData($expense->description, $encryptionKey), "<br>" . 
-        // $expense->value, "<br>" . 
-        // decryptData($expense->dt_registered, $encryptionKey), "<br>" . 
-        // decryptData($expense->dt_expense, $encryptionKey);
-        // exit;
+        $expense->month_reference = date("Y/m/d", strtotime($data['date_expense']));
+        //echo $expense->month_reference; exit;
         try{
             // insere despesa no BD
             $expenseDao->createUserExpense($expense);
@@ -65,9 +56,39 @@ if ($type == "create") {
     }
 
 }elseif ($type == "update") {
-    echo "update";
+
+    $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+
+    $expense = new Expense();
+    $expense->description = encryptData($data['description'], $encryptionKey);
+    $value = preg_replace("/[^0-9,]+/i","",$data['value']);
+    $value = str_replace(",",".",$value);
+    $expense->value = $value;
+    $expense->dt_expense = encryptData($data['date_expense'], $encryptionKey);
+    $expense->dt_updated = encryptData(date("Y-m-d"), $encryptionKey);
+    $expense->id = $data['id'];
+
+    //echo "$expense->description, $expense->value, $expense->dt_expense";
+    try{
+        $expenseDao->updateUserExpense($expense);
+    }catch (PDOException $e) {
+        echo "Erro ao atualizar despesa consulte o administrador do sistema";
+        //echo "Error: " . $e->getMessage();
+    }
+    
 }elseif ($type == "delete") { 
-    echo "delete";
+
+    $id = filter_input(INPUT_POST, "id");
+   
+    try{       
+        // Deleta registro no BD
+        $expenseDao->destroyUserExpense($id);
+
+    }catch(PDOException $e) {
+        //echo "erro ao deletar despesesa, consulte o administrador do sistema";
+        echo "erro ao deletar conta " . $e->getMessage();
+    }
+
 }
 
 

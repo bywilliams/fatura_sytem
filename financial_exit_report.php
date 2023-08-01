@@ -5,10 +5,6 @@ require_once("dao/ExpenseDAO.php");
 
 $expensesDao = new ExpenseDAO($conn, $BASE_URL);
 
-// // Traz os registros de saída da query personalizada 
-// $sql = "";
-// $getOutReports = $expensesDao->getReports($sql,  $userData->id);
-
 /* paginação do relatório  */
 $totalRegistros = $expensesDao->countTypeExpensesCurrentMonth($userData->id);
 
@@ -30,6 +26,7 @@ $month_expense = "";
 if ($_POST) {
     //echo "pesquisa enviada";
     $sql = "";
+    $totalRegistros = 0;
 
     if (isset($_POST['expense_id']) && $_POST['expense_id'] != '') { 
         $expense_id = $_POST['expense_id'];
@@ -58,10 +55,9 @@ if ($_POST) {
    // echo $sql . "<br>";
 }
 
-//echo $expense_id, $name_expense, $value_expense, $month_expense;
-
 // Traz total de saídas do usuário default ou com paginação
 $expensesUser = $expensesDao->getAllExpensesToPagination($userData->id, $sql, $resultsPerPage, $offset);
+//echo count($expensesUser);
 $total_out_value = 0;
 
 ?>
@@ -142,9 +138,9 @@ $total_out_value = 0;
                         <td><?= $expense->value ?></td>
                         <td><?= $dt_registered_final ?></td>
                         <td><?= $dt_expense_final ?></td>
-                        <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $expense->id ?>" title="Editar">
+                        <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#expenseEditModal<?= $expense->id ?>" title="Editar">
                                 <i class="fa-solid fa-file-pen"></i></a>
-                            <a href="#" data-toggle="modal" data-target="#modal_del_finance_moviment<?= $expense->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
+                            <a href="#" data-toggle="modal" data-target="#modal_del_expense<?= $expense->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -155,6 +151,7 @@ $total_out_value = 0;
                 </tr>
             </tfoot>
         </table>
+        <?php if($totalRegistros > 10): ?>
         <!-- Pagination buttons -->
         <div class="row justify-content-center">
             <nav aria-label="...">
@@ -171,83 +168,36 @@ $total_out_value = 0;
             </nav>
         </div>
          <!-- End pagination buttons -->
+        <?php endif ?>
     </div>
     <!-- table div thats receive all expenses without customize inputs parameters  -->
 
-    <!-- Finance all expense moviment modal -->
-    <?php foreach ($outFinancialMoviments as $outFinancialMovimentItem) : ?>
-        <div class="modal fade" id="exampleModalCenter<?= $outFinancialMovimentItem->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Expense expense moviment Edit modal -->
+    <?php foreach ($expensesUser as $expense) : ?>
+        <div class="modal fade" id="expenseEditModal<?= $expense->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-top" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Editar Movimentação</h5>
+                        <h5 class="modal-title">Editar <?= decryptData($expense->description, $encryptionKey) ?></h5>
                         <button type="button" class="close_reports" data-dismiss="modal" arial-label="fechar">
                             <span arial-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="<?= $BASE_URL ?>moviment_process.php?id=<?= $outFinancialMovimentItem->id ?>" method="post">
-                            <input type="hidden" name="type" value="edit">
+                        <form action="<?= $BASE_URL ?>expense_process.php?id=<?= $expense->id ?>" method="post">
+                            <input type="hidden" name="type" value="update">
+                            <input type="hidden" name="id" value="<?= $expense->id ?>">
                             <div class="form-group">
                                 <label for="description">Descriçao:</label>
-                                <input type="text" name="description_edit" id="" class="form-control" placeholder="Insira uma nova descrição" value="<?= $outFinancialMovimentItem->description ?>">
+                                <input type="text" name="description" id="" class="form-control" placeholder="Insira uma nova descrição" value="<?= decryptData($expense->description, $encryptionKey) ?>" required>
                             </div>
                             <div class="form-group">
                                 <label for="value">Valor:</label>
-                                <input type="text" name="value_edit" id="" class="form-control money" placeholder="Insira um novo valor" value="<?= $outFinancialMovimentItem->value ?>">
+                                <input type="text" name="value" id="" class="form-control money" placeholder="Insira um novo valor" value="<?= $expense->value ?>" required>
                             </div>
-                            <?php if ($outFinancialMovimentItem->type == 2) : ?>
-                                <div class="form-group">
-                                    <label for="expense_type">Despesa:</label>
-                                    <?php if ($outFinancialMovimentItem->expense == "Fixa") : ?>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="expense_type_edit" id="inlineRadio1" value="F" checked>
-                                            <label class="edit_moviment_label" for="inlineRadio1">Fixa</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="expense_type_edit" id="inlineRadio2" value="V">
-                                            <label class="edit_moviment_label" for="inlineRadio2">Variavel</label>
-                                        </div>
-                                    <?php else : ?>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="expense_type_edit" id="inlineRadio1" value="F">
-                                            <label class="edit_moviment_label" for="inlineRadio1">Fixa</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="expense_type_edit" id="inlineRadio2" value="V" checked>
-                                            <label class="edit_moviment_label" for="inlineRadio2">Variavel</label>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category">Categoria:</label>
-                                    <select name="category_edit" id="" class="form-control">
-                                        <?php foreach ($exit_categorys as $category) : ?>
-                                            <?php if ($category->category_name == $outFinancialMovimentItem->category) : ?>
-                                                <option value="<?= $category->id ?>" selected> <?= $category->category_name ?></option>
-                                            <?php else : ?>
-                                                <option value="<?= $category->id ?>"> <?= $category->category_name ?></option>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            <?php else : ?>
-                                <div class="form-group">
-                                    <label for="category">Categoria:</label>
-                                    <select name="category_edit" id="" class="form-control">
-                                        <?php foreach ($entry_categorys as $category) : ?>
-                                            <?php if ($category->category_name == $outFinancialMovimentItem->category) : ?>
-                                                <option value="<?= $category->id ?>" selected> <?= $category->category_name ?></option>
-                                            <?php else : ?>
-                                                <option value="<?= $category->id ?>"> <?= $category->category_name ?></option>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            <?php endif; ?>
                             <div class="form-group">
-                                <label for="obs">Observação:</label>
-                                <textarea class="form-control" name="obs" id="obs" rows="5" placeholder="Adicione uma observação..."><?= $outFinancialMovimentItem->obs ?></textarea>
+                                <label for="obs">Data da despesa:</label>
+                                <input type="date" class="form-control" name="date_expense" id="date_expense" value="<?= date("Y-m-d", strtotime(decryptData($expense->dt_expense, $encryptionKey))) ?>" required>
                             </div>
                             <input type="submit" value="Enviar" class="btn btn-lg btn-success">
                         </form>
@@ -259,98 +209,11 @@ $total_out_value = 0;
             </div>
         </div>
     <?php endforeach; ?>
-    <!-- End Finance moviment modal -->
-
-    <!-- Finance customize expense moviment modal -->
-    <?php foreach ($getOutReports as $customizeFinancialMovimentItem) : ?>
-        <div class="modal fade" id="customizeExpenseQuery<?= $customizeFinancialMovimentItem->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-top" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Editar Movimentação</h5>
-                        <button type="button" class="close_reports" data-dismiss="modal" arial-label="fechar">
-                            <span arial-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="<?= $BASE_URL ?>moviment_process.php?id=<?= $customizeFinancialMovimentItem->id ?>" method="post">
-                            <input type="hidden" name="type" value="edit">
-                            <div class="form-group">
-                                <label for="description">Descriçao:</label>
-                                <input type="text" name="description_edit" id="" class="form-control" placeholder="Insira uma nova descrição" value="<?= $customizeFinancialMovimentItem->description ?>">
-                            </div>
-                            <div class="form-group">
-                                <label for="value">Valor:</label>
-                                <input type="text" name="value_edit" id="" class="form-control money" placeholder="Insira um novo valor" value="<?= $customizeFinancialMovimentItem->value ?>">
-                            </div>
-                            <?php if ($customizeFinancialMovimentItem->type == 2) : ?>
-                                <div class="form-group">
-                                    <label for="expense_type">Despesa:</label>
-                                    <?php if ($customizeFinancialMovimentItem->expense == "F") : ?>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="expense_type_edit" id="inlineRadio1" value="F" checked>
-                                            <label class="edit_moviment_label" for="inlineRadio1">Fixa</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="expense_type_edit" id="inlineRadio2" value="V">
-                                            <label class="edit_moviment_label" for="inlineRadio2">Variada</label>
-                                        </div>
-                                    <?php else : ?>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="expense_type_edit" id="inlineRadio1" value="F">
-                                            <label class="edit_moviment_label" for="inlineRadio1">Fixa</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="expense_type_edit" id="inlineRadio2" value="V" checked>
-                                            <label class="edit_moviment_label" for="inlineRadio2">Váriavel</label>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category">Categoria:</label>
-                                    <select name="category_edit" id="" class="form-control">
-                                        <?php foreach ($exit_categorys as $category) : ?>
-                                            <?php if ($category->category_name == $financialMoviment->category) : ?>
-                                                <option value="<?= $category->id ?>" selected> <?= $category->category_name ?></option>
-                                            <?php else : ?>
-                                                <option value="<?= $category->id ?>"> <?= $category->category_name ?></option>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            <?php else : ?>
-                                <div class="form-group">
-                                    <label for="category">Categoria:</label>
-                                    <select name="category_edit" id="" class="form-control">
-                                        <?php foreach ($entry_categorys as $category) : ?>
-                                            <?php if ($category->category_name == $financialMoviment->category) : ?>
-                                                <option value="<?= $category->id ?>" selected> <?= $category->category_name ?></option>
-                                            <?php else : ?>
-                                                <option value="<?= $category->id ?>"> <?= $category->category_name ?></option>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            <?php endif; ?>
-                            <div class="form-group">
-                                <label for="obs">Observação:</label>
-                                <textarea class="form-control" name="obs" id="obs" rows="5" placeholder="Adicione uma observação..."><?= $financialMoviment->obs ?></textarea>
-                            </div>
-                            <input type="submit" value="Enviar" class="btn btn-lg btn-success">
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endforeach; ?>
-    <!-- End Finance moviment modal -->
+    <!-- End Expense moviment Edit modal -->
 
     <!-- Modal para confirmação de exclusão de registro financeiro -->
-    <?php foreach ($getOutReports as $financialMoviment) : ?>
-        <div class="modal" tabindex="-1" id="modal_del_finance_moviment<?= $financialMoviment->id ?>">
+    <?php foreach ($expensesUser as $expense) : ?>
+        <div class="modal fade" tabindex="-1" id="modal_del_expense<?= $expense->id ?>">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body text-center">
@@ -358,9 +221,9 @@ $total_out_value = 0;
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
-                        <form action="<?= $BASE_URL ?>moviment_process.php" method="POST">
-                            <input type="hidden" name="type" value="deletar">
-                            <input type="hidden" name="id" value="<?= $financialMoviment->id ?>">        
+                        <form action="<?= $BASE_URL ?>expense_process.php" method="POST">
+                            <input type="hidden" name="type" value="delete">
+                            <input type="hidden" name="id" value="<?= $expense->id ?>">        
                             <button type="submit" class="btn btn-primary">Sim</button>
                         </form>
                     </div>

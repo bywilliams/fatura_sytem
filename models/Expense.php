@@ -19,7 +19,7 @@
         public function createUserExpense(Expense $expense);
         public function updateUserExpense(Expense $expense);
         public function getReports($sql, $id);
-        public function destroyUserExpee($id);
+        public function destroyUserExpense($id);
     }
 
 

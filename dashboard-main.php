@@ -2,23 +2,17 @@
 require_once("templates/header_iframe.php");
 require_once("models/FinancialMoviment.php");
 require_once("dao/FinancialMovimentDAO.php");
+require_once("dao/ExpenseDAO.php");
 require_once("dao/RemindersDAO.php");
-require_once("dao/CategorysDAO.php");
-include_once("utils/hg_finance_api.php");
+
+
+// Objeto Despesas
+$expenseDao = new ExpenseDAO($conn, $BASE_URL);
 
 // Object Finance to acess propertys
 $financialMoviment = new FinancialMoviment();
 // Object DAO to FinancialMoviment
 $financialMovimentDao = new FinancialMovimentDAO($conn, $BASE_URL);
-
-// Object DAO to Category
-$categorysDao = new CategorysDAO($conn);
-
-// Traz todas as categorias disponiceis para receitas
-$entry_categorys = $categorysDao->getAllEntryCategorys();
-
-// Traz todas as categorias disponiceis para despesas
-$exit_categorys = $categorysDao->getAllExitCategorys();
 
 // Maior receita
 $highValueIncome = $financialMovimentDao->getHighValueIncome($userData->id);
@@ -26,11 +20,11 @@ $highValueIncome = $financialMovimentDao->getHighValueIncome($userData->id);
 // Menor receita
 $lowerValueIncome = $financialMovimentDao->getLowerValueIncome($userData->id);
 
-// Maior despesa
-$biggetsExpense = $financialMovimentDao->getBiggestExpense($userData->id);
+// Maior despesa do usuário
+$biggetsExpense = $expenseDao->getBiggestExpense($userData->id);
 
 // Menor despesa
-$lowerExpense = $financialMovimentDao->getLowerExpense($userData->id);
+$lowersExpense = $expenseDao->getLowerExpense($userData->id);
 
 // Traz as última movimentações do usuário
 $latestFinancialMoviments = $financialMovimentDao->getLatestFinancialMoviment($userData->id);
@@ -39,13 +33,13 @@ $latestFinancialMoviments = $financialMovimentDao->getLatestFinancialMoviment($u
 $totalCashInflow = $financialMovimentDao->getAllCashInflow($userData->id);
 
 // Traz total de saídas do usuário
-$totalCashOutflow = $financialMovimentDao->getAllCashOutflow($userData->id);
+$totalCashOutflow = $expenseDao->getAllCashOutflow($userData->id);
 
-// Pega o resultado da função que faz o calculo da % que as despesas representam sobre a receita
-$resultExpensePercent = (float) $financialMoviment->balancePercent($totalCashInflow, $totalCashOutflow);
+// // Pega o resultado da função que faz o calculo da % que as despesas representam sobre a receita
+// $resultExpensePercent = (float) $financialMoviment->balancePercent($totalCashInflow, $totalCashOutflow);
 
-// Traz o balanço entre entradas e saídas do usuário
-$total_balance = $financialMovimentDao->getTotalBalance($userData->id);
+// // Traz o balanço entre entradas e saídas do usuário
+// $total_balance = $financialMovimentDao->getTotalBalance($userData->id);
 
 // Traz as entradas de cada mês até o mês atual para alimentar o gráfico
 $cashInflowMonthsArray = $financialMovimentDao->getCashInflowByMonths($userData->id);
@@ -111,8 +105,17 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             </div>
                             <div class="card-body">
                                 <h1 class="card-title pricing-card-title" id="expense_h1">- R$ <?= $totalCashOutflow ?></h1>
-                                <small class="text-muted"><strong>Menor despesa</strong> <br> <?= $lowerExpense ?> <br>
-                                    <strong>Maior despesa</strong> <br> <?= $biggetsExpense ?>
+                                <small class="text-muted">
+                                    <strong>Menor despesa</strong> <br> 
+
+                                    <?php foreach($lowersExpense as $lowerExpense): ?> 
+                                        <?= decryptData($lowerExpense->description, $encryptionKey)?> <?= $lowerExpense->value ?>
+                                    <?php endforeach ?>
+                                    <br>
+                                    <strong>Maior despesa</strong> <br> 
+                                    <?php foreach ($biggetsExpense as $bigExpense): ?>
+                                            <?= decryptData($bigExpense->description, $encryptionKey)?> <?= $bigExpense->value ?>
+                                    <?php endforeach ?>
                                 </small>
 
                             </div>
@@ -143,7 +146,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                     <li class="list-group-item d-flex ">
                                         <strong>Cadastrar lembrete: </strong>
                                         <span class="badge d-block position-absolute" style="right: 10px; top: 8px">
-                                            <a href="" data-toggle="modal" data-target="" title="Editar menu">
+                                            <a href="" data-toggle="modal" data-target="#reminder_modal_create" title="Editar menu">
                                                 <i class="fa-regular fa-square-plus fa-2x text-success"></i>
                                             </a>
                                         </span>
