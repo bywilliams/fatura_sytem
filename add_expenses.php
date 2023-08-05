@@ -78,12 +78,6 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
                 <tbody>
                     <?php foreach ($expensesUser as $expense) : 
                     
-                            // Bloco a seguir decripta as datas e converte o formato
-                            $dt_registered = decryptData($expense->dt_registered, $encryptionKey);
-                            $dt_expense = decryptData($expense->dt_expense, $encryptionKey);
-                            $dt_registered_final = date("d-m-Y H:i:s", strtotime($dt_registered));
-                            $dt_expense_final = date("d-m-Y", strtotime($dt_expense));
-                            
                             // Código abaixo soma os valores das despesas
                             $value = str_replace('.', '', $expense->value);
                             $total_entry_value += (float) $value;?>
@@ -93,16 +87,16 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
                                 <?= $expense->id ?>
                             </td>
                             <td>
-                                <?= decryptData($expense->description, $encryptionKey) ?>
+                                <?= $expense->description ?>
                             </td>
                             <td>
                                 <?= $expense->value ?>
                             </td>
                             <td>
-                                <?= $dt_registered_final ?>
+                                <?= $expense->dt_registered ?>
                             </td>
                             <td>
-                                <?= $dt_expense_final ?>
+                                <?= $expense->dt_expense ?>
                             </td>
                             <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#expenseEditModal<?= $expense->id ?>" title="Editar">
                                 <i class="fa-solid fa-file-pen"></i></a>

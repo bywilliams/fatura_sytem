@@ -23,10 +23,11 @@ require_once("utils/config.php");
             $expense->id = $data['id'];
             $expense->description = $data['description'];
             $expense->value = number_format($data['value'], 2, ',', '.');
-            $expense->dt_registered = $data['dt_registered'];
-            $expense->dt_expense = $data['dt_expense'];
+            $expense->dt_registered = date("d-m-Y H:i:s", strtotime($data['dt_registered']));
+            $expense->dt_expense = date("d-m-Y", strtotime($data['dt_expense']));
             $expense->month_reference = $data['month_reference'];
             $expense->dt_updated = $data['dt_updated'];
+            $expense->user_name = $data['user_name'];
 
             return $expense;
 
@@ -62,13 +63,12 @@ require_once("utils/config.php");
             $stmt = $this->conn->prepare("INSERT INTO tb_expenses (
                 description, value, user_id, dt_registered, dt_expense, month_reference
             ) VALUES ( 
-                :description, :value, :user_id, :dt_registered, :dt_expense,:month_reference
+                :description, :value, :user_id, NOW(), :dt_expense,:month_reference
             )");
 
             $stmt->bindParam(":description", $expense->description, PDO::PARAM_STR);
             $stmt->bindParam(":value", $expense->value);
             $stmt->bindParam(":user_id", $expense->user_id, PDO::PARAM_INT);
-            $stmt->bindParam(":dt_registered", $expense->dt_registered, PDO::PARAM_STR);
             $stmt->bindParam(":dt_expense", $expense->dt_expense, PDO::PARAM_STR);
             $stmt->bindParam(":month_reference", $expense->month_reference, PDO::PARAM_STR);
 
@@ -84,14 +84,13 @@ require_once("utils/config.php");
             description = :description,
             value = :value,
             dt_expense = :dt_expense,
-            dt_updated = :dt_updated
+            dt_updated = NOW()
             WHERE id = :id
             ");
 
             $stmt->bindParam(":description", $expense->description, PDO::PARAM_STR);
             $stmt->bindParam(":value", $expense->value);
             $stmt->bindParam(":dt_expense", $expense->dt_expense, PDO::PARAM_STR);
-            $stmt->bindParam(":dt_updated", $expense->dt_updated, PDO::PARAM_STR);
             $stmt->bindParam(":id", $expense->id, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
@@ -133,6 +132,32 @@ require_once("utils/config.php");
             id, description, value, dt_registered, dt_expense, dt_updated 
             FROM tb_expenses 
             WHERE user_id = $id $sql
+            ORDER BY id 
+            DESC LIMIT $resultsPerPage OFFSET $offset;");
+
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                
+                $financialMovimentsArray = $stmt->fetchAll();
+
+                foreach ($financialMovimentsArray as $financialMoviment){
+
+                    $outFinancialMoviments[] = $this->buildExpense($financialMoviment);
+                
+                }
+            }
+            return $outFinancialMoviments;
+        }
+
+        public function getAllExpensesAdminToPagination($sql, $resultsPerPage = "", $offset = "") {
+            
+            $outFinancialMoviments = [];
+
+            $stmt = $this->conn->query("SELECT 
+            tb_expenses.id, description, value, dt_registered, dt_expense, dt_updated,  CONCAT( users.name, ' ',  users.lastname) AS user_name
+            FROM tb_expenses INNER JOIN users ON users.id = tb_expenses.user_id 
+            WHERE user_id > 0 $sql
             ORDER BY id 
             DESC LIMIT $resultsPerPage OFFSET $offset;");
 

@@ -601,6 +601,7 @@ table {
 .card_info img {
     width: 45px;
     height: 35px;
+    border-radius: 5px;
 }
 
 .card_info p {
@@ -792,6 +793,22 @@ table {
 
 
 /* ---------------------------------------------------
+    INVOICES PAGE
+----------------------------------------------------- */
+
+.info i {
+    font-size: 23px;
+    font-weight: 900;
+}
+
+.invoice_card_img img {
+    width: 45px;
+    height: 35px;
+    border-radius: 5px;
+}
+
+
+/* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
 @media only screen and (min-width: 1920px) {
@@ -856,10 +873,6 @@ table {
     #sidebarCollapse {
         position: fixed;
     }
-
-    /* .nav-toggle {
-        position: fixed;
-    } */
 
 }
 

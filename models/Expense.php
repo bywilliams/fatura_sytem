@@ -10,6 +10,7 @@
         public $dt_expense;
         public $month_reference;
         public $dt_updated;
+        public $user_name;
 
     }
 
@@ -19,6 +20,11 @@
         public function createUserExpense(Expense $expense);
         public function updateUserExpense(Expense $expense);
         public function getReports($sql, $id);
+        public function getAllExpensesToPagination($id, $sql, $resultsPerPage = "", $offset = "");
+        public function countTypeExpensesCurrentMonth($id);
+        public function getBiggestExpense($id);
+        public function getLowerExpense($id);
+        public function getAllCashOutflow($id);
         public function destroyUserExpense($id);
     }
 

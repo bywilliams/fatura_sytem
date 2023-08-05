@@ -30,13 +30,12 @@ if ($type == "create") {
     if($data['description'] && $data['value'] && $data['date_expense']) {
         
         $expense = new Expense();
-        $expense->description = encryptData($data['description'], $encryptionKey);
+        $expense->description = $data['description'];
         $value = preg_replace("/[^0-9,]+/i","",$data['value']);
         $value = str_replace(",",".",$value);
         $expense->value = $value;
         $expense->user_id = $userData->id;
-        $expense->dt_registered = encryptData($current_date, $encryptionKey);
-        $expense->dt_expense = encryptData($data['date_expense'], $encryptionKey);
+        $expense->dt_expense = $data['date_expense'];
         $expense->month_reference = date("Y/m/d", strtotime($data['date_expense']));
         //echo $expense->month_reference; exit;
         try{
@@ -60,12 +59,11 @@ if ($type == "create") {
     $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
     $expense = new Expense();
-    $expense->description = encryptData($data['description'], $encryptionKey);
+    $expense->description = $data['description'];
     $value = preg_replace("/[^0-9,]+/i","",$data['value']);
     $value = str_replace(",",".",$value);
     $expense->value = $value;
-    $expense->dt_expense = encryptData($data['date_expense'], $encryptionKey);
-    $expense->dt_updated = encryptData(date("Y-m-d"), $encryptionKey);
+    $expense->dt_expense = $data['date_expense'];
     $expense->id = $data['id'];
 
     //echo "$expense->description, $expense->value, $expense->dt_expense";

@@ -56,6 +56,9 @@
             <li>
                 <a href="<?= $BASE_URL ?>invoices.php" target="myFrame">Ver faturas</a>
             </li>
+            <li>
+                <a href="<?= $BASE_URL ?>expenses_users.php" target="myFrame">Ver despesas</a>
+            </li>
         </ul>
     </li>
     <?php endif ?>

@@ -3,10 +3,10 @@ require_once("templates/header_iframe.php");
 require_once("globals.php");
 require_once("utils/config.php");
 require_once("connection/conn.php");
-require_once("models/BankAccounts.php");
+// require_once("models/BankAccounts.php");
 require_once("dao/BankAccountsDAO.php");
 
-$bankAccout = new BankAccounts();
+// $bankAccout = new BankAccounts();
 $bankAccountsDao = new BankAccountsDAO($conn, $BASE_URL);
 
 // traz todos os cartões do usuário
@@ -87,7 +87,7 @@ $accounts = $bankAccountsDao->getAllBankAccounts();
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="<?= $BASE_URL ?>account_process.php?id=<?= $account->id ?>" method="post" enctype="multipart/form-data">
+                    <form action="<?= $BASE_URL ?>account_process.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id" value="<?= $account->id ?>">
                         <input type="hidden" name="type" value="update">
                         <div class="form-group">

@@ -5,12 +5,17 @@ require_once("connection/conn.php");
 require_once("models/Message.php");
 require_once("models/BankAccounts.php");
 require_once("dao/BankAccountsDAO.php");
+require_once("dao/UserDAO.php");
 
 $bankAccountDao = new BankAccountsDao($conn, $BASE_URL);
 
 $message = new Message($BASE_URL);
 
 $type = filter_input(INPUT_POST, "type");
+
+// resgata dados do usuário
+$userDao = new UserDAO($conn, $BASE_URL);
+$userData = $userDao->verifyToken();
 
 // Pega a data atual do sistema, necessita ser ecryptado também no BD
 $current_date = $agora->format("Y-m-d H:i:s");
@@ -88,7 +93,7 @@ if ($type == "create") {
         $message->setMessage("Preencha todos os campos", "success", "back");
     }
 } else if ($type == "update") {
-
+    
     $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
     // Preenche os dados do Objeto
@@ -102,7 +107,7 @@ if ($type == "create") {
     $bankAccount->updated_at =  encryptData($current_date, $encryptionKey);
     $bankAccount->card_color = $data['color'];
     $bankAccount->logo_img = $data['current_file'];
-
+    
     // Upload da imagem
     if (isset($_FILES["image"]) && !empty($_FILES["image"]["tmp_name"])) {
 

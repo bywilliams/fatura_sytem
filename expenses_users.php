@@ -2,6 +2,10 @@
 require_once("templates/header_iframe.php");
 require_once("utils/config.php");
 require_once("dao/ExpenseDAO.php");
+require_once("dao/UserDAO.php");
+
+$uersDao = new UserDAO($conn, $BASE_URL);
+$allUsers = $uersDao->findAllUsers();
 
 $expensesDao = new ExpenseDAO($conn, $BASE_URL);
 
@@ -19,7 +23,7 @@ $offset = ($page - 1) * $resultsPerPage;
 $sql = "";
 $expense_id = 
 $name_expense = 
-$value_expense =
+$user_expense =
 $month_expense = "";
 
 
@@ -30,7 +34,7 @@ if ($_POST) {
 
     if (isset($_POST['expense_id']) && $_POST['expense_id'] != '') { 
         $expense_id = $_POST['expense_id'];
-        $sql .= "AND id = $expense_id";
+        $sql .= "AND tb_expenses.id = $expense_id";
     }
 
     if (isset($_POST['name_expense']) && $_POST['name_expense'] != '') {
@@ -38,29 +42,29 @@ if ($_POST) {
         $sql .= " AND description LIKE '%%$name_expense%%'";
     }
 
-    if (isset($_POST['value_expense']) && $_POST['value_expense'] != '') {
-        $value_expense = $_POST['value_expense'];
-        $sql .= " AND value <= $value_expense";
+    if (isset($_POST['user_expense']) && $_POST['user_expense'] != '') {
+        $user_expense = $_POST['user_expense'];
+        $sql .= " AND user_id = $user_expense";
     }
 
     if (isset($_POST['month_expense']) && $_POST['month_expense'] != '') { 
         $month_expense_input = $_POST['month_expense'];
         $month_querie = substr($_POST['month_expense'], -2);
-        $sql .= " AND MONTH(month_reference) = '$month_querie' ";
+        $sql .= " AND MONTH(dt_registered) = '$month_querie' ";
     }
 
     //echo $sql . "<br>";
 }
 
 // Traz total de saídas do usuário default ou com paginação
-$expensesUser = $expensesDao->getAllExpensesToPagination($userData->id, $sql, $resultsPerPage, $offset);
-//echo count($expensesUser);
+$expensesUser = $expensesDao->getAllExpensesAdminToPagination( $sql, $resultsPerPage, $offset);
+//print_r($expensesUser);
 $total_out_value = 0;
 
 ?>
 
 <div class="container-fluid">
-    <h1 class="text-center my-5">Despesas <img src="<?= $BASE_URL ?>assets/home/dashboard-main/empty-wallet.png" width="64" height="64" alt=""></h1>
+    <h1 class="text-center my-5">Despesas dos funcionários <img src="<?= $BASE_URL ?>assets/home/dashboard-main/empty-wallet.png" width="64" height="64" alt=""></h1>
     <div class="entrys-search" id="entrys-search">
         <form method="POST">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
@@ -79,12 +83,12 @@ $total_out_value = 0;
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Por valor:</h4>
-                        <select class="form-control" name="value_expense" id="value_expense">
+                        <h4 class="font-weight-normal">Por funcionário:</h4>
+                        <select class="form-control" name="user_expense" id="user_expense">
                             <option value="">Selecione</option>
-                            <option value="100" <?= $value_expense == 100 ? 'selected' : "" ?>>até R$ 100,00</option>
-                            <option value="1000" <?= $value_expense == 1000 ? 'selected' : "" ?>>até R$ 1.000,00</option>
-                            <option value="3000" <?= $value_expense == 3000 ? 'selected' : "" ?>>até R$ 3.000,00</option>
+                            <?php foreach($allUsers as $user): ?>
+                                <option value="<?= $user->id ?>"><?= $user->getFullName($user) ?></option>
+                            <?php endforeach ?>
                         </select>
                     </div>
                 </div>
@@ -115,6 +119,7 @@ $total_out_value = 0;
                     <th scope="col">Valor</th>
                     <th scope="col">Registrada em</th>
                     <th scope="col">Data da despesa</th>
+                    <th scope="col">Funcionário</th>
                     <th scope="col" class="report-action">Ação</th>
                 </tr>
             </thead>
@@ -129,6 +134,9 @@ $total_out_value = 0;
                         <td><?= $expense->value ?></td>
                         <td><?= $expense->dt_registered ?></td>
                         <td><?= $expense->dt_expense ?></td>
+                        <td>
+                            <?= $expense->user_name ?>
+                        </td>
                         <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#expenseEditModal<?= $expense->id ?>" title="Editar">
                                 <i class="fa-solid fa-file-pen"></i></a>
                             <a href="#" data-toggle="modal" data-target="#modal_del_expense<?= $expense->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
