@@ -28,7 +28,7 @@
 
         public function buildInvoice ($data);
         public function getLatestInvoices($user_id);
-        public function getAllInvoicesForAdmin();
+        public function getAllInvoicesForAdminToPagination($sql = "", $resultsPerPage = "", $offset = "");
         // public function getAllUserInvoices($user_id);
         public function getBiggestInvoiceValueUser($id);
         public function getLowerInvoiceValueUser($id);

@@ -8,6 +8,8 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery.mask.js"></script>
 <script src="js/functions.js"></script>
+<!-- Biblioteca para copiar o texto para a área de transferência -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
 
 
 <script>

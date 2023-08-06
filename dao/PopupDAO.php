@@ -32,12 +32,12 @@ require_once("models/Message.php");
             return $popup;
         }
 
-        public function popup($users_id) {
+        public function popupInvoice() {
 
-            $stmt = $this->conn->prepare("SELECT popup.id, popup_name, title, description, image, created_at, popup.modified 
-            FROM popup INNER JOIN popup_users ON popup.id  = popup_users.popup_id 
-            WHERE popup_users.show_popup = 'S' AND popup_users.status_visualized = 'N' 
-            AND popup_users.expired_date > NOW() AND popup_users.users_id = $users_id");
+            $stmt = $this->conn->prepare("SELECT id, popup_name, title, description, image, created_at, popup.modified 
+            FROM popup 
+            WHERE id = '1' 
+            ");
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
@@ -49,40 +49,6 @@ require_once("models/Message.php");
             
         }
 
-        public function createPopup($users_id, $email, $popup_id) {
 
-            $stmt = $this->conn->prepare("INSERT INTO popup_users (
-                popup_id, show_popup, status_visualized, users_id, email, expired_date, created
-            ) VALUES (
-                :popup_id, 'S', 'N', :users_id, :email, NOW() + INTERVAL 10 DAY, now()
-            )");
-            $stmt->bindParam(":popup_id", $popup_id);
-            $stmt->bindParam(":email", $email);
-            $stmt->bindParam(":users_id", $users_id);
-
-            $stmt->execute();
-
-        }
-
-        public function updatePopupUser($popup_id, $users_id) {
-
-            $stmt = $this->conn->prepare("UPDATE popup_users SET 
-            show_popup = 'N', 
-            status_visualized = 'S',
-            modified = now() 
-            WHERE popup_id = :popup_id AND users_id = :users_id 
-            ");
-            
-            $stmt->bindParam(":popup_id", $popup_id);
-            $stmt->bindParam(":users_id", $users_id);
-            
-
-            if($stmt->execute()) {
-                $this->message->setMessage("", "", "back");
-            }else {
-                echo "error";
-            }
-
-        }
 
     }

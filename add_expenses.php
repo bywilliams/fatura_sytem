@@ -4,8 +4,6 @@ require_once("globals.php");
 require_once("utils/config.php");
 require_once("connection/conn.php");
 require_once("dao/ExpenseDAO.php");
-require_once("dao/FinancialMovimentDAO.php");
-
 
 // Traz despesas do usuário
 $expenseDao = new ExpenseDAO($conn, $BASE_URL);

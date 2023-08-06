@@ -1,23 +1,26 @@
 <?php
 require_once("templates/header_iframe.php");
-require_once("dao/FinancialMovimentDAO.php");
+require_once("utils/config.php");
 require_once("dao/InvoicesDAO.php");
-require_once("dao/CategorysDAO.php");
+require_once("dao/BankAccountsDAO.php");
+require_once("dao/UserDAO.php");
+
+$uersDao = new UserDAO($conn, $BASE_URL);
+$allUsers = $uersDao->findAllUsers();
+
+// ---> Objeto contas e seus processos <-------  //
+$bankAccountsDao = new BankAccountsDAO($conn, $BASE_URL);
+$accounts = $bankAccountsDao->getAllBankAccounts();
+// ---> Objeto contas <-------  //
 
 $invoiceDao = new InvoicesDao($conn, $BASE_URL);
 
-$financialMovimentDao = new FinancialMovimentDAO($conn, $BASE_URL);
-$categorysDao = new CategorysDAO($conn);
-
-// Traz todas as categorias disponiveis para entradas
-$entry_categorys = $categorysDao->getAllEntryCategorys();
-
 // Traz o array com os dados de entradas da query personalizada para modal
 $sql = "";
-$getEntryReports = $financialMovimentDao->getReports($sql, 1, $userData->id);
+// $getEntryReports = $financialMovimentDao->getReports($sql, 1, $userData->id);
 
-// Paginação do relatório
-$totalRegistros = $financialMovimentDao->countTypeFinancialCurrentMonth($userData->id, 1);
+// // Paginação do relatório
+$totalRegistros = count($invoiceDao->countAllInvoicesForAdmin());
 
 $resultsPerPage = 10;
 $numberPages = ceil($totalRegistros / $resultsPerPage);
@@ -28,20 +31,57 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 // calcula o indice do primeiro registro da página atual
 $offset = ($page - 1) * $resultsPerPage;
 
-// Traz total de Entradas do usuário default e páginação 
-$allInvoicesUsers = $invoiceDao->getAllInvoicesForAdmin();
 
+$invoice_id = 
+$name_invoice = 
+$account_invoice =
+$reference_invoice =
+$user_id =
+$month_invoice = "";
+
+if ($_POST) {
+    //echo "pesquisa enviada";
+    $sql = "";
+    $totalRegistros = 0;
+
+    if (isset($_POST['invoice_id']) && $_POST['invoice_id'] != '') { 
+        $invoice_id = $_POST['invoice_id'];
+        $sql .= "AND invoices.id = $invoice_id";
+    }
+
+    if (isset($_POST['reference_invoice']) && $_POST['reference_invoice'] != '') {
+        $reference_invoice = $_POST['reference_invoice'];
+        $sql .= " AND reference LIKE '%%$reference_invoice%%'";
+    }
+
+    if (isset($_POST['value_invoice']) && $_POST['value_invoice'] != '') {
+        $value_invoice = $_POST['value_invoice'];
+        $sql .= " AND value <= $value_invoice";
+    }
+
+    if (isset($_POST['account_invoice']) && $_POST['account_invoice'] != '') {
+        $account_invoice = $_POST['account_invoice'];
+        $sql .= " AND account = $account_invoice";
+    }
+
+    if (isset($_POST['month_invoice']) && $_POST['month_invoice'] != '') { 
+        $month_invoice = $_POST['month_invoice'];
+        $sql .= " AND MONTH(dt_expired) = '$month_invoice' ";
+    }
+
+    if (isset($_POST['user_id']) && $_POST['user_id'] != '') { 
+        $user_id = $_POST['user_id'];
+        $sql .= " AND user_id = '$user_id' ";
+    }
+
+    //echo $sql . "<br>";
+}
+
+// Traz total de Entradas do usuário default e páginação 
+$allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resultsPerPage, $offset);
 
 
 ?>
-
-<style>
-    input[type="date"]::-webkit-inner-spin-button,
-    input[type="date"]::-webkit-calendar-picker-indicator {
-        display: none !important;
-        -webkit-appearance: none !important;
-    }
-</style>
 
 <div class="container-fluid">
     <h1 class="text-center my-5">Todas as faturas
@@ -50,60 +90,58 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdmin();
     </h1>
 
     <div class="entrys-search" id="entrys-search">
+        <!-- <h3 class="text-secondary mb-3">Pesquisar:</h3> -->
         <form method="POST">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row">
-                <div class="col-md-3">
+            <div class="row offset-sm-1">
+                <div class="col-md-2">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Por nome:</h4>
-                        <input type="text" name="name_search" id="name_search_entry" class="form-control" placeholder="Ex: salário">
+                        <h4 class="font-weight-normal">Por id:</h4>
+                        <input type="number" name="invoice_id" id="invoice_id" class="form-control" placeholder="Ex: 10" value="<?= $invoice_id ?>">
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Por valor:</h4>
-                        <select class="form-control" name="values_entry" id="values_entry">
+                        <h4 class="font-weight-normal">Por referência:</h4>
+                        <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $reference_invoice ?>">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <h4 class="font-weight-normal">Por conta:</h4>
+                        <select class="form-control" name="account_invoice" id="account_invoice">
                             <option value="">Selecione</option>
-                            <option value="500">até R$ 500,00</option>
-                            <option value="1500">de R$ 500 até R$ 1.500,00</option>
-                            <option value="3000">de R$ 1.500 até R$ 3.000,00</option>
-                            <option value="5000">R$ 3.000 até R$ 5.000,00</option>
-                            <option value="10000">Acima de R$ 5.000,00</option>
+                            <?php foreach ($accounts as $account) : ?>
+                                <option value="<?= $account->id ?>" <?= $account_invoice == $account->id ? "selected" : ""; ?>><?= decryptData($account->razao_social, $encryptionKey) ?></option>
+                            <?php endforeach ?>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-6">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">De:</h4>
-                        <input type="text" name="from_date_entry" id="from_date_entry" class="form-control placeholder" placeholder="__/__/____">
-                        <div class="p-date" onclick="show_password()">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
+                        <h4 class="font-weight-normal">Por mês:</h4>
+                        <select class="form-control" name="month_invoice" id="">
+                            <option value="">Selecione</option>
+                            <?php foreach($meses as $index => $mes): ?>
+                                <option value="<?= $index ?>" <?= $index == $month_invoice ? "selected" : ""; ?>><?= $mes ?></option>
+                            <?php endforeach ?>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-6">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Até:</h4>
-                        <input type="text" name="to_date_entry" id="to_date_entry" class="form-control placeholder" placeholder="__/__/____">
-                        <div class="p-date" onclick="show_password()">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <h4 class="font-weight-normal">Categoria:</h4>
-                        <select class="form-control" name="category_entry" id="category_entry">
+                        <h4 class="font-weight-normal">Por usuário:</h4>
+                        <select class="form-control" name="user_id" id="">
                             <option value="">Selecione</option>
-                            <?php foreach ($entry_categorys as $category) : ?>
-                                <option value="<?= $category->id ?>"> <?= $category->category_name ?></option>
-                            <?php endforeach; ?>
+                           <?php foreach($allUsers as $user): ?>
+                                <option value="<?= $user->id ?>" <?= $user->id == $user_id ? "selected" : ""; ?>><?= $user->getFullName($user) ?></option>
+                           <?php endforeach ?>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-1">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
-                    <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir </button> -->
+                    <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
             </div>
         </form>
@@ -113,8 +151,9 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdmin();
     <div class="table_report my-3" id="table_report_entry">
         
         <div class="row d-block text-right my-2 px-3 info">
-            <div> <i class="fa-regular fa-square-check text-success"></i> <span> Fatura paga </span> </div>
-            <div> <i class="fa-regular fa-square-check text-danger"></i> <span> Aguard. pagamento </span> </div>
+        <div> <i class="fa-regular fa-square-check text-success"></i> <span> Fatura paga </span> </div>
+            <div> <i class="fa-regular fa-square-check text-danger"></i> <span> Fatura não paga </span> </div>
+            <div> <i class="fa-regular fa-square-check text-secondary"></i> <span> Aguardando </span> </div>
         </div>
         <table class="table table-hover table-striped table-bordered">
             <thead class="thead-dark">
@@ -246,8 +285,12 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdmin();
                                     <label class="form-check-label" for="inlineCheckbox1">Pago </label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="invoice_status" id="invoice_status" value="N" <?= $invoices->paid == "N" ? "checked" : ""; ?>>
-                                    <label class="form-check-label" for="inlineCheckbox2">Aguardando pagamento</label>
+                                    <input class="form-check-input" type="checkbox" name="invoice_status" id="invoice_status" value="N" <?= $invoices->paid == "N" ? "checked" : ""; ?> >
+                                    <label class="form-check-label" for="inlineCheckbox2">Não Pago </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="invoice_status" id="invoice_status" value="A" <?= $invoices->paid == "A" ? "checked" : ""; ?>>
+                                    <label class="form-check-label" for="inlineCheckbox3">Aguardando</label>
                                 </div>
                             </div>
                             <input type="submit" value="Atualizar" class="btn btn-lg btn-success">

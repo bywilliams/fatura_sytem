@@ -7,12 +7,12 @@ require_once("dao/InvoicesDAO.php");
 require_once("dao/RemindersDAO.php");
 require_once("dao/BankAccountsDAO.php");
 
-// ---> Objeto contas e seus processos <-------  //
+// ---> Objeto contas e seus processos -------  //
 $bankAccountsDao = new BankAccountsDAO($conn, $BASE_URL);
 $accounts = $bankAccountsDao->getAllBankAccounts();
 // ---> Objeto contas <-------  //
 
-// ---> Objeto Despesas e seus processos <------ //
+// --- Objeto Despesas e seus processos <------ //
 
 $expenseDao = new ExpenseDAO($conn, $BASE_URL);
 // Maior despesa do usuário
@@ -24,7 +24,7 @@ $totalCashOutflow = $expenseDao->getAllCashOutflow($userData->id);
 
 // ---> Objeto Despesas e seus processos <------ //
 
-// ----> Objeto faturas e seus processos <------ //
+// ----> Objeto faturas e seus processos ------ //
 
 $invoiceDao = new InvoicesDAO($conn, $BASE_URL);
 // Traz as últimas faturas cadastradas do usuário
@@ -38,14 +38,11 @@ $lowerRevenueUser = $invoiceDao->getLowerInvoiceValueUser($userData->id);
 
 $ammount = $invoiceDao->getTotalBalance($userData->id);
 
-
-// ----> Objeto faturas e seus processos <------ //
-
+// ---- Objeto faturas e seus processos <------ //
 
 // traz os últimos 4 lembretes cadastrados pelo usuário 
 $reminderDao = new RemindersDAO($conn, $BASE_URL);
 $latestReminders = $reminderDao->getLatestReminders($userData->id);
-
 
 ?>
 
@@ -66,15 +63,15 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                 <h1 class="card-title pricing-card-title text-success" id="revenue_h1">+ R$ <?= $totalCashInflow ?> </h1>
                                 <small class="text-muted"><strong>Menor receita</strong> <br>
                                     <?php foreach ($lowerRevenueUser as $lowerRevenue) : ?>
-                                        <?= $lowerRevenue->invoice_one ?> <?= $lowerRevenue->value ?>
+                                        <?= $lowerRevenue->reference ?> <?= $lowerRevenue->value ?>
                                     <?php endforeach ?>
-                                    <?= count($lowerRevenueUser) == 0 ? 'Não há dados registrados' : ""; ?>
+                                    <?php if(count($lowerRevenueUser) < 1) {  echo 'Não há dados registrados';} ?>
                                     <br>
                                     <strong>Maior receita</strong> <br>
                                     <?php foreach ($biggestRevenueUser as $biggestRevenue) : ?>
-                                        <?= $biggestRevenue->invoice_one ?> <?= $biggestRevenue->value ?>
+                                        <?= $biggestRevenue->reference ?> <?= $biggestRevenue->value ?>
                                     <?php endforeach ?>
-                                    <?= count($biggestRevenueUser) == 0 ? 'Não há dados registrados' : ""; ?>
+                                    <?php if(count($biggestRevenueUser) <  1) { echo 'Não há dados registrados'; } ?>
                                 </small>
 
                             </div>
@@ -143,7 +140,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                             </a>
                                         </span>
                                     </li>
-                                    <?php if ($userData->levels_access_id === 1) : ?>
+                                    <?php if ($userData->levels_access_id == 1) : ?>
                                         <li class="list-group-item d-flex ">
                                             <strong>Cadastrar conta: </strong>
                                             <span class="badge d-block position-absolute" style="right: 10px; top: 8px">
@@ -152,14 +149,14 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                 </a>
                                             </span>
                                         </li>
-                                        <li class="list-group-item d-flex ">
+                                        <!-- <li class="list-group-item d-flex ">
                                             <strong>Cadastrar usuário: </strong>
                                             <span class="badge d-block position-absolute" style="right: 10px; top: 8px">
                                                 <a href="" data-toggle="modal" data-target="" title="Editar menu">
                                                     <i class="fa-regular fa-square-plus fa-2x text-success"></i>
                                                 </a>
                                             </span>
-                                        </li>
+                                        </li> -->
                                     <?php endif ?>
                                 </ul>
                             </div>
@@ -303,7 +300,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                     <th>Referência</th>
                                     <th>Valor</th>
                                     <th>Vencimento</th>
-                                    <th>Status</th>
+                                    <!-- <th>Status</th> -->
                                     <th>Conta</th>
                                     <th>Anotação</th>
                                     <th>Ação</th>
@@ -328,13 +325,13 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                             <td>
                                                 <span> <?= $invoice->dt_expired ?> </span>
                                             </td>
-                                            <td class="info">
+                                            <!-- <td class="info">
                                                 <?php if ($invoice->paid == "S") : ?>
                                                     <i class="fa-regular fa-square-check text-success"></i>
                                                 <?php else : ?>
                                                     <i class="fa-regular fa-square-check text-danger"></i>
                                                 <?php endif ?>
-                                            </td>
+                                            </td> -->
                                             <td>
                                                 <div class="invoice_card_img">
                                                     <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoice->conta_img ?>" alt="">
@@ -359,7 +356,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $invoice->id ?>" title="Editar">
+                                                <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
                                                     <i class="fa-solid fa-copy text-info"></i>
                                                 </a>
                                                 <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $invoice->id ?>" title="Editar">
@@ -380,7 +377,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         <div class="offset-md-3 col-md-6 pb-3 text-center icons_latest">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12 my-2 ver_entradas">
-                                    <a href="<?= $BASE_URL ?>financial_entry_report.php">
+                                    <a href="<?= $BASE_URL ?>invoices_user.php">
                                         <i class="fa-solid fa-plus"></i>
                                         &nbsp; Ver todas as receitas
                                     </a>
@@ -650,10 +647,48 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
         <?php endforeach; ?>
         <!-- End Invoice modal delete -->
 
-        <!-- End modal forms -->
+        <!-- Copy Invoice numbers modal -->
+        <?php foreach ($latestInvoices as $invoice) : ?>
+            <div class="modal fade copyCodigoBoleto<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Copiar código do boleto</h5>
+                            <button type="button" class="close" data-dismiss="modal" arial-label="fechar">
+                                <span arial-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="cnpinvoice_one_copy">Fatura 1</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_one_copy">Copiar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice_two_copy">Fatura 2</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_two_copy">Copiar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+<?php endforeach; ?>
+<!-- End Invoice modal delete -->
 
-        <!-- Check today reminders -->
-        <?php require_once("utils/check_reminders.php") ?>
+<!-- End modal forms -->
+
+<!-- Check today reminders -->
+<?php require_once("utils/check_reminders.php") ?>
 
 </body>
 <?php require_once("templates/footer.php"); ?>
@@ -723,13 +758,14 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
 
     });
 
+    // Auto preenchimento de valor e data de vencimento da fatura
 
     // Função para formatar um número no padrão "1.000,00"
-function formatNumber(number) {
-  return (number / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
-}
+    function formatNumber(number) {
+        return (number / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+    }
 
-$(document).ready(function() {
+    $(document).ready(function() {
         // Quando o valor do input de texto for alterado
         $("#invoice_one").on("input", function() {
             // Obtenha o valor do input de texto
@@ -748,7 +784,7 @@ $(document).ready(function() {
 
             // Extrai os últimos 10 caracteres do código de boleto
             var valorLinhaBoleto = linhaBoleto.substr(-10).replace(/^0+/, "");
-            
+
             // Calcula a data de vencimento a partir dos 4 dígitos antes dos últimos 10 caracteres
             var vencimentoEmDias = parseInt(linhaBoleto.substr(-14, 4));
             var dataBase = new Date(1997, 9, 7); // Data base instituída pelo BACEN (07/10/1997)
@@ -767,5 +803,17 @@ $(document).ready(function() {
                 $("#dt_expired").val("");
             }
         });
+    });
+
+    // JS do modal de copiar codigos do boleto
+    var clipboard = new ClipboardJS('.copy-btn');
+
+    clipboard.on('success', function(event) {
+        alert('Texto copiado com sucesso!');
+        event.clearSelection();
+    });
+
+    clipboard.on('error', function(event) {
+        //alert('Erro ao copiar texto. Tente novamente.');
     });
 </script>

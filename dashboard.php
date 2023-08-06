@@ -2,14 +2,10 @@
 require_once("globals.php");
 require_once("connection/conn.php");
 require_once("models/User.php");
-require_once("models/FinancialMoviment.php");
 require_once("dao/UserDAO.php");
 require_once("dao/MenuDAO.php");
-require_once("dao/FinancialMovimentDAO.php");
 require_once("dao/PopupDAO.php");
-
-$financialMoviment = new FinancialMoviment();
-$financialMovimentDao = new FinancialMovimentDAO($conn, $BASE_URL);
+require_once("dao/InvoicesDAO.php");
 
 $user = new User();
 $userDao = new UserDao($conn, $BASE_URL);
@@ -29,18 +25,14 @@ if ($userData->image == "") {
     $userData->image = "user.png";
 }
 
-// Traz total de entradas do usuário
-$totalCashInflow = $financialMovimentDao->getAllCashInflow($userData->id);
-
-// Traz total de saídas do usuário
-$totalCashOutflow = $financialMovimentDao->getAllCashOutflow($userData->id);
-
-// Pega o resultado da função que faz o calculo da % que as despesas representam sobre a receita
-$resultExpensePercent = (float) $financialMoviment->balancePercent($totalCashInflow, $totalCashOutflow);
 
 // Popups
+$invoiceDao = new InvoicesDao($conn, $BASE_URL);
+$invoicesExpiringUser = $invoiceDao->checkInvoicesUserExpiringToday($userData->id);
+
 $popupDao = new PopupDAO($conn, $BASE_URL);
-$popup = $popupDao->popup($userData->id);
+$popup = $popupDao->popupInvoice($userData->id);
+//print_r($popup); exit;
 
 ?>
 
@@ -49,7 +41,7 @@ $popup = $popupDao->popup($userData->id);
 <nav class="navbar sticky-top navbar-dark shadow">
     <div class="container-fluid">
         <a class="navbar-brand font-weight-bolder" href="<?= $BASE_URL ?>dashboard.php">
-        <i class="fa-solid fa-file-invoice text-white"></i>
+            <i class="fa-solid fa-file-invoice text-white"></i>
             <span>INTRANET</span>
         </a>
         <ul class="navbar-nav px-3">
@@ -103,34 +95,67 @@ $popup = $popupDao->popup($userData->id);
     </div>
     <!-- End Page Content  -->
 
-    <!-- Welcome Popup message  -->
-    <?php if (!empty($popup)) : ?>
+    <!-- Section Popup Invoice Epiring message  -->
+    <section>
+        <?php if (!empty($popup) && !empty($invoicesExpiringUser)) : ?>
+            <?php
+            $showPopup = true;
+            $popupCookieName = "popup_displayed_" . date("Ymd");
+            if (isset($_COOKIE[$popupCookieName])) {
+                $showPopup = false;
+            }
 
-        <div class="container-popup" id="container-popup">
+            if ($showPopup) : ?>
 
-            <div class="popup text-center" id="popup-card">
-                <button class="popup-close close_popup">x</button>
-                <h2><?= $popup->title ?></h2>
-                <p><?= $popup->description ?></p>
-                <?php if ($popup->image != "") : ?>
-                    <div>
-                        <img class="animated-gif" src="<?= $BASE_URL ?>assets/home/popup/<?= $popup->image ?>" alt="imagm popup">
+                <div class="container-popup" id="container-popup">
+
+                    <div class="popup text-center" id="popup-card">
+                        <button class="popup-close close_popup">x</button>
+                        <h2><?= $popup->title ?></h2>
+                        <p><?= $popup->description ?></p>
+                        <?php if ($popup->image != "") : ?>
+                            <div>
+                                <img class="animated-gif" src="<?= $BASE_URL ?>assets/home/popup/<?= $popup->image ?>" alt="imagm popup">
+                            </div>
+                        <?php endif; ?>
+                        <form action="<?= $BASE_URL ?>popup_process.php" method="post">
+                            <div class="form-group">
+                                <!-- Add your form elements here -->
+                            </div>
+                            <button class="btn btn-lg btn-info" id="popup_submit">OK</button>
+                        </form>
                     </div>
-                <?php endif; ?>
-                <form action="<?= $BASE_URL ?>popup_process.php" method="post">
-                    <div class="form-group">
-                        <label for="no_show_again"><small> Marque a caixa abaixo e clique em OK <br> para não mostrar esta
-                                mensagem novamente.</small></label>
-                        <input class="form-control" type="checkbox" name="no_show_popup" id="no_show_popup" value="<?= $popup->id ?>">
-                    </div>
-                    <input type="submit" class="btn btn-lg btn-info" id="popup_submit" value="OK"></input>
-                </form>
-            </div>
 
-        </div>
+                </div>
 
-    <?php endif; ?>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        document.querySelector(".close_popup").addEventListener("click", function() {
+                            document.getElementById("container-popup").style.display = "none";
+                            setPopupCookie();
+                        });
+
+                        document.getElementById("popup_submit").addEventListener("click", function() {
+                            document.getElementById("container-popup").style.display = "none";
+                            setPopupCookie();
+                        });
+
+                        function setPopupCookie() {
+                            var date = new Date();
+                            date.setTime(date.getTime() + (24 * 60 * 60 * 1000)); // Set cookie expiration to 1 day
+                            var expires = "expires=" + date.toUTCString();
+                            document.cookie = "<?= $popupCookieName ?>=true;" + expires + ";path=/";
+                        }
+                    });
+                </script>
+
+            <?php endif; ?>
+
+        <?php endif; ?>
+    </section>
     <!-- Popup messages  -->
+
+
 
 </div>
 
@@ -147,34 +172,6 @@ $popup = $popupDao->popup($userData->id);
 
 
     // Abrir e fechar Popup
-    const popupWindow = document.querySelector("#popup-card");
-    const popupClose = document.querySelectorAll(".popup-close");
-    const containerClose = document.getElementById("container-popup");
 
-    window.addEventListener("load", () => {
-        popupWindow.classList.add("active_item");
-    });
-
-    popupClose.forEach((close) =>
-        close.addEventListener("click", () => {
-            popupWindow.classList.remove("active_item");
-            containerClose.style.display = "none";
-        })
-    );
-
-    // submit desligado enquanto checkbox de confirmação estiver vazio
-    $(document).ready(function() {
-        $('#popup_submit').prop('disabled', true);
-        $('#no_show_popup').click(function() {
-            if ($(this).is(':checked')) {
-                $('#popup_submit').prop('disabled', false);
-            } else {
-                $('#popup_submit').prop('disabled', true);
-            }
-        });
-    });
     // Fim Popup
-
-    </script>
-
 </script>

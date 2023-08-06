@@ -25,7 +25,7 @@
             $invoice->notation = $data['notation'];
             $invoice->type = $data['type'];
             $invoice->invoice_two = $data['invoice_two'];
-            $invoice->dt_expired = $data['dt_expired'];
+            $invoice->dt_expired = date("d-m-Y", strtotime($data['dt_expired']));
             $invoice->reference = $data['reference'];
             $invoice->account = $data['account'];
             $invoice->user_id = $data['user_id'];
@@ -114,6 +114,61 @@
             }
             return $outFinancialMoviments;
         }
+
+        public function getAllInvoicesUserExpiringToPagination($id, $sql, $resultsPerPage = "", $offset = "") {
+            
+            $invoiceExpiring = [];
+
+            $currentDate = date("Y-m-d");
+
+            $stmt = $this->conn->query("SELECT 
+            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, paid, bank_accounts.logo_img AS 'conta_img'
+            FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
+            WHERE user_id = '$id' AND dt_Expired = '$currentDate' $sql
+            ORDER BY id 
+            DESC LIMIT $resultsPerPage OFFSET $offset");
+
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                
+                $financialMovimentsArray = $stmt->fetchAll();
+
+                foreach ($financialMovimentsArray as $financialMoviment){
+
+                    $invoiceExpiring[] = $this->buildInvoice($financialMoviment);
+                
+                }
+            }
+            return $invoiceExpiring;
+        }
+
+        public function checkInvoicesUserExpiringToday($id) {
+            
+            $invoiceExpiring = [];
+
+            $currentDate = date("Y-m-d");
+
+            $stmt = $this->conn->query("SELECT 
+            id, invoice_one, emission, value, invoice_two, dt_expired, reference 
+            FROM invoices
+            WHERE user_id = '$id' AND dt_Expired = '$currentDate' 
+            ");
+
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                
+                $financialMovimentsArray = $stmt->fetchAll();
+
+                foreach ($financialMovimentsArray as $financialMoviment){
+
+                    $invoiceExpiring[] = $this->buildInvoice($financialMoviment);
+                
+                }
+            }
+            return $invoiceExpiring;
+        }
         
 
         public function countInvoicesUser($id) {
@@ -150,13 +205,39 @@
 
         }
 
-        public function getAllInvoicesForAdmin() {
+        public function countAllInvoicesForAdmin() {
+
+            $invoices = [];
+
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM invoices 
+            ");
+
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                
+                $data = $stmt->fetchAll();
+
+                foreach ($data as $invoice) {
+                    $invoices[] = $this->buildInvoice($invoice);
+                }
+
+            }
+
+            return $invoices;
+
+        }
+
+        public function getAllInvoicesForAdminToPagination($sql = "", $resultsPerPage = "", $offset = "") {
 
             $invoices = [];
 
             $stmt = $this->conn->prepare("SELECT 
             invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, paid, user_id, CONCAT( users.name, ' ',  users.lastname) AS user_name, bank_accounts.logo_img AS 'conta_img'
             FROM invoices INNER JOIN users ON users.id = invoices.user_id INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
+            WHERE invoices.id <> 0 $sql
+            ORDER BY invoices.id
+            DESC LIMIT $resultsPerPage OFFSET $offset
             ");
 
             $stmt->execute();
@@ -181,10 +262,10 @@
 
             $mes = date("m");
 
-            $stmt = $this->conn->prepare("SELECT MAX(VALUE) AS 'value', invoice_one FROM invoices 
+            $stmt = $this->conn->prepare("SELECT MAX(VALUE) AS 'value', reference FROM invoices 
                 WHERE MONTH(emission) = '$mes' 
                 AND user_id = :user_id 
-                LIMIT 1
+                GROUP BY value LIMIT 1
             ");
 
             $stmt->bindParam(":user_id", $id);
@@ -205,10 +286,10 @@
 
             $mes = date("m");
 
-            $stmt = $this->conn->prepare("SELECT MIN(VALUE) AS value, invoice_one FROM invoices 
+            $stmt = $this->conn->prepare("SELECT MIN(VALUE) AS value, reference FROM invoices 
                 WHERE MONTH(emission) = '$mes' 
                 AND user_id = :user_id 
-                LIMIT 1
+                GROUP BY value LIMIT 1
             ");
 
             $stmt->bindParam(":user_id", $id);

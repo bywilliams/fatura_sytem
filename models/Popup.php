@@ -15,8 +15,7 @@
     interface PopupDAOInterface {
 
         public function buildPopup($data); // constroi objeto popup
-        public function popup($users_id); // traz dados dos popups
-        public function createPopup($users_id, $email, $popup_id); // insere popups para usuários novos
-        public function updatePopupUser($pop_id, $users_id); // atualiza status de cada popup para usuário 
+        public function popupInvoice(); // traz dados dos popups
+        
 
     }

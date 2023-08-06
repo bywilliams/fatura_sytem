@@ -35,7 +35,7 @@
     <?php endforeach; ?>
     
     <!-- Menu de Opçoes Admin -->
-    <?php if ($userData->levels_access_id === 1) : ?>
+    <?php if ($userData->levels_access_id == 1) : ?>
     <li>
         <a href="#admin" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <i class="fa-solid fa-lock"></i> Admin

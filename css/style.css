@@ -499,7 +499,7 @@ table {
     margin-top: 2rem;
 }
 
-.fa-plus {
+.ver_entradas .fa-plus {
     display: inline-block;
     border-radius: 60px;
     color: #0cb006;
@@ -507,12 +507,12 @@ table {
     padding: 0.5em 0.6em;
 }
 
-.fa-plus:hover {
+.ver_entradas .fa-plus:hover {
     background-color: #0cb006;
     color: #fff;
 }
 
-.fa-minus {
+.ver_saidas .fa-minus {
     display: inline-block;
     border-radius: 60px;
     border: solid 2px #c00537;
@@ -520,7 +520,7 @@ table {
     padding: 0.5em 0.6em;
 }
 
-.fa-minus:hover {
+.ver_saidas .fa-minus:hover {
     background-color: #c00537;
     color: #fff;
 }
@@ -805,6 +805,53 @@ table {
     width: 45px;
     height: 35px;
     border-radius: 5px;
+}
+
+/* ---------------------------------------------------
+    ACCOUNTS USERS PAGE
+----------------------------------------------------- */
+.card-credit button {
+    width: 4rem;
+    height: 35px;
+    background: #2B2730;
+    color: #fff;
+    border-radius: 5px;
+    border: none;
+}
+
+.card-credit button:hover {
+    background: #999;
+    color: #fff;
+}
+
+.card_results .card-credit img {
+    width: 45px;
+    height: 35px;
+    border-radius: 3px;
+}
+
+.card_results .card-credit {
+    height: 320px;
+}
+
+.card_results .account-btn {
+    margin-top: -20px;
+    font-size: 35px;
+    padding: 0px 10px;
+    background: green;
+    width: 50px;
+    height: 50px; 
+    border-radius: 10px;
+    border: none;
+    color: #fff;
+    z-index: 1;
+    position: relative;
+}
+
+.card_results .account-btn:hover {
+   color: green;
+   background: #fff;
+   border: solid 1px #ccc;
 }
 
 

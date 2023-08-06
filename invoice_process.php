@@ -49,6 +49,8 @@ if ($type == "create") {
         $invoice->account = $data['account'];
         $invoice->user_id = $userData->id;
 
+        //print_r($data); exit;
+
         try {
             // Registra no BD
             $invoiceDao->createUserInvoice($invoice);

@@ -63,15 +63,15 @@ if ($_POST) {
 }
 
 // Traz total de saídas do usuário default ou com paginação
-$invoicesUser = $invoiceDao->getAllInvoicesUserToPagination($userData->id, $sql, $resultsPerPage, $offset);
+$invoicesUser = $invoiceDao->getAllInvoicesUserExpiringToPagination($userData->id, $sql, $resultsPerPage, $offset);
 
 $total_entry_value = 0;
 
 ?>
 
 <div class="container-fluid">
-    <h1 class="text-center my-5"> Receitas
-        <img src="<?= $BASE_URL ?>assets/home/dashboard-main/full-wallet.png" width="64" height="64" alt="">
+    <h1 class="text-center my-5"> Receitas Vencendo hoje
+        <img src="<?= $BASE_URL ?>assets/home/dashboard-main/invoice_expiring.png" width="64" height="64" alt="">
     </h1>
 
     <div class="entrys-search" id="entrys-search">
@@ -91,30 +91,6 @@ $total_entry_value = 0;
                         <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $invoice_expense ?>">
                     </div>
                 </div>
-                <!-- <div class="col-md-2">
-                    <div class="form-group">
-                        <h4 class="font-weight-normal">Por valor:</h4>
-                        <select class="form-control" name="value_invoice" id="value_invoice">
-                            <option value="">Selecione</option>
-                            <optgroup label="de 10,00 até 100,00">
-                                <option value="10-100">10,00 até 100,00</option>
-                            </optgroup>
-                            <optgroup label="de 100,00 até 500,00">
-                                <option value="100-500">100,00 até 500,00</option>
-                            </optgroup>
-                            <optgroup label="de 500,00 até 1.500,00">
-                                <option value="500-1500">500,00 até 1.500,00</option>
-                            </optgroup>
-                            <optgroup label="de 1.500,00 até 3.000,00">
-                                <option value="1500-3000">1.500,00 até 3.000,00</option>
-                            </optgroup>
-                            <optgroup label="acima de 3.000,00">
-                                <option value="+3000">acima de 3.000,00</option>
-                            </optgroup>
-                        </select>
-
-                    </div>
-                </div> -->
                 <div class="col-md-2">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por conta:</h4>
@@ -148,11 +124,6 @@ $total_entry_value = 0;
     <!-- table div thats receive all entrys without customize inputs parameters  -->
     <div class="table_report my-3" id="table_report_entry">
     <h3 class="text-center text-secondary">Resultados:</h3>
-        <div class="row d-block text-right my-2 px-3 info">
-        <div> <i class="fa-regular fa-square-check text-success"></i> <span> Fatura paga </span> </div>
-        <div> <i class="fa-regular fa-square-check text-danger"></i> <span> Fatura não paga </span> </div>
-        <div> <i class="fa-regular fa-square-check text-secondary"></i> <span> Aguard. pagamento </span> </div>
-        </div>
         <table class="table table-hover table-striped table-bordered">
             <thead class="thead-dark">
                 <tr>
@@ -187,13 +158,6 @@ $total_entry_value = 0;
                         <td>
                             <?= $invoices->dt_expired ?>
                         </td>
-                        <!-- <td class="info">
-                            <?php if ($invoices->paid == "S"): ?>
-                            <i class="fa-regular fa-square-check text-success"></i>
-                            <?php else: ?>
-                            <i class="fa-regular fa-square-check text-danger"></i>
-                            <?php endif ?>
-                        </td> -->
                         <td>
                             <div class="invoice_card_img">
                                 <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>"  alt="">
