@@ -9,9 +9,12 @@ require_once("traits/generates.php");
         public $cnpj;
         public $agencia;
         public $conta;
-        public $logo_img;
         public $pix;
         public $card_color;
+        public $banco;
+        public $cod;
+        public $bank_name;
+        public $bank_logo;
         public $created_at;
         public $updated_at;
 

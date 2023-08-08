@@ -12,6 +12,7 @@ $bankAccountsDao = new BankAccountsDAO($conn, $BASE_URL);
 // traz todos os cartões do usuário
 $accounts = $bankAccountsDao->getAllBankAccounts();
 
+
 ?>
 
 <div class="container-fluid">
@@ -28,8 +29,9 @@ $accounts = $bankAccountsDao->getAllBankAccounts();
 
                         <div class="card_info">
                             <div class="bg-white rounded" style="display: inline-block">
-                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $account->logo_img ?>" alt="">
+                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $account->bank_logo ?>" alt="">
                             </div>
+                            <span class="text-white"><?= $account->cod . " - " . $account->bank_name ?></span>
                             <p class="mt-3" id="card_number"> CNPJ <?= decryptData($account->cnpj, $encryptionKey) ?></p>
                         </div>
                         <div class="card_pix">

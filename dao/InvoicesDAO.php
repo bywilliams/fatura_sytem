@@ -20,7 +20,7 @@
 
             $invoice->id = $data['id'];
             $invoice->invoice_one = $data['invoice_one'];
-            $invoice->emission = $data['emission'];
+            $invoice->emission = date("d-m-Y H:i:s", strtotime($data['emission']));
             $invoice->value =  $data['value'];
             $invoice->notation = $data['notation'];
             $invoice->type = $data['type'];
@@ -29,9 +29,11 @@
             $invoice->reference = $data['reference'];
             $invoice->account = $data['account'];
             $invoice->user_id = $data['user_id'];
-            $invoice->paid = $data['paid'];
+            $invoice->invoice_one_status = $data['invoice_one_status'];
+            $invoice->invoice_two_status = $data['invoice_two_status'];
             $invoice->user_name = $data['user_name'];
-            $invoice->conta_img = $data['conta_img'];
+            $invoice->conta_img = $data['logo'];
+            $invoice->razao_social = $data['razao_social'];
 
             return $invoice;
 
@@ -42,8 +44,10 @@
             $invoices = [];
 
             $stmt = $this->conn->prepare("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, paid, account, user_id, bank_accounts.logo_img AS 'conta_img'
+            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, invoice_one_status, invoice_two_status,  
+            bank_accounts.razao_social, banks.logo
             FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
+           	INNER JOIN banks ON bank_accounts.banco = banks.cod
             WHERE user_id = :user_id 
             ORDER BY id DESC LIMIT 5");
             $stmt->bindParam(":user_id", $user_id);
@@ -69,7 +73,7 @@
         //     $invoices = [];
 
         //     $stmt = $this->conn->prepare("SELECT 
-        //     id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, paid 
+        //     id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, invoice_one_status 
         //     WHERE user_id = :user_id");
         //     $stmt->bindParam(":usert_id", $user_id);
 
@@ -94,8 +98,10 @@
             $outFinancialMoviments = [];
 
             $stmt = $this->conn->query("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, paid, bank_accounts.logo_img AS 'conta_img'
-            FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
+            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, 
+            reference, account, user_id, invoice_one_status, banks.logo
+            FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id 
+            INNER JOIN banks ON bank_accounts.banco = banks.cod 
             WHERE user_id = '$id' $sql
             ORDER BY id 
             DESC LIMIT $resultsPerPage OFFSET $offset");
@@ -122,7 +128,7 @@
             $currentDate = date("Y-m-d");
 
             $stmt = $this->conn->query("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, paid, bank_accounts.logo_img AS 'conta_img'
+            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, invoice_one_status, bank_accounts.logo_img AS 'conta_img'
             FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
             WHERE user_id = '$id' AND dt_Expired = '$currentDate' $sql
             ORDER BY id 
@@ -232,9 +238,10 @@
 
             $invoices = [];
 
-            $stmt = $this->conn->prepare("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, paid, user_id, CONCAT( users.name, ' ',  users.lastname) AS user_name, bank_accounts.logo_img AS 'conta_img'
+            $stmt = $this->conn->prepare(" SELECT 
+            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, invoice_one_status, user_id, CONCAT( users.name, ' ',  users.lastname) AS user_name, banks.logo
             FROM invoices INNER JOIN users ON users.id = invoices.user_id INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
+            INNER JOIN banks ON bank_accounts.banco = banks.cod
             WHERE invoices.id <> 0 $sql
             ORDER BY invoices.id
             DESC LIMIT $resultsPerPage OFFSET $offset
@@ -305,8 +312,8 @@
 
         public function setInvoicePaidAdmin(Invoices $invoice) {
 
-            $stmt = $this->conn->prepare("UPDATE invoices SET paid = :paid WHERE id = :id");
-            $stmt->bindParam(":paid", $invoice->paid);
+            $stmt = $this->conn->prepare("UPDATE invoices SET invoice_one_status = :invoice_one_status WHERE id = :id");
+            $stmt->bindParam(":invoice_one_status", $invoice->invoice_one_status);
             $stmt->bindParam(":id", $invoice->id);
 
             if ($stmt->execute()) {
@@ -320,7 +327,7 @@
             $mes = date("m");
 
             $stmt = $this->conn->query("SELECT SUM(value) AS 'value' FROM invoices 
-            WHERE MONTH(emission) = '$mes' AND user_id = $id AND paid = 'S'");
+            WHERE MONTH(emission) = '$mes' AND user_id = $id AND invoice_one_status = 'S'");
             $stmt->execute();
 
             if($stmt->rowCount() > 0) {
@@ -334,9 +341,9 @@
         public function createUserInvoice(Invoices $invoice) {
 
             $stmt = $this->conn->prepare("INSERT INTO invoices (
-                id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, paid, user_id
+                id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, invoice_one_status, user_id
             ) VALUES (
-                :id, :invoice_one, :emission, :value, :notation, :type, :invoice_two, :dt_expired, :reference, :account, 'N', :user_id
+                :id, :invoice_one, :emission, :value, :notation, :type, :invoice_two, :dt_expired, :reference, :account, 'A', :user_id
             )");
 
             $stmt->bindParam(":id", $invoice->id);

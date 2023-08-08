@@ -27,9 +27,12 @@
             $bankAccount->agencia = $data['agencia'];
             $bankAccount->conta = $data['conta'];
             $bankAccount->pix = $data['pix'];
-            $bankAccount->logo_img = $data['logo_img'];
             $bankAccount->card_color = $data['card_color'];
+            $bankAccount->banco = $data['banco'];
             $bankAccount->created_at = $data['created_at'];
+            $bankAccount->cod = $data['cod'];
+            $bankAccount->bank_name = $data['bank_name'];
+            $bankAccount->bank_logo = $data['bank_logo'];
 
             return $bankAccount;
 
@@ -40,9 +43,9 @@
             $accounts = [];
 
             $stmt = $this->conn->prepare("SELECT 
-            id, razao_social, cnpj, agencia, conta, pix, logo_img, card_color, created_at 
-            FROM bank_accounts
-            ORDER BY id DESC");
+            bank_accounts.id, razao_social, cnpj, agencia, conta, pix, banco, card_color, banks.cod, banks.logo AS 'bank_logo', banks.name as 'bank_name'
+            FROM bank_accounts INNER JOIN banks ON bank_accounts.banco = banks.cod
+            ORDER BY id ASC");
 
             $stmt->execute();
 
@@ -63,9 +66,9 @@
         public function createbankAccount(BankAccounts $bankAccount) {
 
             $stmt = $this->conn->prepare("INSERT INTO bank_accounts (
-                razao_social, cnpj, agencia, conta, pix, logo_img, card_color, created_at
+                razao_social, cnpj, agencia, conta, pix, banco, card_color, created_at
             ) VALUES (
-                :razao_social, :cnpj, :agencia, :conta, :pix, :logo_img, :card_color, :created_at
+                :razao_social, :cnpj, :agencia, :conta, :pix, :banco, :card_color, :created_at
             )");
 
             $stmt->bindParam(":razao_social", $bankAccount->razao_social, PDO::PARAM_STR);
@@ -73,7 +76,7 @@
             $stmt->bindParam(":agencia", $bankAccount->agencia, PDO::PARAM_STR);
             $stmt->bindParam(":conta", $bankAccount->conta, PDO::PARAM_STR);
             $stmt->bindParam(":pix", $bankAccount->pix, PDO::PARAM_STR);
-            $stmt->bindParam(":logo_img", $bankAccount->logo_img, PDO::PARAM_STR);
+            $stmt->bindParam(":banco", $bankAccount->banco, PDO::PARAM_INT);
             $stmt->bindParam(":card_color", $bankAccount->card_color, PDO::PARAM_STR);
             $stmt->bindParam(":created_at", $bankAccount->created_at, PDO::PARAM_STR);
             
@@ -92,7 +95,7 @@
                 agencia = :agencia,
                 conta = :conta,
                 pix = :pix,
-                logo_img = :logo_img,
+                banco = :banco,
                 card_color = :card_color,
                 updated_at = :updated_at
                 WHERE id = :id
@@ -104,7 +107,7 @@
             $stmt->bindParam(":agencia", $bankAccount->agencia, PDO::PARAM_STR);
             $stmt->bindParam(":conta", $bankAccount->conta, PDO::PARAM_STR);
             $stmt->bindParam(":pix", $bankAccount->pix, PDO::PARAM_STR);
-            $stmt->bindParam(":logo_img", $bankAccount->logo_img, PDO::PARAM_STR);
+            $stmt->bindParam(":banco", $bankAccount->banco, PDO::PARAM_INT);
             $stmt->bindParam(":card_color", $bankAccount->card_color, PDO::PARAM_STR);
             $stmt->bindParam(":updated_at", $bankAccount->updated_at, PDO::PARAM_STR);
             $stmt->bindParam(":id", $bankAccount->id, PDO::PARAM_STR);

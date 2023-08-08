@@ -11,14 +11,15 @@ $bankAccountDao = new BankAccountsDao($conn, $BASE_URL);
 
 $message = new Message($BASE_URL);
 
-$type = filter_input(INPUT_POST, "type");
-
 // resgata dados do usuário
 $userDao = new UserDAO($conn, $BASE_URL);
 $userData = $userDao->verifyToken();
 
 // Pega a data atual do sistema, necessita ser ecryptado também no BD
 $current_date = $agora->format("Y-m-d H:i:s");
+
+// recebe o tipo do form (Create, Update, Delete)
+$type = filter_input(INPUT_POST, "type");
 
 if ($type == "create") {
 
@@ -42,40 +43,9 @@ if ($type == "create") {
         $bankAccount->created_at =  encryptData($current_date, $encryptionKey);
         $bankAccount->pix =  encryptData($data['pix'], $encryptionKey);
         $bankAccount->card_color = $data['color'];
+        $bankAccount->banco = $data['banco'];
         // echo $encryptionKey . "<br>";
         // echo $bankAccount->decryptData($bankAccount->razao_social, $encryptionKey); exit;
-
-        // Upload da imagem
-        if (isset($_FILES["image"]) && !empty($_FILES["image"]["tmp_name"])) {
-
-            $image = $_FILES["image"];
-
-            //tipos permitidos 
-            $imagesType = ["image/jpg", "image/jpeg", "image/png"];
-            $jpgArray = ["image/jpg", "image/jpeg"];
-
-            // Checa tipo da imagem
-            if (in_array($image["type"], $imagesType)) {
-
-                if (in_array($image["type"], $jpgArray)) {
-                    $imageFile = imagecreatefromjpeg($image["tmp_name"]);
-                } else {
-                    // caso for PNG
-                    $imageFile = imagecreatefrompng($image["tmp_name"]);
-                }
-            } else {
-                $message->setMessage("Tipo inválido de imagem, insira imagens do tipo png ou jpg.", "error", "back");
-            }
-
-
-            //Gera nome para a imagem
-            $imageName = $bankAccount->imageGenerateName();
-
-            // Cria a imageem no diretório
-            imagejpeg($imageFile, "./assets/home/contas/" . $imageName, 100);
-
-            $bankAccount->logo_img = $imageName;
-        }
 
         try {
             $bankAccountDao->createbankAccount($bankAccount);
@@ -86,12 +56,14 @@ if ($type == "create") {
             $_SESSION['pix'] = "";
             $_SESSION['color'] = "";
         } catch (PDOException $e) {
-            echo "Erro ao cadastrar conta, consulte o administrador do sistema";
-            //echo "Erro ao cadastrar conta: ".$e->getMessage();
+            //echo "Erro ao cadastrar conta, consulte o administrador do sistema";
+            echo "Erro ao cadastrar conta: ".$e->getMessage();
         }
+
     } else {
         $message->setMessage("Preencha todos os campos", "success", "back");
     }
+
 } else if ($type == "update") {
     
     $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -106,52 +78,6 @@ if ($type == "create") {
     $bankAccount->pix =  encryptData($data['pix'], $encryptionKey);
     $bankAccount->updated_at =  encryptData($current_date, $encryptionKey);
     $bankAccount->card_color = $data['color'];
-    $bankAccount->logo_img = $data['current_file'];
-    
-    // Upload da imagem
-    if (isset($_FILES["image"]) && !empty($_FILES["image"]["tmp_name"])) {
-
-        $image = $_FILES["image"];
-
-        //tipos permitidos 
-        $imagesType = ["image/jpg", "image/jpeg", "image/png"];
-        $jpgArray = ["image/jpg", "image/jpeg"];
-
-        // Checa tipo da imagem
-        if (in_array($image["type"], $imagesType)) {
-
-            if (in_array($image["type"], $jpgArray)) {
-                $imageFile = imagecreatefromjpeg($image["tmp_name"]);
-            } else {
-                // caso for PNG
-                $imageFile = imagecreatefrompng($image["tmp_name"]);
-            }
-        } else {
-            $message->setMessage("Tipo inválido de imagem, insira imagens do tipo png ou jpg.", "error", "back");
-        }
-
-        //Gera nome para a imagem
-        $imageName = $bankAccount->imageGenerateName();
-
-        // PEGA NOME DA IMAGEM E CAMINHO
-        $img = $data["current_file"];
-        $path = './assets/home/contas/' . $img;
-
-        // CHECA SE O ARQUIVO EXISTE NA PASTA DE ORIGEM| SE EXISTIR EXCLUI O ARQUIVO
-        if (file_exists($path)):
-            // deleta imagem anterior
-            unlink($path);
-            // Cria nova imagem no diretório
-            imagejpeg($imageFile, "./assets/home/contas/" . $imageName, 100);
-        else :
-            echo "<script>
-            alert('Ops, algo deu errado, arquivo não encontrado!');
-            </script>";
-        endif;
-
-        $bankAccount->logo_img = $imageName;
-    }
-
     
     try{
         // faz o update

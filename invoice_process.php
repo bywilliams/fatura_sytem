@@ -37,9 +37,10 @@ if ($type == "create") {
         $invoice = new Invoices();
         $invoice->invoice_one = $data['invoice_one'];
         $invoice->emission = $data['emission'];
-        //$value = preg_replace("/[^0-9,]+/i","",$data['value']);
-        $value = str_replace(",",".",$data['value']);
-        //echo $value; exit;
+        $value = preg_replace("/[^0-9.]+/i","",$data['value']);
+        //echo $value; 
+        $value = str_replace(",",".",$value);
+        //echo $value; 
         $invoice->value = $value;
         $invoice->notation = $data['notation'];
         $invoice->type = $data['type_paid'];
@@ -123,7 +124,7 @@ if ($type == "create") {
     if ($invoice_status) {
         
         $invoice = new Invoices();
-        $invoice->paid = $invoice_status;
+        $invoice->invoice_one_status = $invoice_status;
         $invoice->id = $invoice_id;
        
         try {

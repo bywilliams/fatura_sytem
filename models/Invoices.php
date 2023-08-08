@@ -13,9 +13,11 @@
         public $reference;
         public $account;
         public $user_id;
-        public $paid;
+        public $invoice_one_status;
+        public $invoice_two_status;
         public $user_name;
         public $conta_img;
+        public $razao_social;
 
         public function getFullName($user){
             return $user->name . " " . $user->lastname;

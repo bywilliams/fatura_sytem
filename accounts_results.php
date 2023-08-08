@@ -35,23 +35,18 @@ $account_id =
 $user_id = $userData->id;
 
 
-
 if ($_GET) {
-    //print_r($_GET); exit;
 
     if (isset($_GET['account_id']) && $_GET['account_id'] != '') { 
         $account_id = $_GET['account_id'];
         $sql .= "AND account = $account_id";
     }
-
-
-    //echo $sql . "<br>";
+    //echo $sql . "<br>"; 
 }
 
 // Traz total de saídas do usuário default ou com paginação
 if ($sql) {
     $invoicesUser = $invoiceDao->getAllInvoicesUserToPagination($userData->id, $sql, $resultsPerPage, $offset);
-    # code...
 }
 
 $total_entry_value = 0;
@@ -73,7 +68,10 @@ $total_entry_value = 0;
                     <div class="col-lg-4 col-md-6 mb-3">
                         <div class="card-credit px-2" id="card-credit-bg shadow" style="background: <?= $account->card_color ?>">
                             <div class="my-3 d-flex justify-content-between">
-                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $account->logo_img ?>" alt="">
+                                <div class="text-white">
+                                    <img src="<?= $BASE_URL ?>assets/home/contas/<?= $account->bank_logo ?>" alt="">
+                                    <span class="copy-data"> <?= $account->cod . " - " . $account->bank_name ?> </span>
+                                </div>
                                 <button class="copy-all-btn" data-clipboard-group="<?= $account->id ?>">Tudo</button>
                             </div>
                             <div class="mt-2 d-flex justify-content-between">
@@ -124,9 +122,9 @@ $total_entry_value = 0;
     <div class="table_report my-3" id="table_report_entry">
     <h3 class="text-center text-secondary">Resultados:</h3>
         <div class="row d-block text-right my-2 px-3 info">
-            <div> <i class="fa-regular fa-square-check text-success"></i> <span> Fatura paga </span> </div>
+            <!-- <div> <i class="fa-regular fa-square-check text-success"></i> <span> Fatura paga </span> </div>
             <div> <i class="fa-regular fa-square-check text-danger"></i> <span> Fatura não paga </span> </div>
-            <div> <i class="fa-regular fa-square-check text-secondary"></i> <span> Aguard. pagamento </span> </div>
+            <div> <i class="fa-regular fa-square-check text-secondary"></i> <span> Aguard. pagamento </span> </div> -->
         </div>
         <table class="table table-hover table-striped table-bordered">
             <thead class="thead-dark">
@@ -136,7 +134,7 @@ $total_entry_value = 0;
                     <th scope="col">Referência</th>
                     <th scope="col">Valor</th>
                     <th scope="col">Vencimento</th>
-                    <th scope="col">Status</th>
+                    <!-- <th scope="col">Status</th> -->
                     <th scope="col">Conta</th>
                     <th scope="col">Anotação</th>
                 </tr>
@@ -157,18 +155,18 @@ $total_entry_value = 0;
                             <?= $invoices->reference ?>
                         </td>
                         <td>
-                            <?= $invoices->value ?>
+                            <?= number_format($invoices->value,2 , ",", ".") ?>
                         </td>
                         <td>
                             <?= $invoices->dt_expired ?>
                         </td>
-                        <td class="info">
+                        <!-- <td class="info">
                             <?php if ($invoices->paid == "S"): ?>
                             <i class="fa-regular fa-square-check text-success"></i>
                             <?php else: ?>
                             <i class="fa-regular fa-square-check text-danger"></i>
                             <?php endif ?>
-                        </td>
+                        </td> -->
                         <td>
                             <div class="invoice_card_img">
                                 <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>"  alt="">
@@ -263,7 +261,7 @@ $(document).ready(function() {
                 var card = $(trigger).closest(".card-credit");
                 var textToCopy = card.find(".copy-data").map(function() {
                     return $(this).text();
-                }).get().join(" ");
+                }).get().join("\n ");
                 return textToCopy;
             }
         });

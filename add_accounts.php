@@ -1,5 +1,10 @@
 <?php
 require_once("templates/header_iframe.php");
+require_once("dao/BanksDAO.php");
+
+$banksDao = new banksDAO($conn, $BASE_URL);
+
+$allBanks = $banksDao->getAllBanks();
 
 isset($_SESSION['razao']) ? $_SESSION['razao'] : "";
 isset($_SESSION['cnpj']) ? $_SESSION['cnpj'] : "";
@@ -11,12 +16,13 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
 ?>
 
 <div class="container-fluid">
-    <h1 class="text-center my-5 text-secondary">Adicionar conta <i class="fa-solid fa-building-columns"></i></h1>
-    <div class="container actions p-5 mb-4 bg-light rounded-3 shadow-sm">
+
+    <h1 class="text-center my-5 text-secondary">Adicionar conta <i class="fa-solid fa-credit-card"></i></h1>
+    <div class="container actions p-3 mb-4 bg-light rounded-3 shadow-sm">
         <form action="<?= $BASE_URL ?>account_process.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="type" value="create">
             <!-- <input type="hidden" name="csrf_token" value="<?= $token ?>"> -->
-            <div class="row text-center">
+            <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Razão Social:</h4>
@@ -38,21 +44,26 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
                 <div class="col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Conta:</h4>
-                        <input type="number" name="cc" id="cc" class="form-control" value="<?= $_SESSION['cc'] ?>" placeholder="010101-01" title="Apenas números" required>
+                        <input type="number" name="cc" id="cc" class="form-control" value="<?= $_SESSION['cc'] ?>" placeholder="01010101" title="Apenas números" required>
                     </div>
                 </div>
             </div>
-            <div class="row offset-sm-1 text-center">
-                <div class="col-md-3">
+            <div class="row offset-sm-1 ">
+                <div class="col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-nrmal">Chave Pix:</h4>
                         <input class="form-control" type="text" name="pix" id="pix" placeholder="123.456.789-10" value="<?= $_SESSION['pix'] ?>" required>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <h4 class="font-weight-normal">Logo:</h4>
-                        <input class="form-control" type="file" name="image" id="logo" required>
+                        <h4 class="font-weight-normal">Banco:</h4>
+                        <select class="form-control" name="banco" id="banco">
+                            <option value="">Selecione</option>
+                            <?php foreach ($allBanks as $bank): ?>
+                                <option value="<?= $bank->cod ?>"><?= $bank->cod ?> - <?= $bank->name ?></option>
+                            <?php endforeach ?>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -69,7 +80,7 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
     </div>
 
     <!-- Card contaider auto fill -->
-    <div class="card_example" id="cards-page">
+    <div class="card_example pb-3" id="cards-page">
         <div class="offset-md-4 col-md-4">
             <div class="card-credit px-2" id="card-credit-bg">
 
@@ -102,7 +113,7 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
         </div>
     </div>
     <!-- Card contaider auto fill -->
-    
+
 
 </div>
 
@@ -124,7 +135,7 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
     //     }
     // });
 
-     // Referência para o input do tipo "number"
+    // Referência para o input do tipo "number"
     var inputNumber1 = $("#cc");
     var inputNumber2 = $("#ag");
 
@@ -178,7 +189,7 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
                 $("#chave_pix").append(chave_pix);
                 $("#conta").append(conta);
                 $("#agencia").append(agencia);
-                
+
             }
 
         });

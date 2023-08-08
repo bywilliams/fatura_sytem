@@ -5,9 +5,59 @@ require_once("utils/config.php");
 require_once("connection/conn.php");
 require_once("dao/ExpenseDAO.php");
 
-// Traz despesas do usuário
-$expenseDao = new ExpenseDAO($conn, $BASE_URL);
-$expensesUser = $expenseDao->getAllUserExpense($userData->id);
+$expensesDao = new ExpenseDAO($conn, $BASE_URL);
+
+/* paginação do relatório  */
+$totalRegistros = $expensesDao->countTypeExpensesCurrentMonth($userData->id);
+
+$resultsPerPage = 10;
+$numberPages = ceil($totalRegistros / $resultsPerPage);
+
+// Pega numero da página atual
+$page = isset($_GET["page"]) ? $_GET["page"] : 1;
+// calcula o indice do primeiro registro da página atual
+$offset = ($page - 1) * $resultsPerPage;
+
+$sql = "";
+$expense_id = 
+$name_expense = 
+$value_expense =
+$month_expense = "";
+
+
+if ($_POST) {
+    //echo "pesquisa enviada";
+    $sql = "";
+    $totalRegistros = 0;
+
+    if (isset($_POST['expense_id']) && $_POST['expense_id'] != '') { 
+        $expense_id = $_POST['expense_id'];
+        $sql .= "AND id = $expense_id";
+    }
+
+    if (isset($_POST['name_expense']) && $_POST['name_expense'] != '') {
+        $name_expense = $_POST['name_expense'];
+        $sql .= " AND description LIKE '%%$name_expense%%'";
+    }
+
+    if (isset($_POST['value_expense']) && $_POST['value_expense'] != '') {
+        $value_expense = $_POST['value_expense'];
+        $sql .= " AND value <= $value_expense";
+    }
+
+    if (isset($_POST['month_expense']) && $_POST['month_expense'] != '') { 
+        $month_expense_input = $_POST['month_expense'];
+        $month_querie = substr($_POST['month_expense'], -2);
+        $sql .= " AND MONTH(month_reference) = '$month_querie' ";
+    }
+
+    //echo $sql . "<br>";
+}
+
+// Traz total de saídas do usuário default ou com paginação
+$expensesUser = $expensesDao->getAllExpensesToPagination($userData->id, $sql, $resultsPerPage, $offset);
+//echo count($expensesUser);
+$total_out_value = 0;
 
 // Sessions
 isset($_SESSION['description']) ? $_SESSION['description'] : "";
@@ -17,9 +67,9 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
 ?>
 
 <div class="container">
-    <h1 class="text-center my-5">Cadastrar Despesas <i class="fa-solid fa-calendar-minus text-danger"></i></i></h1>
+    <h1 class="text-center my-5">Cadastrar despesa <i class="fa-solid fa-calendar-minus text-danger"></i></h1>
 
-    <!-- Cash Inflow | Cash outflow form  -->
+    <!-- Expense form  -->
     <section>
        
         <div class="actions p-5 mb-4 bg-light rounded-3 shadow-sm">
@@ -56,69 +106,113 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
             </form>
         </div>
     </section>
-    <!-- Cash Inflow | Cash outflow form  -->
+    <!-- Expense form  -->
 
-    <h4 class="font-weight-normal mt-5">Últimas 10 despesas do mês</h4>
+</div>
 
-    <?php if (count($expensesUser) > 0) : ?>
-        <div class="table_report" id="table_report_entry">
-            <table class="table table-bordered table-hover table-striped">
-                <thead class="thead-dark">
+<div class="container">
+<h1 class="text-center my-5">Lista de despesas <i class="fa-solid fa-calendar-minus text-danger"></i></h1>
+    <div class="entrys-search" id="entrys-search">
+        <form method="POST">
+            <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
+            <div class="row ">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <h4 class="font-weight-normal">Por id:</h4>
+                        <input type="number" name="expense_id" id="expense_id" class="form-control" placeholder="Ex: 10" value="<?= $expense_id ?>">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <h4 class="font-weight-normal">Por nome:</h4>
+                        <input type="text" name="name_expense" id="name_expense" class="form-control" placeholder="Ex: salário" value="<?= $name_expense ?>">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <h4 class="font-weight-normal">Por valor:</h4>
+                        <select class="form-control" name="value_expense" id="value_expense">
+                            <option value="">Selecione</option>
+                            <option value="100" <?= $value_expense == 100 ? 'selected' : "" ?>>até R$ 100,00</option>
+                            <option value="1000" <?= $value_expense == 1000 ? 'selected' : "" ?>>até R$ 1.000,00</option>
+                            <option value="3000" <?= $value_expense == 3000 ? 'selected' : "" ?>>até R$ 3.000,00</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <div class="form-group">
+                        <h4 class="font-weight-normal">Por mês:</h4>
+                        <input type="month" name="month_expense" id="month_expense" class="form-control" value="<?= $month_expense_input ?>">
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <input class="btn btn-lg btn-success" type="submit" value="Buscar">
+                    <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="table_report my-3" id="search_exit"></div>
+
+    <!-- table div thats receive all expenses without customize inputs parameters  -->
+    <div class="table_report" id="table_report_exit">
+        <h3 class="text-center text-secondary">Resultados:</h3>
+        <table class="table table-hover table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Registrada em</th>
+                    <th scope="col">Data da despesa</th>
+                    <th scope="col" class="report-action">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($expensesUser as $expense) : 
+                    $value = str_replace('.', '', $expense->value);
+                    $total_out_value += (float) $value; 
+                    ?>
                     <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">Descrição</th>
-                        <th scope="col">Valor</th>
-                        <th scope="col">Registrada em</th>
-                        <th scope="col">Data da despesa</th>
-                        <th scope="col">Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($expensesUser as $expense) : 
-                    
-                            // Código abaixo soma os valores das despesas
-                            $value = str_replace('.', '', $expense->value);
-                            $total_entry_value += (float) $value;?>
-
-                        <tr>
-                            <td scope="row">
-                                <?= $expense->id ?>
-                            </td>
-                            <td>
-                                <?= $expense->description ?>
-                            </td>
-                            <td>
-                                <?= $expense->value ?>
-                            </td>
-                            <td>
-                                <?= $expense->dt_registered ?>
-                            </td>
-                            <td>
-                                <?= $expense->dt_expense ?>
-                            </td>
-                            <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#expenseEditModal<?= $expense->id ?>" title="Editar">
+                        <th scope="row"><?= $expense->id ?></th>
+                        <td><?= $expense->description ?></td>
+                        <td><?= $expense->value ?></td>
+                        <td><?= $expense->dt_registered ?></td>
+                        <td><?= $expense->dt_expense ?></td>
+                        <td id="latest_moviments" class="report-action"><a href="#" data-toggle="modal" data-target="#expenseEditModal<?= $expense->id ?>" title="Editar">
                                 <i class="fa-solid fa-file-pen"></i></a>
                             <a href="#" data-toggle="modal" data-target="#modal_del_expense<?= $expense->id ?>" title="Deletar"><i class="fa-solid fa-trash-can"></i></a>
                         </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="8"> <strong> Total: </strong> R$
-                            <?= number_format($total_entry_value, 2, ",", "."); ?>
-                        </td>
                     </tr>
-                </tfoot>
-            </table>
+                <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="8"> <strong> Total: </strong> R$ <?= number_format($total_out_value, 2, ',', '.') ?></td>
+                </tr>
+            </tfoot>
+        </table>
+        <?php if($totalRegistros > 10): ?>
+        <!-- Pagination buttons -->
+        <div class="row justify-content-center">
+            <nav aria-label="...">
+                <ul class="pagination pagination-lg">
+                    <?php for ($i = 1; $i <= $numberPages; $i++): ?>
+                        <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
+
+                        <li class="page-item <?=$active?>">
+                            <a class="page-link" href="<?= $BASE_URL ?>financial_exit_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
+                        </li>
+
+                    <?php endfor ?>
+                </ul>
+            </nav>
         </div>
-    <?php else : ?>
-        <div class="col-md-12">
-            <div iv class=" bg-light rounded-3 shadow-sm my-3 py-3">
-                <h5 class="py-2 text-center text-info">Ainda não há despesas cadastradas.</h5>
-            </div>
-        </div>
-    <?php endif ?>
+         <!-- End pagination buttons -->
+        <?php endif ?>
+    </div>
+    <!-- table div thats receive all expenses without customize inputs parameters  -->
 
 </div>
 

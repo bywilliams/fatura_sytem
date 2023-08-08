@@ -10,6 +10,7 @@ require_once("dao/BankAccountsDAO.php");
 // ---> Objeto contas e seus processos -------  //
 $bankAccountsDao = new BankAccountsDAO($conn, $BASE_URL);
 $accounts = $bankAccountsDao->getAllBankAccounts();
+
 // ---> Objeto contas <-------  //
 
 // --- Objeto Despesas e seus processos <------ //
@@ -27,8 +28,10 @@ $totalCashOutflow = $expenseDao->getAllCashOutflow($userData->id);
 // ----> Objeto faturas e seus processos ------ //
 
 $invoiceDao = new InvoicesDAO($conn, $BASE_URL);
+
 // Traz as últimas faturas cadastradas do usuário
 $latestInvoices = $invoiceDao->getLatestInvoices($userData->id);
+
 // Traz total de receitas do usuário
 $totalCashInflow = $invoiceDao->getAllCashInflow($userData->id);
 // Traz a maior receita do usuário
@@ -65,13 +68,17 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                     <?php foreach ($lowerRevenueUser as $lowerRevenue) : ?>
                                         <?= $lowerRevenue->reference ?> <?= $lowerRevenue->value ?>
                                     <?php endforeach ?>
-                                    <?php if(count($lowerRevenueUser) < 1) {  echo 'Não há dados registrados';} ?>
+                                    <?php if (count($lowerRevenueUser) < 1) {
+                                        echo 'Não há dados registrados';
+                                    } ?>
                                     <br>
                                     <strong>Maior receita</strong> <br>
                                     <?php foreach ($biggestRevenueUser as $biggestRevenue) : ?>
                                         <?= $biggestRevenue->reference ?> <?= $biggestRevenue->value ?>
                                     <?php endforeach ?>
-                                    <?php if(count($biggestRevenueUser) <  1) { echo 'Não há dados registrados'; } ?>
+                                    <?php if (count($biggestRevenueUser) <  1) {
+                                        echo 'Não há dados registrados';
+                                    } ?>
                                 </small>
 
                             </div>
@@ -225,7 +232,10 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             <select class="form-control" name="account" id="account">
                                 <option value="">Selecione</option>
                                 <?php foreach ($accounts as $account) : ?>
-                                    <option value="<?= $account->id ?>" value="<?= $_SESSION['account'] ?>"><?= decryptData($account->razao_social, $encryptionKey) ?></option>
+                                    <option value="<?= $account->id ?>" value="<?= $_SESSION['account'] ?>">
+                                    <?= $account->cod . " " .  $account->bank_name . " - " ?>
+                                    <?= decryptData($account->razao_social, $encryptionKey) ?>
+                                    </option>
                                 <?php endforeach ?>
                             </select>
                         </div>
@@ -233,7 +243,6 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             <input type="submit" class="btn btn-lg btn-success" value="Adicionar"></input>
                         </div>
                     </div>
-
 
                 </form>
             </div>
@@ -246,11 +255,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                 <div class="col-md-12">
                     <div class="actions mb-4 py-3 bg-light rounded">
                         <h4 class="text-center my-3">Meus Lembretes
-                            <span class="d-inline-block" tabindex="3" data-toggle="tooltip" title="Adicionar novo lembrete">
-                                <a href="#reminder_modal_create" data-toggle="modal" data-target="#reminder_modal_create">
-                                    <i class="fa-regular fa-square-plus"></i>
-                                </a>
-                            </span>
+                            <span class="d-inline-block" tabindex="3" data-toggle="tooltip" title="Adicionar novo lembrete"></span>
                         </h4>
                         <hr class="hr">
                         <div class="row px-4">
@@ -297,6 +302,8 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                 <thead class="thead-dark">
                                     <th>id</th>
                                     <th>Data</th>
+                                    <th>Fatura 1</th>
+                                    <th>Fatura 2</th>
                                     <th>Referência</th>
                                     <th>Valor</th>
                                     <th>Vencimento</th>
@@ -309,18 +316,28 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                     <?php foreach ($latestInvoices as $invoice) : ?>
                                         <tr class="pb-2">
                                             <td>
-                                                <span class="table_description"> <strong> <?= $invoice->id ?>
-                                                    </strong></span>
+                                                <strong> <?= $invoice->id ?>
+                                                </strong>
+                                            </td>
+                                            <td class="table_description">
+                                                <?= $invoice->emission ?>
+                                            </td>
+                                            <td class="d-flex justify-content-between <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "bg-danger" : "table_description"); ?>"><?= $invoice->invoice_one ?>
+                                                <?php if ($invoice->invoice_one_status == "A"): ?>
+                                                <form action="" method="post">                                                   
+                                                    <label for="submit">
+                                                     <a href=""> <i class="fa-solid fa-file-invoice text-dark" title="clique para consultar o status"></i> </a>
+                                                    </label>
+                                                    <input type="submit" id="submit" value="">
+                                                </form>
+                                                <?php endif ?>
+                                            </td>
+                                            <td class=" <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "bg-danger" : "table_description") ?>"><?= $invoice->invoice_two ?></td>
+                                            <td class="table_description">
+                                                <?= $invoice->reference ?>
                                             </td>
                                             <td>
-                                                <span> <?= $invoice->emission ?> </span>
-                                            </td>
-                                            <td>
-                                                <span class="table_description"> <strong> <?= $invoice->reference ?>
-                                                    </strong></span>
-                                            </td>
-                                            <td>
-                                                <span> R$ <?= $invoice->value ?></span>
+                                                <span> R$ <?= number_format($invoice->value, 2, ",", ".") ?></span>
                                             </td>
                                             <td>
                                                 <span> <?= $invoice->dt_expired ?> </span>
@@ -332,9 +349,10 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                     <i class="fa-regular fa-square-check text-danger"></i>
                                                 <?php endif ?>
                                             </td> -->
-                                            <td>
-                                                <div class="invoice_card_img">
-                                                    <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoice->conta_img ?>" alt="">
+                                            <td class="">
+                                                <div class="invoice_card_img text-left px-2">
+                                                    <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoice->conta_img ?>" alt="">
+                                                    <span class="ml-2 text-center"></span> <?= decryptData($invoice->razao_social, $encryptionKey) ?> </span>
                                                 </div>
                                             </td>
                                             <td>
@@ -359,13 +377,17 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                 <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
                                                     <i class="fa-solid fa-copy text-info"></i>
                                                 </a>
-                                                <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $invoice->id ?>" title="Editar">
+                                                <?php if ($userData->levels_access_id == 1) : ?>
+                                                    <a href="#" data-toggle="modal" data-target="#editInvoiceModal<?= $invoice->id ?>" title="Editar fatura">
+                                                        <i class="fa-solid fa-file-pen"></i></a>
+
+                                                    <a href="#" data-toggle="modal" data-target="#del_latest_invoice<?= $invoice->id ?>" title="Deletar">
+                                                        <i class="fa-solid fa-trash-can"></i></a>
+                                                <?php endif ?>
+                                                <!-- <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $invoice->id ?>" title="Editar">
                                                     <i class="fa-solid fa-receipt text-sucsess"></i>
-                                                </a>
-                                                <a href="#" data-toggle="modal" data-target="#editInvoiceModal<?= $invoice->id ?>" title="Editar fatura">
-                                                    <i class="fa-solid fa-file-pen"></i></a>
-                                                <a href="#" data-toggle="modal" data-target="#del_latest_invoice<?= $invoice->id ?>" title="Deletar">
-                                                    <i class="fa-solid fa-trash-can"></i></a>
+                                                </a> -->
+
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -402,7 +424,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
 
         <!--  Reminder modal create -->
         <div class="modal fade" id="reminder_modal_create" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog modal-dialog-top" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Criar Lembrete</h5>
@@ -585,7 +607,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="dt_expired">Vencimento:</label>
-                                            <input class="form-control" type="date" name="dt_expired" id="" value="<?= $invoice->dt_expired ?>" required>
+                                            <input class="form-control" type="date" name="dt_expired" id="" value="<?= date("Y-m-d", strtotime($invoice->dt_expired)) ?>" required>
                                         </div>
                                     </div>
                                 </div>

@@ -525,6 +525,11 @@ table {
     color: #fff;
 }
 
+.actions .fa-file-invoice {
+    font-size: 20px;
+    margin-top: 3px;
+}
+
 @media not print {
     @media (max-width: 575px) {
 
@@ -919,6 +924,10 @@ table {
 
     #sidebarCollapse {
         position: fixed;
+    }
+
+    .actions .btn {
+        margin-top: 5px;
     }
 
 }

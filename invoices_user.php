@@ -182,7 +182,7 @@ $total_entry_value = 0;
                             <?= $invoices->reference ?>
                         </td>
                         <td>
-                            <?= $invoices->value ?>
+                            <?= number_format($invoices->value, 2, ",", ".") ?>
                         </td>
                         <td>
                             <?= $invoices->dt_expired ?>

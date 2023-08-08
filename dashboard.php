@@ -78,7 +78,7 @@ $popup = $popupDao->popupInvoice($userData->id);
 
         <nav class="navbar navbar-expand-lg nav-toggle" style="background-color: #999;">
             <div class="container-fluid">
-                <button type="button" id="sidebarCollapse" class="btn btn-outline-dark" onclick="mudaIconeToogle()">
+                <button type="button" id="sidebarCollapse" class="btn btn-dark" onclick="mudaIconeToogle()">
                     <i class="fa-solid fa-arrows-left-right fa-1x"></i>
                 </button>
                 <h5 class=" text-white ml-auto pt-2">Mês:
