@@ -20,8 +20,7 @@ function openTooltip(i) {
 }
 
 
- // the selector will match all input controls of type :checkbox
-    // and attach a click event handler 
+ // Faz com que seja selecionado apenas 1 input checkbox por vez
     $("input:checkbox").on('click', function() {
         // in the handler, 'this' refers to the box clicked on
         var $box = $(this);
@@ -37,3 +36,5 @@ function openTooltip(i) {
             $box.prop("checked", false);
         }
     });
+
+

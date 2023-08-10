@@ -98,10 +98,10 @@
             $outFinancialMoviments = [];
 
             $stmt = $this->conn->query("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, 
-            reference, account, user_id, invoice_one_status, banks.logo
-            FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id 
-            INNER JOIN banks ON bank_accounts.banco = banks.cod 
+            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, invoice_one_status, invoice_two_status,  
+            bank_accounts.razao_social, banks.logo
+            FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
+           	INNER JOIN banks ON bank_accounts.banco = banks.cod
             WHERE user_id = '$id' $sql
             ORDER BY id 
             DESC LIMIT $resultsPerPage OFFSET $offset");
@@ -125,12 +125,12 @@
             
             $invoiceExpiring = [];
 
-            $currentDate = date("Y-m-d");
-
             $stmt = $this->conn->query("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, invoice_one_status, bank_accounts.logo_img AS 'conta_img'
+            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, invoice_one_status, invoice_two_status,
+            bank_accounts.razao_social, banks.logo
             FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
-            WHERE user_id = '$id' AND dt_Expired = '$currentDate' $sql
+            INNER JOIN banks ON bank_accounts.banco = banks.cod
+            WHERE user_id = '$id' $sql
             ORDER BY id 
             DESC LIMIT $resultsPerPage OFFSET $offset");
 

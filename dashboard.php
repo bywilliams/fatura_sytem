@@ -31,8 +31,8 @@ $invoiceDao = new InvoicesDao($conn, $BASE_URL);
 $invoicesExpiringUser = $invoiceDao->checkInvoicesUserExpiringToday($userData->id);
 
 $popupDao = new PopupDAO($conn, $BASE_URL);
-$popup = $popupDao->popupInvoice($userData->id);
-//print_r($popup); exit;
+$popup = $popupDao->popupInvoice();
+
 
 ?>
 
@@ -95,66 +95,49 @@ $popup = $popupDao->popupInvoice($userData->id);
     </div>
     <!-- End Page Content  -->
 
+
     <!-- Section Popup Invoice Epiring message  -->
     <section>
-        <?php if (!empty($popup) && !empty($invoicesExpiringUser)) : ?>
-            <?php
-            $showPopup = true;
-            $popupCookieName = "popup_displayed_" . date("Ymd");
-            if (isset($_COOKIE[$popupCookieName])) {
-                $showPopup = false;
+    <?php if (!empty($popup) && !empty($invoicesExpiringUser)) : ?>
+    <?php
+    $showPopup = true;
+    $popupCookieName = "popup_displayed_" . date("Ymd");
+    if (isset($_COOKIE[$popupCookieName])) {
+        $showPopup = false;
+    }
+
+    if ($showPopup) : ?>
+        <script>
+            Swal.fire({
+                title: '<?= $popup->title ?>',
+                text: '<?= $popup->description ?>',
+                imageUrl: '<?= $BASE_URL ?>assets/home/popup/<?= $popup->image ?>',
+                imageWidth: 400,
+                imageHeight: 350,
+                imageAlt: 'Custom image',
+                showCancelButton: true,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#0B666A', // Defina a cor do botão aqui (verde neste caso)
+                cancelButtonText: 'Não mostrar novamente',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Exibido o popup, definir o cookie para não mostrar novamente por um dia
+                    setPopupCookie();
+                }
+            });
+
+            function setPopupCookie() {
+                var date = new Date();
+                date.setTime(date.getTime() + (24 * 60 * 60 * 1000)); // Set cookie expiration to 1 day
+                var expires = "expires=" + date.toUTCString();
+                document.cookie = "<?= $popupCookieName ?>=true;" + expires + ";path=/";
             }
+        </script>
+    <?php endif; ?>
+<?php endif; ?>
 
-            if ($showPopup) : ?>
-
-                <div class="container-popup" id="container-popup">
-
-                    <div class="popup text-center" id="popup-card">
-                        <button class="popup-close close_popup">x</button>
-                        <h2><?= $popup->title ?></h2>
-                        <p><?= $popup->description ?></p>
-                        <?php if ($popup->image != "") : ?>
-                            <div>
-                                <img class="animated-gif" src="<?= $BASE_URL ?>assets/home/popup/<?= $popup->image ?>" alt="imagm popup">
-                            </div>
-                        <?php endif; ?>
-                        <form action="<?= $BASE_URL ?>popup_process.php" method="post">
-                            <div class="form-group">
-                                <!-- Add your form elements here -->
-                            </div>
-                            <button class="btn btn-lg btn-info" id="popup_submit">OK</button>
-                        </form>
-                    </div>
-
-                </div>
-
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        document.querySelector(".close_popup").addEventListener("click", function() {
-                            document.getElementById("container-popup").style.display = "none";
-                            setPopupCookie();
-                        });
-
-                        document.getElementById("popup_submit").addEventListener("click", function() {
-                            document.getElementById("container-popup").style.display = "none";
-                            setPopupCookie();
-                        });
-
-                        function setPopupCookie() {
-                            var date = new Date();
-                            date.setTime(date.getTime() + (24 * 60 * 60 * 1000)); // Set cookie expiration to 1 day
-                            var expires = "expires=" + date.toUTCString();
-                            document.cookie = "<?= $popupCookieName ?>=true;" + expires + ";path=/";
-                        }
-                    });
-                </script>
-
-            <?php endif; ?>
-
-        <?php endif; ?>
     </section>
     <!-- Popup messages  -->
-
 
 
 </div>
@@ -169,9 +152,4 @@ $popup = $popupDao->popupInvoice($userData->id);
             $(this).addClass("active_item");
         });
     });
-
-
-    // Abrir e fechar Popup
-
-    // Fim Popup
 </script>

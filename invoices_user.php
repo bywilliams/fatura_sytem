@@ -23,18 +23,20 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 $offset = ($page - 1) * $resultsPerPage;
 
 $sql = "";
-$invoice_id = 
-$name_invoice = 
-$account_invoice =
-$value_invoice =
-$month_invoice = "";
+$invoice_id =
+    $name_invoice =
+    $reference_invoice =
+    $account_invoice =
+    $value_invoice =
+    $emission =
+    $month_invoice = "";
 
 if ($_POST) {
     //echo "pesquisa enviada";
     $sql = "";
     $totalRegistros = 0;
 
-    if (isset($_POST['invoice_id']) && $_POST['invoice_id'] != '') { 
+    if (isset($_POST['invoice_id']) && $_POST['invoice_id'] != '') {
         $invoice_id = $_POST['invoice_id'];
         $sql .= "AND invoices.id = $invoice_id";
     }
@@ -54,9 +56,14 @@ if ($_POST) {
         $sql .= " AND account = $account_invoice";
     }
 
-    if (isset($_POST['month_invoice']) && $_POST['month_invoice'] != '') { 
-        $month_invoice_input = $_POST['month_invoice'];
-        $sql .= " AND MONTH(dt_expired) = '$month_invoice_input' ";
+    if (isset($_POST['emission']) && $_POST['emission'] != '') {
+        $emission = $_POST['emission'];
+        $sql .= " AND DATE(emission) = '$emission'";
+    }
+
+    if (isset($_POST['month_invoice']) && $_POST['month_invoice'] != '') {
+        $month_invoice = $_POST['month_invoice'];
+        $sql .= " AND MONTH(emission) = '$month_invoice' ";
     }
 
     //echo $sql . "<br>";
@@ -64,7 +71,6 @@ if ($_POST) {
 
 // Traz total de saídas do usuário default ou com paginação
 $invoicesUser = $invoiceDao->getAllInvoicesUserToPagination($userData->id, $sql, $resultsPerPage, $offset);
-
 $total_entry_value = 0;
 
 ?>
@@ -74,70 +80,61 @@ $total_entry_value = 0;
         <img src="<?= $BASE_URL ?>assets/home/dashboard-main/full-wallet.png" width="64" height="64" alt="">
     </h1>
 
-    <div class="entrys-search" id="entrys-search">
+    <div class="row my-2 px-2">
+        <div class="col-lg-12 d-flex justify-content-end">
+            <button class="btn btn-lg btn-outline-secondary" id="limparCampos" title="Limpa todos os campos">Limpar</button>
+        </div>
+    </div>
+
+    <div class=" entrys-search" id="entrys-search">
         <!-- <h3 class="text-secondary mb-3">Pesquisar:</h3> -->
-        <form method="POST">
+        <form method="POST" id="meuFormulario">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row offset-sm-2">
-                <div class="col-md-2">
+            <div class="row ">
+                <div class="col-lg-2 col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
                         <input type="number" name="invoice_id" id="invoice_id" class="form-control" placeholder="Ex: 10" value="<?= $invoice_id ?>">
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-3 col-md-5">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por referência:</h4>
-                        <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $invoice_expense ?>">
+                        <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $reference_invoice ?>">
                     </div>
                 </div>
-                <!-- <div class="col-md-2">
-                    <div class="form-group">
-                        <h4 class="font-weight-normal">Por valor:</h4>
-                        <select class="form-control" name="value_invoice" id="value_invoice">
-                            <option value="">Selecione</option>
-                            <optgroup label="de 10,00 até 100,00">
-                                <option value="10-100">10,00 até 100,00</option>
-                            </optgroup>
-                            <optgroup label="de 100,00 até 500,00">
-                                <option value="100-500">100,00 até 500,00</option>
-                            </optgroup>
-                            <optgroup label="de 500,00 até 1.500,00">
-                                <option value="500-1500">500,00 até 1.500,00</option>
-                            </optgroup>
-                            <optgroup label="de 1.500,00 até 3.000,00">
-                                <option value="1500-3000">1.500,00 até 3.000,00</option>
-                            </optgroup>
-                            <optgroup label="acima de 3.000,00">
-                                <option value="+3000">acima de 3.000,00</option>
-                            </optgroup>
-                        </select>
-
-                    </div>
-                </div> -->
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por conta:</h4>
                         <select class="form-control" name="account_invoice" id="account_invoice">
                             <option value="">Selecione</option>
                             <?php foreach ($accounts as $account) : ?>
-                                <option value="<?= $account->id ?>" value="<?= $account_invoice == $account->id ? "selected" : ""; ?>"><?= decryptData($account->razao_social, $encryptionKey) ?></option>
+                                <option value="<?= $account->id ?>" <?= $account_invoice == $account->id ? "selected" : ""; ?>>
+                                    <?= $account->cod . " " .  $account->bank_name . " - " ?>
+                                    <?= decryptData($account->razao_social, $encryptionKey) ?>
+                                </option>
                             <?php endforeach ?>
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6">
+                <div class="col-lg-2 col-md-5">
+                    <div class="form-group">
+                        <h4 class="font-weight-normal">Por emissão:</h4>
+                        <input class="form-control" type="date" name="emission" id="emission" value="<?= $emission ?>">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-5">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por mês:</h4>
                         <select class="form-control" name="month_invoice" id="">
                             <option value="">Selecione</option>
-                            <?php foreach($meses as $index => $mes): ?>
-                                <option value="<?= $index ?>"><?= $mes ?></option>
+                            <?php foreach ($meses as $index => $mes) : ?>
+                                <option value="<?= $index ?>" <?= $month_invoice == $index ? "selected" : ""; ?>><?= $mes ?></option>
                             <?php endforeach ?>
                         </select>
                     </div>
                 </div>
-                <div class="col-md-1">
+                <div class="col-lg-1 col-md-2">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
                     <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
@@ -146,18 +143,18 @@ $total_entry_value = 0;
     </div>
 
     <!-- table div thats receive all entrys without customize inputs parameters  -->
-    <div class="table_report my-3" id="table_report_entry">
-    <h3 class="text-center text-secondary">Resultados:</h3>
+    <?php if($totalRegistros > 0): echo "aqui";?>
+    <div class="table_report table-responsive my-3" id="table_report_entry">
+        <h3 class="text-center text-secondary">Resultados:</h3>
         <div class="row d-block text-right my-2 px-3 info">
-        <div> <i class="fa-regular fa-square-check text-success"></i> <span> Fatura paga </span> </div>
-        <div> <i class="fa-regular fa-square-check text-danger"></i> <span> Fatura não paga </span> </div>
-        <div> <i class="fa-regular fa-square-check text-secondary"></i> <span> Aguard. pagamento </span> </div>
         </div>
         <table class="table table-hover table-striped table-bordered">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Data</th>
+                    <th scope="col">Fatura 1</th>
+                    <th scope="col">Fatura 2</th>
                     <th scope="col">Referência</th>
                     <th scope="col">Valor</th>
                     <th scope="col">Vencimento</th>
@@ -170,7 +167,6 @@ $total_entry_value = 0;
                 <?php foreach ($invoicesUser as $invoices) : ?>
                     <?php $value = $invoices->value;
                     $total_entry_value += (float) $value; ?>
-
                     <tr>
                         <th scope="row">
                             <?= $invoices->id ?>
@@ -178,6 +174,17 @@ $total_entry_value = 0;
                         <td>
                             <?= $invoices->emission ?>
                         </td>
+                        <td class="d-flex justify-content-between <?= $invoices->invoice_one_status == "S" ? "bg-success" : ($invoices->invoice_one_status == "N" ? "bg-danger" : "table_description"); ?>"><?= $invoices->invoice_one ?>
+                            <?php if ($invoices->invoice_one_status == "A") : ?>
+                                <form action="" method="post">
+                                    <label for="submit">
+                                        <a href=""> <i class="fa-solid fa-file-invoice text-dark" title="clique para consultar o status"></i> </a>
+                                    </label>
+                                    <input type="submit" id="submit" value="">
+                                </form>
+                            <?php endif ?>
+                        </td>
+                        <td class=" <?= $invoices->invoice_two_status == "S" ? "bg-success" : ($invoices->invoice_two_status == "N" ? "bg-danger" : "table_description") ?>"><?= $invoices->invoice_two ?></td>
                         <td>
                             <?= $invoices->reference ?>
                         </td>
@@ -188,15 +195,16 @@ $total_entry_value = 0;
                             <?= $invoices->dt_expired ?>
                         </td>
                         <!-- <td class="info">
-                            <?php if ($invoices->paid == "S"): ?>
+                            <?php if ($invoices->paid == "S") : ?>
                             <i class="fa-regular fa-square-check text-success"></i>
-                            <?php else: ?>
+                            <?php else : ?>
                             <i class="fa-regular fa-square-check text-danger"></i>
                             <?php endif ?>
                         </td> -->
                         <td>
-                            <div class="invoice_card_img">
-                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>"  alt="">
+                            <div class="invoice_card_img px-2">
+                                <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>" alt="">
+                                <span class="ml-2 text-center"></span> <?= decryptData($invoices->razao_social, $encryptionKey) ?> </span>
                             </div>
                         </td>
 
@@ -220,11 +228,8 @@ $total_entry_value = 0;
                         </td>
 
                         <td id="latest_moviments" class="report-action">
-                            <a href="#" data-toggle="modal" data-target="#editInvoiceModal<?= $invoices->id ?>" title="Editar">
-                                <i class="fa-solid fa-file-pen"></i>
-                            </a>
-                            <a href="#" data-toggle="modal" data-target="#del_invoice<?= $invoices->id ?>" title="Deletar">
-                                <i class="fa-solid fa-trash-can"></i>
+                            <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoices->id ?>" title="Editar">
+                                <i class="fa-solid fa-copy text-info"></i>
                             </a>
                         </td>
                     </tr>
@@ -232,7 +237,7 @@ $total_entry_value = 0;
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="8"> <strong> Total: </strong> R$
+                    <td colspan="10"> <strong> Total: </strong> R$
                         <?= number_format($total_entry_value, 2, ",", "."); ?>
                     </td>
                 </tr>
@@ -240,152 +245,101 @@ $total_entry_value = 0;
         </table>
 
         <!-- Pagination buttons -->
-        <?php if($totalRegistros > 10): ?>
-        <!-- Pagination buttons -->
-        <div class="row justify-content-center">
-            <nav aria-label="...">
-                <ul class="pagination pagination-lg">
-                    <?php for ($i = 1; $i <= $numberPages; $i++): ?>
-                        <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
+        <?php if ($totalRegistros > 10) : ?>
+            <!-- Pagination buttons -->
+            <div class="row justify-content-center">
+                <nav aria-label="...">
+                    <ul class="pagination pagination-lg">
+                        <?php for ($i = 1; $i <= $numberPages; $i++) : ?>
+                            <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
 
-                        <li class="page-item <?=$active?>">
-                            <a class="page-link" href="<?= $BASE_URL ?>financial_exit_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
-                        </li>
+                            <li class="page-item <?= $active ?>">
+                                <a class="page-link" href="<?= $BASE_URL ?>financial_exit_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
+                            </li>
 
-                    <?php endfor ?>
-                </ul>
-            </nav>
-        </div>
-         <!-- End pagination buttons -->
+                        <?php endfor ?>
+                    </ul>
+                </nav>
+            </div>
+            <!-- End pagination buttons -->
         <?php endif ?>
 
         <!-- End pagination buttons -->
     </div>
+    <?php else: ?>
+        <div class="col-md-12">
+            <hr class="hr">
+            <h5 class="py-2 text-center text-info">Ainda não há faturas cadastradas.</h5>
+        </div>
+    <?php endif ?>
 
+</div>
 
-   <!-- Invoice moviment modal Edit -->
-   <?php foreach ($invoicesUser as $invoice) : ?>
-        <div class="modal fade" id="editInvoiceModal<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+    <!-- Copy Invoice numbers modal -->
+    <?php foreach ($invoicesUser as $invoice) : ?>
+        <div class="modal fade copyCodigoBoleto<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-top">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Editar fatura</h5>
+                        <h5 class="modal-title">Copiar código do boleto</h5>
                         <button type="button" class="close" data-dismiss="modal" arial-label="fechar">
                             <span arial-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="<?= $BASE_URL ?>invoice_process.php" method="post">
-                            <input type="hidden" name="type" value="update">
-                            <input type="hidden" name="id" value="<?= $invoice->id ?>">
-                            <div class="form-group">
-                                <label for="invoice_one">Descriçao: <small>(fatura 1)</small> </label>
-                                <input class="form-control" type="text" name="invoice_one" id="" value="<?= $invoice->invoice_one ?>" required>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="value">Valor:</label>
-                                        <input class="form-control money" type="text" name="value" id="" value="<?= $invoice->value ?>" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="type_edit">Tipo:</label>
-                                        <select class="form-control" name="type_edit" id="type_edit" required>
-                                            <option value="">Selecione</option>
-                                            <option value="1" <?= $invoice->type == 1 ? "selected" : "" ?>>Boleto</option>
-                                            <option value="2" <?= $invoice->type == 2 ? "selected" : "" ?>>Pix</option>
-                                            <option value="3" <?= $invoice->type == 3 ? "selected" : "" ?>>TED</option>
-                                        </select>
-                                    </div>
+                        <div class="form-group">
+                            <label for="cnpinvoice_one_copy">Fatura 1</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_one_copy">Copiar</button>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="notation">Anotação:</label>
-                                        <input class="form-control" type="text" name="notation" id="notation" value="<?= $invoice->notation ?>">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="dt_expired">Vencimento:</label>
-                                        <input class="form-control" type="date" name="dt_expired" id="" value="<?= $invoice->dt_expired ?>" required>
-                                    </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice_two_copy">Fatura 2</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_two_copy">Copiar</button>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="invoice_two">Descriçao: <small>(fatura 2)</small> </label>
-                                <input class="form-control" type="text" name="invoice_two" id="" value="<?= $invoice->invoice_two ?>" required>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="reference">Referência:</label>
-                                        <input class="form-control" type="text" name="reference" id="" value="<?= $invoice->reference ?>" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="account">Conta:</label>
-                                        <select class="form-control" name="account" id="">
-                                            <?php foreach ($accounts as $account) : ?>
-                                                <option value="<?= $account->id ?>" <?= $account->id == $invoice->account ? "selected" : "" ?> required>
-                                                    <?= decryptData($account->razao_social, $encryptionKey) ?>
-                                                </option>
-                                            <?php endforeach ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <input type="submit" value="Enviar" class="btn btn-lg btn-success" onclick="scrollToTop()">
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     <?php endforeach; ?>
-    <!-- End Invoice moviment modal edit -->
-
-  
-
-    <!-- Invoice modal delete -->
-    <?php foreach ($invoicesUser as $invoice) : ?>
-        <div class="modal fade" id="del_invoice<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body text-center">
-                        <p>Tem certeza que deseja excluir o registro?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Não</button>
-                        <form action="<?= $BASE_URL ?>invoice_process.php" method="POST">
-                            <input type="hidden" name="type" value="delete">
-                            <input type="hidden" name="id" value="<?= $invoice->id ?>">
-                            <button type="submit" class="btn btn-primary">Sim</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endforeach; ?>
-    <!-- End Invoice modal delete -->
-
-</div>
+    <!-- End Invoice modal Copy -->
 
 <?php require_once("templates/footer.php"); ?>
 
 <script>
-    $(document).ready(function() {
-        $('.placeholder').mask("00/00/0000", {
-            placeholder: "__/__/____"
+    // Limpa inputs dos formulário
+    document.addEventListener('DOMContentLoaded', function() {
+        const formulario = document.getElementById('meuFormulario');
+        const limparBotao = document.getElementById('limparCampos');
+
+        limparBotao.addEventListener('click', function() {
+            const inputs = formulario.querySelectorAll('input, select');
+            inputs.forEach(function(input) {
+                if (input.type !== 'submit' && input.type !== 'reset') {
+                    input.value = '';
+                }
+            });
         });
     });
+    // Fim limpa inputs do formulário
 
+    // JS do modal de copiar codigos do boleto
+    var clipboard = new ClipboardJS('.copy-btn');
+
+    clipboard.on('success', function(event) {
+        alert('Texto copiado com sucesso!');
+        event.clearSelection();
+    });
+
+    clipboard.on('error', function(event) {
+        //alert('Erro ao copiar texto. Tente novamente.');
+    });
 </script>
-
-<script src="js/ajax_finance_entrys_request.js"></script>

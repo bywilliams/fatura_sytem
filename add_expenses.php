@@ -111,7 +111,7 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
 </div>
 
 <div class="container">
-<h1 class="text-center my-5">Lista de despesas <i class="fa-solid fa-calendar-minus text-danger"></i></h1>
+    <h1 class="text-center my-5">Lista de despesas <i class="fa-solid fa-calendar-minus text-danger"></i></h1>
     <div class="entrys-search" id="entrys-search">
         <form method="POST">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
@@ -156,6 +156,7 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
     <div class="table_report my-3" id="search_exit"></div>
 
     <!-- table div thats receive all expenses without customize inputs parameters  -->
+    <?php if($totalRegistros): ?>
     <div class="table_report" id="table_report_exit">
         <h3 class="text-center text-secondary">Resultados:</h3>
         <table class="table table-hover table-striped table-bordered">
@@ -212,6 +213,12 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
          <!-- End pagination buttons -->
         <?php endif ?>
     </div>
+    <?php else: ?>
+        <div class="col-md-12">
+            <hr class="hr">
+            <h5 class="py-2 text-center text-info">Não há despesas cadastradas.</h5>
+        </div>
+    <?php endif ?>
     <!-- table div thats receive all expenses without customize inputs parameters  -->
 
 </div>

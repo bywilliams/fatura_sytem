@@ -296,7 +296,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             <div> <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row table-responsive">
 
                             <table class="table table-hover table-bordered">
                                 <thead class="thead-dark">
@@ -703,10 +703,10 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                     </div>
                 </div>
             </div>
-    </div>
-<?php endforeach; ?>
-<!-- End Invoice modal delete -->
-
+        </div>
+        <?php endforeach; ?>
+        <!-- End Invoice modal Copy -->
+                               
 <!-- End modal forms -->
 
 <!-- Check today reminders -->
