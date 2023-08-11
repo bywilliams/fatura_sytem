@@ -394,19 +394,10 @@ hr.dashed {
     font-size: 25px;
 }
 
-.info div {
-    position: relative;
-    display: inline-block;
-}
-.info div span {
-    color: #999;
-    top: -2px;
-    position: relative;
-}
 
-#latest_moviments .fa-trash-can, .fa-file-pen, .fa-receipt, .fa-copy { 
+
+#latest_moviments .fa-trash-can, .fa-file-pen, .fa-receipt, .fa-copy, .fa-check-double { 
     font-size: 25px;
-
 }
 
 #latest_moviments .fa-trash-can {
@@ -414,9 +405,14 @@ hr.dashed {
 }
 
 #latest_moviments .fa-file-pen {
-   
     color: #DC8449;
 }
+
+#latest_moviments .fa-check-double {
+    color: #17A2B8;
+}
+
+
 
 
 table {
@@ -842,14 +838,6 @@ table {
         right: 9rem;
     }
 
-    .actions .info{
-        float: none;
-    }
-
-    .agendada span {
-        float: none;
-    }
-
 }
 
 @media (max-width: 425px) {
@@ -860,6 +848,11 @@ table {
 
     .actions .btn {
         margin-top: 5px;
+    }
+
+    #latest_moviments .info {
+        display: block !important;
+        
     }
 
 }

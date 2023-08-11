@@ -23,19 +23,14 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 $offset = ($page - 1) * $resultsPerPage;
 
 $sql = "";
-$invoice_id = 
-$name_invoice = 
-$account_invoice =
-$value_invoice =
-$month_invoice = "";
 
 
 if ($_POST) {
-    //echo "pesquisa enviada";
+   
     $sql = "";
     $totalRegistros = 0;
 
-    if (isset($_POST['invoice_id']) && $_POST['invoice_id'] != '') { 
+    if (isset($_POST['invoice_id']) && $_POST['invoice_id'] != '') {
         $invoice_id = $_POST['invoice_id'];
         $sql .= "AND invoices.id = $invoice_id";
     }
@@ -55,7 +50,7 @@ if ($_POST) {
         $sql .= " AND account = $account_invoice";
     }
 
-    if (isset($_POST['month_invoice']) && $_POST['month_invoice'] != '') { 
+    if (isset($_POST['month_invoice']) && $_POST['month_invoice'] != '') {
         $month_invoice_input = $_POST['month_invoice'];
         $sql .= " AND MONTH(dt_expired) = '$month_invoice_input' ";
     }
@@ -63,13 +58,9 @@ if ($_POST) {
     //echo $sql . "<br>";
 }
 
-
 // Traz total de saídas do usuário default ou com paginação
 $invoicesUser = $invoiceDao->getAllInvoicesUserToPagination($userData->id, $sql, $resultsPerPage, $offset);
-
-
 $total_entry_value = 0;
-
 
 ?>
 
@@ -125,7 +116,10 @@ $total_entry_value = 0;
                         <select class="form-control" name="account_invoice" id="account_invoice">
                             <option value="">Selecione</option>
                             <?php foreach ($accounts as $account) : ?>
-                                <option value="<?= $account->id ?>" value="<?= $account_invoice == $account->id ? "selected" : ""; ?>"><?= decryptData($account->razao_social, $encryptionKey) ?></option>
+                                <option value="<?= $account->id ?>" <?= $account_invoice == $account->id ? "selected" : ""; ?>>
+                                    <?= $account->cod . " " .  $account->bank_name . " - " ?>
+                                    <?= decryptData($account->razao_social, $encryptionKey) ?>
+                                </option>
                             <?php endforeach ?>
                         </select>
                     </div>
@@ -135,7 +129,7 @@ $total_entry_value = 0;
                         <h4 class="font-weight-normal">Por mês:</h4>
                         <select class="form-control" name="month_invoice" id="">
                             <option value="">Selecione</option>
-                            <?php foreach($meses as $index => $mes): ?>
+                            <?php foreach ($meses as $index => $mes) : ?>
                                 <option value="<?= $index ?>"><?= $mes ?></option>
                             <?php endforeach ?>
                         </select>
@@ -151,7 +145,7 @@ $total_entry_value = 0;
 
     <!-- table div thats receive all entrys without customize inputs parameters  -->
     <div class="table_report my-3" id="table_report_entry">
-    <h3 class="text-center text-secondary">Resultados:</h3>
+        <h3 class="text-center text-secondary">Resultados:</h3>
         <div class="row d-block text-right my-2 px-3 info">
             <div> <i class="fa-regular fa-square-check text-success"></i> <span> Fatura paga </span> </div>
             <div> <i class="fa-regular fa-square-check text-danger"></i> <span> Aguard. pagamento </span> </div>
@@ -192,15 +186,15 @@ $total_entry_value = 0;
                             <?= $invoices->dt_expired ?>
                         </td>
                         <td class="info">
-                            <?php if ($invoices->paid == "S"): ?>
-                            <i class="fa-regular fa-square-check text-success"></i>
-                            <?php else: ?>
-                            <i class="fa-regular fa-square-check text-danger"></i>
+                            <?php if ($invoices->paid == "S") : ?>
+                                <i class="fa-regular fa-square-check text-success"></i>
+                            <?php else : ?>
+                                <i class="fa-regular fa-square-check text-danger"></i>
                             <?php endif ?>
                         </td>
                         <td>
                             <div class="invoice_card_img">
-                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>"  alt="">
+                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>" alt="">
                             </div>
                         </td>
 
@@ -239,118 +233,118 @@ $total_entry_value = 0;
         </table>
 
         <!-- Pagination buttons -->
-        <?php if($totalRegistros > 10): ?>
-        <!-- Pagination buttons -->
-        <div class="row justify-content-center">
-            <nav aria-label="...">
-                <ul class="pagination pagination-lg">
-                    <?php for ($i = 1; $i <= $numberPages; $i++): ?>
-                        <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
+        <?php if ($totalRegistros > 10) : ?>
+            <!-- Pagination buttons -->
+            <div class="row justify-content-center">
+                <nav aria-label="...">
+                    <ul class="pagination pagination-lg">
+                        <?php for ($i = 1; $i <= $numberPages; $i++) : ?>
+                            <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
 
-                        <li class="page-item <?=$active?>">
-                            <a class="page-link" href="<?= $BASE_URL ?>financial_exit_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
-                        </li>
+                            <li class="page-item <?= $active ?>">
+                                <a class="page-link" href="<?= $BASE_URL ?>financial_exit_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
+                            </li>
 
-                    <?php endfor ?>
-                </ul>
-            </nav>
-        </div>
-         <!-- End pagination buttons -->
+                        <?php endfor ?>
+                    </ul>
+                </nav>
+            </div>
+            <!-- End pagination buttons -->
         <?php endif ?>
 
         <!-- End pagination buttons -->
     </div>
 
 
-   <!-- Invoice moviment modal Edit -->
-   <?php foreach ($latestInvoices as $invoice) : ?>
-            <div class="modal fade" id="editInvoiceModal<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Editar fatura</h5>
-                            <button type="button" class="close" data-dismiss="modal" arial-label="fechar">
-                                <span arial-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="<?= $BASE_URL ?>invoice_process.php" method="post">
-                                <input type="hidden" name="type" value="update">
-                                <input type="hidden" name="id" value="<?= $invoice->id ?>">
-                                <div class="form-group">
-                                    <label for="invoice_one">Descriçao: <small>(fatura 1)</small> </label>
-                                    <input class="form-control" type="text" name="invoice_one" id="" value="<?= $invoice->invoice_one ?>" required>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="value">Valor:</label>
-                                            <input class="form-control money" type="text" name="value" id="" value="<?= $invoice->value ?>" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="type_edit">Tipo:</label>
-                                            <select class="form-control" name="type_edit" id="type_edit" required>
-                                                <option value="">Selecione</option>
-                                                <option value="1" <?= $invoice->type == 1 ? "selected" : "" ?>>Boleto</option>
-                                                <option value="2" <?= $invoice->type == 2 ? "selected" : "" ?>>Pix</option>
-                                                <option value="3" <?= $invoice->type == 3 ? "selected" : "" ?>>TED</option>
-                                            </select>
-                                        </div>
+    <!-- Invoice moviment modal Edit -->
+    <?php foreach ($latestInvoices as $invoice) : ?>
+        <div class="modal fade" id="editInvoiceModal<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar fatura</h5>
+                        <button type="button" class="close" data-dismiss="modal" arial-label="fechar">
+                            <span arial-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="<?= $BASE_URL ?>invoice_process.php" method="post">
+                            <input type="hidden" name="type" value="update">
+                            <input type="hidden" name="id" value="<?= $invoice->id ?>">
+                            <div class="form-group">
+                                <label for="invoice_one">Descriçao: <small>(fatura 1)</small> </label>
+                                <input class="form-control" type="text" name="invoice_one" id="" value="<?= $invoice->invoice_one ?>" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="value">Valor:</label>
+                                        <input class="form-control money" type="text" name="value" id="" value="<?= $invoice->value ?>" required>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="notation">Anotação:</label>
-                                            <input class="form-control" type="text" name="notation" id="notation" value="<?= $invoice->notation ?>">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="dt_expired">Vencimento:</label>
-                                            <input class="form-control" type="date" name="dt_expired" id="" value="<?= $invoice->dt_expired ?>" required>
-                                        </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="type_edit">Tipo:</label>
+                                        <select class="form-control" name="type_edit" id="type_edit" required>
+                                            <option value="">Selecione</option>
+                                            <option value="1" <?= $invoice->type == 1 ? "selected" : "" ?>>Boleto</option>
+                                            <option value="2" <?= $invoice->type == 2 ? "selected" : "" ?>>Pix</option>
+                                            <option value="3" <?= $invoice->type == 3 ? "selected" : "" ?>>TED</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="invoice_two">Descriçao: <small>(fatura 2)</small> </label>
-                                    <input class="form-control" type="text" name="invoice_two" id="" value="<?= $invoice->invoice_two ?>" required>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="reference">Referência:</label>
-                                            <input class="form-control" type="text" name="reference" id="" value="<?= $invoice->reference ?>" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="account">Conta:</label>
-                                            <select class="form-control" name="account" id="">
-                                                <?php foreach ($accounts as $account) : ?>
-                                                    <option value="<?= $account->id ?>" <?= $account->id == $invoice->account ? "selected" : "" ?> required>
-                                                        <?= decryptData($account->razao_social, $encryptionKey) ?>
-                                                    </option>
-                                                <?php endforeach ?>
-                                            </select>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="notation">Anotação:</label>
+                                        <input class="form-control" type="text" name="notation" id="notation" value="<?= $invoice->notation ?>">
                                     </div>
                                 </div>
-                                <input type="submit" value="Enviar" class="btn btn-lg btn-success" onclick="scrollToTop()">
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                        </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dt_expired">Vencimento:</label>
+                                        <input class="form-control" type="date" name="dt_expired" id="" value="<?= $invoice->dt_expired ?>" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice_two">Descriçao: <small>(fatura 2)</small> </label>
+                                <input class="form-control" type="text" name="invoice_two" id="" value="<?= $invoice->invoice_two ?>" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="reference">Referência:</label>
+                                        <input class="form-control" type="text" name="reference" id="" value="<?= $invoice->reference ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="account">Conta:</label>
+                                        <select class="form-control" name="account" id="">
+                                            <?php foreach ($accounts as $account) : ?>
+                                                <option value="<?= $account->id ?>" <?= $account->id == $invoice->account ? "selected" : "" ?> required>
+                                                    <?= decryptData($account->razao_social, $encryptionKey) ?>
+                                                </option>
+                                            <?php endforeach ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" value="Enviar" class="btn btn-lg btn-success" onclick="scrollToTop()">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                     </div>
                 </div>
             </div>
-        <?php endforeach; ?>
-        <!-- End Invoice moviment modal edit -->
+        </div>
+    <?php endforeach; ?>
+    <!-- End Invoice moviment modal edit -->
 
-  
+
 
     <!-- Modal para confirmação de exclusão de registro financeiro da busca personalizada -->
     <?php foreach ($getEntryReports as $financialMoviment) : ?>
@@ -384,7 +378,6 @@ $total_entry_value = 0;
             placeholder: "__/__/____"
         });
     });
-
 </script>
 
 <script src="js/ajax_finance_entrys_request.js"></script>

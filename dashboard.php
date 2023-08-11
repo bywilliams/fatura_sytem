@@ -98,43 +98,43 @@ $popup = $popupDao->popupInvoice();
 
     <!-- Section Popup Invoice Epiring message  -->
     <section>
-    <?php if (!empty($popup) && !empty($invoicesExpiringUser)) : ?>
-    <?php
-    $showPopup = true;
-    $popupCookieName = "popup_displayed_" . date("Ymd");
-    if (isset($_COOKIE[$popupCookieName])) {
-        $showPopup = false;
-    }
-
-    if ($showPopup) : ?>
-        <script>
-            Swal.fire({
-                title: '<?= $popup->title ?>',
-                text: '<?= $popup->description ?>',
-                imageUrl: '<?= $BASE_URL ?>assets/home/popup/<?= $popup->image ?>',
-                imageWidth: 400,
-                imageHeight: 350,
-                imageAlt: 'Custom image',
-                showCancelButton: true,
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#0B666A', // Defina a cor do botão aqui (verde neste caso)
-                cancelButtonText: 'Não mostrar novamente',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Exibido o popup, definir o cookie para não mostrar novamente por um dia
-                    setPopupCookie();
-                }
-            });
-
-            function setPopupCookie() {
-                var date = new Date();
-                date.setTime(date.getTime() + (24 * 60 * 60 * 1000)); // Set cookie expiration to 1 day
-                var expires = "expires=" + date.toUTCString();
-                document.cookie = "<?= $popupCookieName ?>=true;" + expires + ";path=/";
+        <?php if (!empty($popup) && !empty($invoicesExpiringUser)) : ?>
+            <?php
+            $showPopup = true;
+            $popupCookieName = "popup_displayed_" . date("Ymd");
+            if (isset($_COOKIE[$popupCookieName])) {
+                $showPopup = false;
             }
-        </script>
-    <?php endif; ?>
-<?php endif; ?>
+
+            if ($showPopup) : ?>
+                <script>
+                    Swal.fire({
+                        title: '<?= $popup->title ?>',
+                        text: '<?= $popup->description ?>',
+                        imageUrl: '<?= $BASE_URL ?>assets/home/popup/<?= $popup->image ?>',
+                        imageWidth: 250,
+                        imageHeight: 250,
+                        imageAlt: 'Custom image',
+                        showCancelButton: true,
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#0B666A', // Defina a cor do botão aqui (verde neste caso)
+                        cancelButtonText: 'Fechar',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Exibido o popup, definir o cookie para não mostrar novamente por um dia
+                            setPopupCookie();
+                        }
+                    });
+
+                    function setPopupCookie() {
+                        var date = new Date();
+                        date.setTime(date.getTime() + (24 * 60 * 60 * 1000)); // Set cookie expiration to 1 day
+                        var expires = "expires=" + date.toUTCString();
+                        document.cookie = "<?= $popupCookieName ?>=true;" + expires + ";path=/";
+                    }
+                </script>
+            <?php endif; ?>
+        <?php endif; ?>
 
     </section>
     <!-- Popup messages  -->

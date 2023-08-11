@@ -156,7 +156,7 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
     <div class="table_report my-3" id="search_exit"></div>
 
     <!-- table div thats receive all expenses without customize inputs parameters  -->
-    <?php if($totalRegistros): ?>
+    <?php if(count($expensesUser) > 0): ?>
     <div class="table_report" id="table_report_exit">
         <h3 class="text-center text-secondary">Resultados:</h3>
         <table class="table table-hover table-striped table-bordered">

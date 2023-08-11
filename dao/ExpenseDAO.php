@@ -131,9 +131,9 @@ require_once("utils/config.php");
             $stmt = $this->conn->query("SELECT 
             id, description, value, dt_registered, dt_expense, dt_updated 
             FROM tb_expenses 
-            WHERE user_id = $id $sql
+            WHERE user_id = '$id' $sql
             ORDER BY id 
-            DESC LIMIT $resultsPerPage OFFSET $offset;");
+            DESC LIMIT $resultsPerPage OFFSET $offset");
 
             $stmt->execute();
 

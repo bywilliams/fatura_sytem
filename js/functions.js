@@ -38,3 +38,20 @@ function openTooltip(i) {
     });
 
 
+     // Limpa inputs dos formulário
+     document.addEventListener('DOMContentLoaded', function() {
+        const formulario = document.getElementById('meuFormulario');
+        const limparBotao = document.getElementById('limparCampos');
+
+        limparBotao.addEventListener('click', function() {
+            const inputs = formulario.querySelectorAll('input, select');
+            inputs.forEach(function(input) {
+                if (input.type !== 'submit' && input.type !== 'reset') {
+                    input.value = '';
+                }
+            });
+        });
+    });
+    // Fim limpa inputs do formulário
+
+

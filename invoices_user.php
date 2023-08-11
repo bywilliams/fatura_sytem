@@ -143,7 +143,7 @@ $total_entry_value = 0;
     </div>
 
     <!-- table div thats receive all entrys without customize inputs parameters  -->
-    <?php if($totalRegistros > 0): echo "aqui";?>
+    <?php if(count($invoicesUser) > 0): ?>
     <div class="table_report table-responsive my-3" id="table_report_entry">
         <h3 class="text-center text-secondary">Resultados:</h3>
         <div class="row d-block text-right my-2 px-3 info">
@@ -315,21 +315,6 @@ $total_entry_value = 0;
 <?php require_once("templates/footer.php"); ?>
 
 <script>
-    // Limpa inputs dos formulário
-    document.addEventListener('DOMContentLoaded', function() {
-        const formulario = document.getElementById('meuFormulario');
-        const limparBotao = document.getElementById('limparCampos');
-
-        limparBotao.addEventListener('click', function() {
-            const inputs = formulario.querySelectorAll('input, select');
-            inputs.forEach(function(input) {
-                if (input.type !== 'submit' && input.type !== 'reset') {
-                    input.value = '';
-                }
-            });
-        });
-    });
-    // Fim limpa inputs do formulário
 
     // JS do modal de copiar codigos do boleto
     var clipboard = new ClipboardJS('.copy-btn');

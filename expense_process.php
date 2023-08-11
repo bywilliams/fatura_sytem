@@ -21,6 +21,8 @@ $type = filter_input(INPUT_POST, "type");
 
 if ($type == "create") {
 
+    //echo "form create"; exit;
+
     $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
     $_SESSION['description'] = $data['description'];
@@ -37,16 +39,17 @@ if ($type == "create") {
         $expense->user_id = $userData->id;
         $expense->dt_expense = $data['date_expense'];
         $expense->month_reference = date("Y/m/d", strtotime($data['date_expense']));
-        //echo $expense->month_reference; exit;
+        
         try{
+           
             // insere despesa no BD
             $expenseDao->createUserExpense($expense);
             $_SESSION['description'] = "";
             $_SESSION['value'] =  "";
             $_SESSION['date_expense'] = "";
         }catch(PDOException $e){ 
-            //echo "Erro ao cadastrar despesa, consulte o administrador do sistena";
-            echo "Erro ao cadastrar despesa". $e->getMessage();
+            echo "Erro ao cadastrar despesa, consulte o administrador do sistena";
+            //echo "Erro ao cadastrar despesa". $e->getMessage();
         }
 
 

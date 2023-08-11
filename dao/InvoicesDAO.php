@@ -238,8 +238,9 @@
 
             $invoices = [];
 
-            $stmt = $this->conn->prepare(" SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, invoice_one_status, user_id, CONCAT( users.name, ' ',  users.lastname) AS user_name, banks.logo
+            $stmt = $this->conn->prepare("SELECT 
+            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, invoice_one_status, user_id,
+             CONCAT( users.name, ' ',  users.lastname) AS user_name, banks.logo, bank_accounts.razao_social
             FROM invoices INNER JOIN users ON users.id = invoices.user_id INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
             INNER JOIN banks ON bank_accounts.banco = banks.cod
             WHERE invoices.id <> 0 $sql
