@@ -28,18 +28,19 @@
 
     interface InvoicesDAOInterface {
 
-        public function buildInvoice ($data);
-        public function getLatestInvoices($user_id);
-        public function getAllInvoicesForAdminToPagination($sql = "", $resultsPerPage = "", $offset = "");
+        public function buildInvoice ($data); // constrói objetos de invoice
+        public function getLatestInvoices($user_id); // pega as últimas 5 faturas cadastradas
+        public function getAllInvoicesForAdminToPagination($sql = "", $resultsPerPage = "", $offset = ""); // traz todas as faturas cadatradas e com paginação para o admin
         // public function getAllUserInvoices($user_id);
-        public function getBiggestInvoiceValueUser($id);
-        public function getLowerInvoiceValueUser($id);
-        public function setInvoicePaidAdmin(Invoices $invoice);
-        public function getTotalBalance($id);
-        public function createUserInvoice(Invoices $invoice);
-        public function updateUserInvoice(Invoices $invoice);
-        public function getReports($sql, $id);
-        public function destroyUserInvoice($id);
+        public function getBiggestInvoiceValueUser($id); // traz o maior valor de receita 
+        public function getLowerInvoiceValueUser($id); // traz o menor valor de receita
+        public function setInvoicePaidAdmin(Invoices $invoice); // muda status de fatura 
+        public function getTotalBalance($id); // traz o saldo de faturas pagas do usuário
+        public function getBalanceGeneral($sql = "" ); // pega o balanço geral entre receitas, receitas pagas, despesas e receitas pagas x despesas (valor liquido)
+        public function createUserInvoice(Invoices $invoice); // insere fatura no BD
+        public function updateUserInvoice(Invoices $invoice); // atualiza uma fatura no BD
+        public function getReports($sql, $id); 
+        public function destroyUserInvoice($id); // Destrói uma fatura no BD
 
     }
 

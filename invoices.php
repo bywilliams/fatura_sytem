@@ -170,14 +170,17 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
     </div>
 
     <!-- table div thats receive all entrys without customize inputs parameters  -->
-    <div class="table_report my-3" id="table_report_entry">
+    <div class="table_report my-3" id="latest_moviments">
         <h3 class="text-center text-secondary">Resultados:</h3>
         <div class="row d-block text-right my-2 px-3 info">
             <div class=" d-flex justify-content-end  my-2 info">
                 <!-- <div> <i class="fa-solid fa-copy fa-2x text-info"></i> <span> Copiar </span> </div> -->
                 <div> <i class="fa-solid fa-check-double text-info"></i> <span> Informar Pgto.</span> </div>
-                <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
-                <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div>
+                <!-- <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
+                <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div> -->
+                <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
+                <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
+                <div> <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
             </div>
         </div>
         <table class="table table-hover table-striped table-bordered">
@@ -258,17 +261,23 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                         <td id="latest_moviments" class="report-action">
                             <a href="#" data-toggle="modal" data-target="#updateInvoiceUserAdmin<?= $invoices->id ?>" title="Editar">
                                 <i class="fa-solid fa-check-double"></i>
-                                <a href="#" data-toggle="modal" data-target="#editInvoiceModal<?= $invoices->id ?>" title="Editar">
-                                    <i class="fa-solid fa-file-pen"></i></a>
-                                <a href="#" data-toggle="modal" data-target="#del_latest_invoice<?= $invoices->id ?>" title="Deletar">
-                                    <i class="fa-solid fa-trash-can"></i></a>
+                            </a>
+                            <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoices->id ?>">
+                                <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
+                            </a>
+                            <a href="#" data-toggle="modal" data-target="#editInvoiceModal<?= $invoices->id ?>" title="Editar">
+                                <i class="fa-solid fa-file-pen"></i>
+                            </a>
+                            <a href="#" data-toggle="modal" data-target="#del_latest_invoice<?= $invoices->id ?>" title="Deletar">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="9"> <strong> Total: </strong> R$
+                    <td colspan="10"> <strong> Total: </strong> R$
                         <?= number_format($total_entry_value, 2, ",", "."); ?>
                     </td>
                 </tr>
@@ -431,7 +440,6 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
     <?php endforeach; ?>
     <!-- End Invoice moviment modal edit -->
 
-
     <!-- Modal para confirmação de exclusão de registro financeiro da busca personalizada -->
     <?php foreach ($allInvoicesUsers as $invoices) : ?>
         <div class="modal fade" tabindex="-1" id="del_latest_invoice<?= $invoices->id ?>">
@@ -454,6 +462,37 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
         </div>
     <?php endforeach; ?>
     <!-- Fim Modal para cofnirmação de exclusão de registro financeiro -->
+
+    <!-- Copy Invoice numbers modal -->
+    <?php foreach ($allInvoicesUsers as $invoice) : ?>
+        <div class="modal fade checkStatusInvoice<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-top">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Status do boleto</h5>
+                        <button type="button" class="close" data-dismiss="modal" arial-label="fechar">
+                            <span arial-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="cnpinvoice_one_copy">Fatura 1</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="invoice_two_copy">Fatura 2</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <!-- End Invoice modal Copy -->
 
 </div>
 

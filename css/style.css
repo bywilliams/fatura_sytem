@@ -396,7 +396,7 @@ hr.dashed {
 
 
 
-#latest_moviments .fa-trash-can, .fa-file-pen, .fa-receipt, .fa-copy, .fa-check-double { 
+#latest_moviments .fa-trash-can, .fa-file-pen, .fa-receipt, .fa-copy, .fa-check-double, .fa-circle-check { 
     font-size: 25px;
 }
 
@@ -410,6 +410,26 @@ hr.dashed {
 
 #latest_moviments .fa-check-double {
     color: #17A2B8;
+}
+
+#latest_moviments .fa-circle-check { 
+    color: #073d3e;
+}
+
+#latest_moviments .icon-form {
+    display: inline-block; /* Certifica-se de que os formulários ocupem o espaço necessário */
+}
+
+#latest_moviments .icon-button {
+    border: none;
+    background: none;
+   
+    cursor: pointer;
+    outline: none;
+}
+
+#latest_moviments .icon-button i {
+    font-size: 2rem; /* Tamanho do ícone */
 }
 
 

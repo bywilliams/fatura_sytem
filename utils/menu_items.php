@@ -29,7 +29,7 @@
                 <a href="<?= $BASE_URL ?>expenses_users.php" target="myFrame">Ver despesas</a>
             </li>
             <li>
-                <a href="<?= $BASE_URL ?>expenses_users.php" target="myFrame">Balanço</a>
+                <a href="<?= $BASE_URL ?>balance.php" target="myFrame">Balanço</a>
             </li>
         </ul>
     </li>

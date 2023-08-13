@@ -328,7 +328,7 @@
             $mes = date("m");
 
             $stmt = $this->conn->query("SELECT SUM(value) AS 'value' FROM invoices 
-            WHERE MONTH(emission) = '$mes' AND user_id = $id AND invoice_one_status = 'S'");
+            WHERE MONTH(emission) = '$mes' AND user_id = $id AND paid = 'S'");
             $stmt->execute();
 
             if($stmt->rowCount() > 0) {
@@ -336,6 +336,44 @@
                 $total_balance = number_format($row['value'], 2, ',', '.');
                 return $total_balance;
             }
+
+        }
+
+        public function getBalanceGeneral($sql = "" ) { 
+
+            $balance = [];
+
+            $stmt = $this->conn->prepare("SELECT 
+                total_invoices,
+                total_paid_invoices,
+                total_expenses,
+                total_paid_invoices - total_expenses AS balance
+                FROM (
+                    SELECT 
+                        SUM(i.value) AS total_invoices,
+                        SUM(CASE WHEN i.paid = 'S' THEN i.value ELSE 0 END) AS total_paid_invoices
+                    FROM invoices i 
+                    WHERE i.id > 0 $sql  
+                ) AS invoices_summary
+                CROSS JOIN (
+                    SELECT 
+                        SUM(e.value) AS total_expenses
+                    FROM tb_expenses e
+                    WHERE e.id > 0 $sql
+                ) AS expenses_summary            
+            ");
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                $data = $stmt->fetchAll();
+
+                foreach($data as $result) {
+                    $balance[] = $result;
+                }
+            }
+
+            return $balance;
+            
 
         }
 
@@ -415,6 +453,3 @@
         }
 
     }
-
-
-?>

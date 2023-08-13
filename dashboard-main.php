@@ -233,8 +233,8 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                 <option value="">Selecione</option>
                                 <?php foreach ($accounts as $account) : ?>
                                     <option value="<?= $account->id ?>" value="<?= $_SESSION['account'] ?>">
-                                    <?= $account->cod . " " .  $account->bank_name . " - " ?>
-                                    <?= decryptData($account->razao_social, $encryptionKey) ?>
+                                        <?= $account->cod . " " .  $account->bank_name . " - " ?>
+                                        <?= decryptData($account->razao_social, $encryptionKey) ?>
                                     </option>
                                 <?php endforeach ?>
                             </select>
@@ -285,24 +285,22 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
         <section>
             <div class="row">
                 <div class="col-md-12" id="latest_moviments">
-
                     <div class="actions mb-5 py-2 px-3 bg-light rounded">
                         <h4 class="font-weight-normal text-center my-3" id="latest-text">Últimos 5 registros</h4>
                         <hr class="hr">
                         <div class=" d-flex justify-content-end  my-2 info">
-                           
-                                <div> <i class="fa-solid fa-copy fa-2x text-secondary"></i> <span> Copiar </span> </div>
-                                <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
-                                <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
-                                <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div>
-                            <!-- <?php if ($userData->levels_access_id == 1):  ?>
+                            <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
+                            <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div>
+                            <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
+                            <div> <i class="fa-solid fa-copy fa-2x text-secondary"></i> <span> Copiar </span> </div>
+                            <!-- <div> <i class="fa-solid fa-copy fa-2x text-secondary"></i> <span> Copiar </span> </div> -->
+                            <!-- <?php if ($userData->levels_access_id == 1) :  ?>
                             <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
                             <div> <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
                             <?php endif ?> -->
                         </div>
 
                         <div class="table-responsive">
-
                             <table class="table table-hover table-bordered">
                                 <thead class="thead-dark">
                                     <th>id</th>
@@ -324,31 +322,40 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                             <td>
                                                 <strong> <?= $invoice->id ?></strong>
                                             </td>
-                                            <td >
+                                            <td>
                                                 <?= $invoice->emission ?>
                                             </td>
-                                            <td class="d-flex justify-content-between <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : ""); ?>"><?= $invoice->invoice_one ?>
-                                                <?php if ($invoice->invoice_one_status == "A"): ?>
-                                                <form action="" method="post">                                                   
-                                                    <label for="submit">
-                                                     <a href=""> <i class="fa-solid fa-receipt text-dark" title="clique para consultar o status"></i> </a>
-                                                    </label>
-                                                    <input type="submit" id="submit" value="">
-                                                </form>
+                                            <td class=" <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : ""); ?>"><?= $invoice->invoice_one ?>
+                                                <?php if ($invoice->invoice_one_status == "A") : ?>
+                                                    <form action="<?= $BASE_URL ?>consulta.php" method="post" class="icon-form">
+                                                        <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_one ?>">
+                                                        <button type="submit" id="submit<?= $invoice->id ?>" class="icon-button">
+                                                            <i class="fa-solid fa-receipt text-dark" title="clique para consultar o status"></i>
+                                                        </button>
+                                                    </form>
                                                 <?php endif ?>
                                             </td>
-                                            <td class=" <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>"><?= $invoice->invoice_two ?></td>
-                                            <td >
+                                            <td class=" <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>"><?= $invoice->invoice_two ?>
+                                                <?php if ($invoice->invoice_two_status == "A") : ?>
+                                                    <form action="<?= $BASE_URL ?>consulta.php" method="post" class="icon-form">
+                                                        <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_two ?>">
+                                                        <button type="submit" id="submit<?= $invoice->id ?>" class="icon-button">
+                                                            <i class="fa-solid fa-receipt text-dark" title="clique para consultar o status"></i>
+                                                        </button>
+                                                    </form>
+                                                <?php endif ?>
+                                            </td>
+                                            <td>
                                                 <?= $invoice->reference ?>
                                             </td>
                                             <td>
                                                 R$ <?= number_format($invoice->value, 2, ",", ".") ?>
                                             </td>
-                                            <td >
-                                               R$ 0.00 
+                                            <td>
+                                                R$ 0.00
                                             </td>
                                             <td>
-                                                <?= $invoice->dt_expired ?> 
+                                                <?= $invoice->dt_expired ?>
                                             </td>
                                             <!-- <td class="info">
                                                 <?php if ($invoice->paid == "S") : ?>
@@ -385,9 +392,12 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                 <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
                                                     <i class="fa-solid fa-copy text-secondary"></i>
                                                 </a>
-                                               
+
                                                 <!-- <a href="#" data-toggle="modal" data-target="#exampleModalCenter<?= $invoice->id ?>" title="Editar">
                                                     <i class="fa-solid fa-receipt text-sucsess"></i>
+                                                </a> -->
+                                                <!-- <a href="">
+                                                    <i class="fa-solid fa-circle-check"></i>
                                                 </a> -->
 
                                             </td>
@@ -705,14 +715,16 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                     </div>
                 </div>
             </div>
-        </div>
         <?php endforeach; ?>
         <!-- End Invoice modal Copy -->
-                               
-<!-- End modal forms -->
+        
+        <!-- End modal forms -->
+    </div>
 
-<!-- Check today reminders -->
-<?php require_once("utils/check_reminders.php") ?>
+    
+
+    <!-- Check today reminders -->
+    <?php require_once("utils/check_reminders.php") ?>
 
 </body>
 <?php require_once("templates/footer.php"); ?>
@@ -828,42 +840,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
             }
         });
 
-        $("#invoice_two").on("input", function() {
-            // Obtenha o valor do input de texto
-            var linhaBoleto = $(this).val();
 
-            // Verifique se o campo de texto está vazio
-            if (linhaBoleto.trim() === "") {
-                // Se estiver vazio, limpe o campo de data
-                $("#dt_expired").val("");
-                $("#value").val("");
-                return; // Encerre o manipulador de eventos aqui para evitar processamento desnecessário
-            }
-
-            // Remove pontos e espaços do código de boleto
-            linhaBoleto = linhaBoleto.replace(/[.\s]/g, "");
-
-            // Extrai os últimos 10 caracteres do código de boleto
-            var valorLinhaBoleto = linhaBoleto.substr(-10).replace(/^0+/, "");
-
-            // Calcula a data de vencimento a partir dos 4 dígitos antes dos últimos 10 caracteres
-            var vencimentoEmDias = parseInt(linhaBoleto.substr(-14, 4));
-            var dataBase = new Date(1997, 9, 7); // Data base instituída pelo BACEN (07/10/1997)
-            var dataVencimento = new Date(dataBase);
-            dataVencimento.setDate(dataBase.getDate() + vencimentoEmDias); // Adiciona os dias à data base
-            var dataFormatada = dataVencimento.toISOString().slice(0, 10);
-
-            // Verifique se o valor é um número válido
-            if ($.isNumeric(valorLinhaBoleto)) {
-                // Se for um número válido, insira-o no input de número e data
-                $("#reference").val(formatNumber(parseFloat(valorLinhaBoleto)));
-                $("#dt_expired").val(dataFormatada);
-            } else {
-                // Caso contrário, limpe os inputs de número e data
-                $("#value").val("");
-                $("#dt_expired").val("");
-            }
-        });
     });
 
     // JS do modal de copiar codigos do boleto
