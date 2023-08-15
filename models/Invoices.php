@@ -13,6 +13,7 @@
         public $reference;
         public $account;
         public $user_id;
+        public $ammount_paid;
         public $invoice_one_status;
         public $invoice_two_status;
         public $user_name;

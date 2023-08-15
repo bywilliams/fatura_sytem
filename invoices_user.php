@@ -146,7 +146,12 @@ $total_entry_value = 0;
     <?php if (count($invoicesUser) > 0) : ?>
         <div class="table_report table-responsive my-3" id="latest_moviments">
             <h3 class="text-center text-secondary">Resultados:</h3>
-            <div class="row d-block text-right my-2 px-3 info">
+            <hr class="hr">
+            <div class=" d-flex justify-content-end  my-2 info">
+                <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
+                <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div>
+                <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
+                <div> <i class="fa-solid fa-copy fa-2x text-secondary"></i> <span> Copiar </span> </div>
             </div>
             <table class="table table-hover table-striped table-bordered">
                 <thead class="thead-dark">
@@ -156,7 +161,8 @@ $total_entry_value = 0;
                         <th scope="col">Fatura 1</th>
                         <th scope="col">Fatura 2</th>
                         <th scope="col">Referência</th>
-                        <th scope="col">Valor</th>
+                        <th scope="col">Valor da fatura</th>
+                        <th scope="col">Valor pago</th>
                         <th scope="col">Vencimento</th>
                         <th scope="col">Conta</th>
                         <th scope="col">Anotação</th>
@@ -174,42 +180,44 @@ $total_entry_value = 0;
                             <td>
                                 <?= $invoice->emission ?>
                             </td>
-                            <td class=" <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : ""); ?>"><?= $invoice->invoice_one ?>
-                                <?php if ($invoice->invoice_one_status == "A") : ?>
-                                    <form action="<?= $BASE_URL ?>consulta.php" method="post" class="icon-form">
-                                        <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_one ?>">
-                                        <button type="submit" id="submit<?= $invoice->id ?>" class="icon-button">
-                                            <i class="fa-solid fa-receipt text-dark" title="clique para consultar o status"></i>
-                                        </button>
-                                    </form>
-                                <?php endif ?>
-                            </td>
-                            <td class=" <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>"><?= $invoice->invoice_two ?>
-                                <?php if ($invoice->invoice_two_status == "A") : ?>
-                                    <form action="<?= $BASE_URL ?>consulta.php" method="post" class="icon-form">
-                                        <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_two ?>">
-                                        <button type="submit" id="submit<?= $invoice->id ?>" class="icon-button">
-                                            <i class="fa-solid fa-receipt text-dark" title="clique para consultar o status"></i>
-                                        </button>
-                                    </form>
-                                <?php endif ?>
-                            </td>
+                            <?php if ($invoice->invoice_one_status == "PAGO - Baixado" || $invoice->invoice_one_status == "PAGO - Liquidado") : ?>
+                                <td class="bg-success text-white">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
+                            <?php elseif ($invoice->invoice_one_status == "NAO PAGO - Em Aberto") : ?>
+                                <td class="bg-danger text-white">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
+                            <?php else : ?>
+                                <td class="">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
+                            <?php endif ?>
+                            <?php if ($invoice->invoice_two_status == "PAGO - Baixado" || $invoice->invoice_two_status == "PAGO - Liquidado") : ?>
+                                <td class="bg-success text-white">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php elseif ($invoice->invoice_two_status == "NAO PAGO - Em Aberto") : ?>
+                                <td class="bg-danger text-white">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php else : ?>
+                                <td class="">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php endif ?>
                             <td>
                                 <?= $invoice->reference ?>
                             </td>
                             <td>
                                 <?= number_format($invoice->value, 2, ",", ".") ?>
                             </td>
+                            <td><?= number_format($invoice->ammount_paid, 2, ",", ".") ?></td>
+                            
                             <td>
                                 <?= $invoice->dt_expired ?>
                             </td>
-                            <!-- <td class="info">
-                            <?php if ($invoice->paid == "S") : ?>
-                            <i class="fa-regular fa-square-check text-success"></i>
-                            <?php else : ?>
-                            <i class="fa-regular fa-square-check text-danger"></i>
-                            <?php endif ?>
-                        </td> -->
+
                             <td>
                                 <div class="invoice_card_img px-2">
                                     <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoice->conta_img ?>" alt="">
@@ -238,10 +246,10 @@ $total_entry_value = 0;
 
                             <td id="latest_moviments" class="report-action">
                                 <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
-                                    <i class="fa-solid fa-copy text-info"></i>
+                                    <i class="fa-solid fa-copy text-secondary"></i>
                                 </a>
-                                <a href="">
-                                    <i class="fa-solid fa-circle-check"></i>
+                                <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoice->id ?>">
+                                    <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
                                 </a>
                             </td>
                         </tr>
@@ -249,7 +257,7 @@ $total_entry_value = 0;
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="10"> <strong> Total: </strong> R$
+                        <td colspan="11"> <strong> Total: </strong> R$
                             <?= number_format($total_entry_value, 2, ",", "."); ?>
                         </td>
                     </tr>
@@ -323,6 +331,57 @@ $total_entry_value = 0;
     </div>
 <?php endforeach; ?>
 <!-- End Invoice modal Copy -->
+
+<!-- Status Invoice modal -->
+<?php foreach ($invoicesUser as $invoice) : ?>
+    <div class="modal fade checkStatusInvoice<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-top">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Status do boleto id: <?= $invoice->id ?> </h5>
+                    <button type="button" class="close" data-dismiss="modal" arial-label="fechar">
+                        <span arial-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <form action="<?= $BASE_URL ?>consulta.php" method="post">
+                            <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_one ?>">
+                            <input type="hidden" name="id" value="<?= $invoice->id ?>">
+                            <input type="hidden" name="invoice_type" value="invoice_one_status">
+                            <input type="hidden" name="current_status" value="<?= $invoice->invoice_one_status ?>">
+                            <div class="form-group">
+                                <label for="invoice_one_copy">Fatura 1</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                </div>
+                            </div>
+
+                            <input class="btn btn-success" type="submit" value="Checar">
+                        </form>
+                    </div>
+
+                    <div class="form-group">
+                        <form action="<?= $BASE_URL ?>consulta.php" method="post">
+                            <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_two ?>">
+                            <input type="hidden" name="id" value="<?= $invoice->id ?>">
+                            <input type="hidden" name="invoice_type" value="invoice_two_status">
+                            <input type="hidden" name="current_status" value="<?= $invoice->invoice_two_status ?>">
+                            <div class="form-group">
+                                <label for="invoice_two_copy">Fatura 2</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                </div>
+                            </div>
+                            <input class="btn btn-success" type="submit" value="Checar">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+<!-- End Status Invoice modal  -->
 
 <?php require_once("templates/footer.php"); ?>
 

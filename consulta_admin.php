@@ -1,14 +1,10 @@
 <?php
 require_once("globals.php");
 require_once("connection/conn.php");
-require_once("models/Invoices.php");
 require_once("models/Message.php");
-require_once("dao/InvoicesDAO.php");
 require_once("dao/UserDAO.php");
 
 $message = new Message($BASE_URL);
-
-$invoiceDao = new InvoicesDAO($conn, $BASE_URL);
 
 // resgata dados do usuário
 $userDao = new UserDAO($conn, $BASE_URL);
@@ -110,16 +106,9 @@ function revalidarSessao() {
 
 // Verificar se o formulário foi submetido
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
+
     // Obter a linha digitável do boleto enviada pelo formulário
     $linha_digitavel = $_POST['linha_digitavel'];
-    $id = $_POST['id'];
-    $current_status = $_POST['current_status'];
-    $invoice_type = $_POST['invoice_type'];
-    //echo "Invoice type: $invoice_type"; exit;
-    //echo "Status: " . $current_status; "<br>"; exit;
-    // echo $linha_digitavel . "<br>";
-    // echo "id: $id"; 
 
     // Formatar a linha digitável
     $linha_digitavel_formatada = formatarLinhaDigitavel($linha_digitavel);
@@ -152,71 +141,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status_final = "Status desconhecido";
     }
 
-    if ($current_status != $status_final) {
-        
-        $invoice = new Invoices();
-        $invoice->id = $id;
-        
-        if ($invoice_type == "invoice_one_status") {
-            //echo $invoice_type; exit;
-            $invoice->invoice_one_status = $status_final;
-            $invoice->invoice_one = $linha_digitavel;
-            $invoice->invoice_two_status = 'Status Desconhecido';
-            $check_date = "check_date_invoice_one";
-        }else {
-            $invoice->invoice_two_status = $status_final;
-            $invoice->invoice_two = $linha_digitavel;
-            $invoice->invoice_one_status = 'Status Desconhecido';
-            $check_date = "check_date_invoice_two";
-        }
+    $message->setMessage("<script>
+    Swal.fire({
+        title: 'Status atual',
+        text: ' $status_final ',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#0B666A', 
+        cancelButtonText: 'Fechar',
+    })
+    ;</script>", "", "back");
 
-        if ($invoiceDao->findUserInvoiceCheck($id) > 0) {
-            //echo $invoice_type; exit;
-            try {
-                $invoiceDao->updateInvoiceCheckStatus($id, $check_date, $invoice_type, $status_final);
-            } catch (PDOException $e) {
-                echo "Error: ". $e->getMessage();
-            }
-            
-        }else {
-
-            //print($invoice); exit;
-            try {
-                $invoiceDao->createUserInvoiceCheck($invoice);
-            } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-            }
-        }
-        
-        try {
-
-
-            $invoiceDao->updateInvoiceStatus($id, $invoice_type, $status_final);
-            $message->setMessage("<script>
-            Swal.fire({
-                title: 'Status atual',
-                text: ' $status_final ',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#0B666A', 
-                cancelButtonText: 'Fechar',
-            })
-            ;</script>", "", "back");
-        } catch (PDOException $e) {
-            echo "Erro ao consultar status da fatura, consulte o administrador do sistema";
-            //echo "Error: ".$e->getMessage();
-        }
-    
-
-    }else{
-        $message->setMessage("<script>
-        Swal.fire({
-            title: 'Status atual',
-            text: ' Não houve atualização no status da fatura ',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#0B666A', 
-            cancelButtonText: 'Fechar',
-        })
-        ;</script>", "", "back");
-    }
 }
-?>

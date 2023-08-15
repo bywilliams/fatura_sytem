@@ -163,122 +163,149 @@ for ($i = 1; $i <= 31; $i++) {
     </div>
 
     <!-- table div thats receive all entrys without customize inputs parameters  -->
-    <?php if(count($invoicesUser) > 0): ?>
-    <div class="table_report table-responsive my-3" id="table_report_entry">
-        <h3 class="text-center text-secondary">Resultados:</h3>
-        <table class="table table-hover table-striped table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Data</th>
-                    <th scope="col">Fatura 1</th>
-                    <th scope="col">Fatura 2</th>
-                    <th scope="col">Referência</th>
-                    <th scope="col">Valor</th>
-                    <th scope="col">Vencimento</th>
-                    <th scope="col">Conta</th>
-                    <th scope="col">Anotação</th>
-                    <th scope="col" class="report-action">Ação</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($invoicesUser as $invoices) : ?>
-                    <?php $value = $invoices->value;
-                    $total_entry_value += (float) $value; ?>
-
+    <?php if (count($invoicesUser) > 0) : ?>
+        <div class="table_report table-responsive my-3" id="table_report_entry">
+            <h3 class="text-center text-secondary">Resultados:</h3>
+            <hr class="hr">
+            <div class=" d-flex justify-content-end  my-2 info">
+                <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
+                <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div>
+                <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
+                <div> <i class="fa-solid fa-copy fa-2x text-secondary"></i> <span> Copiar </span> </div>
+            </div>
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="thead-dark">
                     <tr>
-                        <th scope="row">
-                            <?= $invoices->id ?>
-                        </th>
-                        <td>
-                            <?= $invoices->emission ?>
-                        </td>
-                        <td class="d-flex justify-content-between <?= $invoices->invoice_one_status == "S" ? "bg-success" : ($invoices->invoice_one_status == "N" ? "bg-danger" : "table_description"); ?>"><?= $invoices->invoice_one ?>
-                            <?php if ($invoices->invoice_one_status == "A") : ?>
-                                <form action="" method="post">
-                                    <label for="submit">
-                                        <a href=""> <i class="fa-solid fa-file-invoice text-dark" title="clique para consultar o status"></i> </a>
-                                    </label>
-                                    <input type="submit" id="submit" value="">
-                                </form>
-                            <?php endif ?>
-                        </td>
-                        <td class=" <?= $invoices->invoice_two_status == "S" ? "bg-success" : ($invoices->invoice_two_status == "N" ? "bg-danger" : "table_description") ?>"><?= $invoices->invoice_two ?></td>
-                        <td>
-                            <?= $invoices->reference ?>
-                        </td>
-                        <td>
-                            <?= $invoices->value ?>
-                        </td>
-                        <td>
-                            <?= $invoices->dt_expired ?>
-                        </td>
-                        <td>
-                            <div class="invoice_card_img px-2">
-                                <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>" alt="">
-                                <span class="ml-2 text-center"></span> <?= decryptData($invoices->razao_social, $encryptionKey) ?> </span>
-                            </div>
-                        </td>
+                        <th scope="col">Id</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Fatura 1</th>
+                        <th scope="col">Fatura 2</th>
+                        <th scope="col">Referência</th>
+                        <th scope="col">Valor da fatura</th>
+                        <th scope="col">Valor pago</th>
+                        <th scope="col">Vencimento</th>
+                        <th scope="col">Conta</th>
+                        <th scope="col">Anotação</th>
+                        <th scope="col" class="report-action">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($invoicesUser as $invoice) : ?>
+                        <?php $value = $invoice->value;
+                        $total_entry_value += (float) $value; ?>
 
-                        <td>
-                            <?php if ($invoices->notation != "") : ?>
-                                <a href="#!" id="grupos<?= $invoices->id ?>" onclick="openTooltip(<?= $invoices->id ?>)"><img src="<?= $BASE_URL ?>assets/home/dashboard-main/message_alert.gif" alt="message_alert" title="ver observação" width="33" height="30"> </a>
-                                <div class="tooltip_" id="tooltip_<?= $invoices->id ?>">
-                                    <div id="conteudo">
-                                        <div class="bloco">
-                                            <h5>Observação</h5>
-                                            <a href="#!" id="close<?= $invoices->id ?>"><i class="fa-solid fa-xmark"></i></a>
-                                        </div>
-                                        <div class="bloco">
-                                            <small>
-                                                <?= $invoices->notation ?>
-                                            </small>
+                        <tr>
+                            <th scope="row">
+                                <?= $invoice->id ?>
+                            </th>
+                            <td>
+                                <?= $invoice->emission ?>
+                            </td>
+                            <?php if ($invoice->invoice_one_status == "PAGO - Baixado" || $invoice->invoice_one_status == "PAGO - Liquidado") : ?>
+                                <td class="bg-success text-white">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
+                            <?php elseif ($invoice->invoice_one_status == "NAO PAGO - Em Aberto") : ?>
+                                <td class="bg-danger text-white">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
+                            <?php else : ?>
+                                <td class="">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
+                            <?php endif ?>
+                            <?php if ($invoice->invoice_two_status == "PAGO - Baixado" || $invoice->invoice_two_status == "PAGO - Liquidado") : ?>
+                                <td class="bg-success text-white">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php elseif ($invoice->invoice_two_status == "NAO PAGO - Em Aberto") : ?>
+                                <td class="bg-danger text-white">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php else : ?>
+                                <td class="">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php endif ?>
+                            <td>
+                                <?= $invoice->reference ?>
+                            </td>
+                            <td>
+                                <?= $invoice->value ?>
+                            </td>
+                            <td><?= $invoice->ammount_paid ?></td>
+                            <td>
+                                <?= $invoice->dt_expired ?>
+                            </td>
+                            <td>
+                                <div class="invoice_card_img px-2">
+                                    <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoice->conta_img ?>" alt="">
+                                    <span class="ml-2 text-center"></span> <?= decryptData($invoice->razao_social, $encryptionKey) ?> </span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <?php if ($invoice->notation != "") : ?>
+                                    <a href="#!" id="grupos<?= $invoice->id ?>" onclick="openTooltip(<?= $invoice->id ?>)"><img src="<?= $BASE_URL ?>assets/home/dashboard-main/message_alert.gif" alt="message_alert" title="ver observação" width="33" height="30"> </a>
+                                    <div class="tooltip_" id="tooltip_<?= $invoice->id ?>">
+                                        <div id="conteudo">
+                                            <div class="bloco">
+                                                <h5>Observação</h5>
+                                                <a href="#!" id="close<?= $invoice->id ?>"><i class="fa-solid fa-xmark"></i></a>
+                                            </div>
+                                            <div class="bloco">
+                                                <small>
+                                                    <?= $invoice->notation ?>
+                                                </small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            <?php endif; ?>
-                        </td>
+                                <?php endif; ?>
+                            </td>
 
-                        <td id="latest_moviments" class="report-action">
-                            <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoices->id ?>" title="Editar">
-                                <i class="fa-solid fa-copy text-info"></i>
-                            </a>
+                            <td id="latest_moviments" class="report-action">
+                                <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
+                                    <i class="fa-solid fa-copy text-info"></i>
+                                </a>
+                                <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoice->id ?>">
+                                    <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="11"> <strong> Total: </strong> R$
+                            <?= number_format($total_entry_value, 2, ",", "."); ?>
                         </td>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="10"> <strong> Total: </strong> R$
-                        <?= number_format($total_entry_value, 2, ",", "."); ?>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
 
-        <!-- Pagination buttons -->
-        <?php if ($totalRegistros > 10) : ?>
             <!-- Pagination buttons -->
-            <div class="row justify-content-center">
-                <nav aria-label="...">
-                    <ul class="pagination pagination-lg">
-                        <?php for ($i = 1; $i <= $numberPages; $i++) : ?>
-                            <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
+            <?php if ($totalRegistros > 10) : ?>
+                <!-- Pagination buttons -->
+                <div class="row justify-content-center">
+                    <nav aria-label="...">
+                        <ul class="pagination pagination-lg">
+                            <?php for ($i = 1; $i <= $numberPages; $i++) : ?>
+                                <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
 
-                            <li class="page-item <?= $active ?>">
-                                <a class="page-link" href="<?= $BASE_URL ?>financial_exit_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
-                            </li>
+                                <li class="page-item <?= $active ?>">
+                                    <a class="page-link" href="<?= $BASE_URL ?>financial_exit_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
+                                </li>
 
-                        <?php endfor ?>
-                    </ul>
-                </nav>
-            </div>
+                            <?php endfor ?>
+                        </ul>
+                    </nav>
+                </div>
+                <!-- End pagination buttons -->
+            <?php endif ?>
+
             <!-- End pagination buttons -->
-        <?php endif ?>
-
-        <!-- End pagination buttons -->
-    </div>
-    <?php else: ?>
+        </div>
+    <?php else : ?>
         <div class="col-md-12">
             <hr class="hr">
             <h5 class="py-2 text-center text-info">Sem faturas a vencer hoje.</h5>
@@ -287,6 +314,57 @@ for ($i = 1; $i <= 31; $i++) {
 
 
 </div>
+
+<!-- Status Invoice modal -->
+<?php foreach ($invoicesUser as $invoice) : ?>
+    <div class="modal fade checkStatusInvoice<?= $invoice->id ?>" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-top">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Status do boleto</h5>
+                    <button type="button" class="close" data-dismiss="modal" arial-label="fechar">
+                        <span arial-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <form action="<?= $BASE_URL ?>consulta.php" method="post">
+                            <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_one ?>">
+                            <input type="hidden" name="id" value="<?= $invoice->id ?>">
+                            <input type="hidden" name="invoice_type" value="invoice_one_status">
+                            <input type="hidden" name="current_status" value="<?= $invoice->invoice_one_status ?>">
+                            <div class="form-group">
+                                <label for="invoice_one_copy">Fatura 1</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                </div>
+                            </div>
+
+                            <input class="btn btn-success" type="submit" value="Checar">
+                        </form>
+                    </div>
+
+                    <div class="form-group">
+                        <form action="<?= $BASE_URL ?>consulta.php" method="post">
+                            <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_two ?>">
+                            <input type="hidden" name="id" value="<?= $invoice->id ?>">
+                            <input type="hidden" name="invoice_type" value="invoice_two_status">
+                            <input type="hidden" name="current_status" value="<?= $invoice->invoice_two_status ?>">
+                            <div class="form-group">
+                                <label for="invoice_two_copy">Fatura 2</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                </div>
+                            </div>
+                            <input class="btn btn-success" type="submit" value="Checar">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+<!-- End Status Invoice modal  -->
 
 <!-- Copy Invoice numbers modal -->
 <?php foreach ($invoicesUser as $invoice) : ?>
@@ -329,7 +407,6 @@ for ($i = 1; $i <= 31; $i++) {
 
 
 <script>
-
     // JS do modal de copiar codigos do boleto
     var clipboard = new ClipboardJS('.copy-btn');
 

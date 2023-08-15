@@ -4,6 +4,7 @@ require_once("globals.php");
 require_once("connection/conn.php");
 require_once("dao/InvoicesDAO.php");
 require_once("dao/UserDAO.php");
+require_once("models/Invoices.php");
 require_once("models/Message.php");
 
 $message = new Message($BASE_URL);
@@ -119,12 +120,17 @@ if ($type == "create") {
 } else if ($type == "editInvoiceStatus"){
 
     $invoice_status = filter_input(INPUT_POST, "invoice_status");
+    $value_paid = filter_input(INPUT_POST, "value_paid");
+    $value = preg_replace("/[^0-9,]+/i","",$value_paid);
+    $value = str_replace(",",".",$value);
     $invoice_id = filter_input(INPUT_POST, "id");
+
+    //echo "$invoice_status, $value_paid, $invoice_id"; exit;
 
     if ($invoice_status) {
         
         $invoice = new Invoices();
-        $invoice->invoice_one_status = $invoice_status;
+        $invoice->value = $value;
         $invoice->id = $invoice_id;
        
         try {

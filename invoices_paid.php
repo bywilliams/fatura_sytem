@@ -19,8 +19,8 @@ $invoiceDao = new InvoicesDao($conn, $BASE_URL);
 $sql = "";
 // $getEntryReports = $financialMovimentDao->getReports($sql, 1, $userData->id);
 
-// // Paginação do relatório
-$totalRegistros = count($invoiceDao->countAllInvoicesForAdmin());
+// Paginação do relatório
+$totalRegistros = count($invoiceDao->countAllInvoicesPaidForAdmin());
 
 $resultsPerPage = 10;
 $numberPages = ceil($totalRegistros / $resultsPerPage);
@@ -67,11 +67,6 @@ if ($_POST) {
         $sql .= " AND DATE(dt_expired) = '$dt_expired'";
     }
 
-    // if (isset($_POST['month_invoice']) && $_POST['month_invoice'] != '') {
-    //     $month_invoice = $_POST['month_invoice'];
-    //     $sql .= " AND MONTH(dt_expired) = '$month_invoice' ";
-    // }
-
     if (isset($_POST['user_id']) && $_POST['user_id'] != '') {
         $user_id = $_POST['user_id'];
         $sql .= " AND user_id = '$user_id' ";
@@ -81,7 +76,7 @@ if ($_POST) {
 }
 
 // Traz total de Entradas do usuário default e páginação 
-$allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resultsPerPage, $offset);
+$allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $resultsPerPage, $offset);
 
 
 ?>
@@ -94,7 +89,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
 
     <div class="row my-2 px-2">
         <div class="col-lg-12 d-flex justify-content-end">
-            <button class="btn btn-lg btn-outline-secondary" id="limparCampos" title="Limpa todos os campos">Limpar</button>
+            <button class="btn btn-lg btn-outline-secondary " id="limparCampos" title="Limpa todos os campos">Limpar</button>
         </div>
     </div>
 
@@ -174,7 +169,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
         <hr class="hr">
         <div class="row my-2 px-2">
             <div class="col-lg-12 d-flex justify-content-end">
-                <a href="<?= $BASE_URL ?>invoices_paid.php" class="btn btn-md btn-outline-dark mr-3" id="limparCampos" title="Limpa todos os campos"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
+                <button class="btn btn-md btn-outline-dark mr-3" id="limparCampos" title="Limpa todos os campos"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</button>
             </div>
         </div>
         <h3 class="text-center text-secondary">Resultados:</h3>

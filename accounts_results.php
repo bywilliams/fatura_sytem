@@ -131,8 +131,11 @@ $total_entry_value = 0;
                 <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Data</th>
+                    <th scope="col">Fatura 1</th>
+                    <th scope="col">Fatura 2</th>
                     <th scope="col">Referência</th>
-                    <th scope="col">Valor</th>
+                    <th scope="col">Valor da fatura</th>
+                    <th scope="col">Valor pago</th>
                     <th scope="col">Vencimento</th>
                     <!-- <th scope="col">Status</th> -->
                     <th scope="col">Conta</th>
@@ -140,51 +143,74 @@ $total_entry_value = 0;
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($invoicesUser as $invoices) : ?>
-                    <?php $value = $invoices->value;
+                <?php foreach ($invoicesUser as $invoice) : ?>
+                    <?php $value = $invoice->value;
                     $total_entry_value += (float) $value; ?>
 
                     <tr>
                         <th scope="row">
-                            <?= $invoices->id ?>
+                            <?= $invoice->id ?>
                         </th>
                         <td>
-                            <?= $invoices->emission ?>
+                            <?= $invoice->emission ?>
                         </td>
-                        <td>
-                            <?= $invoices->reference ?>
-                        </td>
-                        <td>
-                            <?= number_format($invoices->value,2 , ",", ".") ?>
-                        </td>
-                        <td>
-                            <?= $invoices->dt_expired ?>
-                        </td>
-                        <!-- <td class="info">
-                            <?php if ($invoices->paid == "S"): ?>
-                            <i class="fa-regular fa-square-check text-success"></i>
-                            <?php else: ?>
-                            <i class="fa-regular fa-square-check text-danger"></i>
+                        <?php if ($invoice->invoice_one_status == "PAGO - Baixado" || $invoice->invoice_one_status == "PAGO - Liquidado") : ?>
+                                <td class="bg-success text-white">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
+                            <?php elseif ($invoice->invoice_one_status == "NAO PAGO - Em Aberto") : ?>
+                                <td class="bg-danger text-white">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
+                            <?php else : ?>
+                                <td class="">
+                                    <?= $invoice->invoice_one_status ?>
+                                </td>
                             <?php endif ?>
-                        </td> -->
+                            <?php if ($invoice->invoice_two_status == "PAGO - Baixado" || $invoice->invoice_two_status == "PAGO - Liquidado") : ?>
+                                <td class="bg-success text-white">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php elseif ($invoice->invoice_two_status == "NAO PAGO - Em Aberto") : ?>
+                                <td class="bg-danger text-white">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php else : ?>
+                                <td class="">
+                                    <?= $invoice->invoice_two_status ?>
+                                </td>
+                            <?php endif ?>
+                        <td>
+                            <?= $invoice->reference ?>
+                        </td>
+                        <td>
+                            <?= number_format($invoice->value,2 , ",", ".") ?>
+                        </td>
+                        <td>
+                        <?= number_format($invoice->ammount_paid,2 , ",", ".") ?>
+                        </td>
+                        <td>
+                            <?= $invoice->dt_expired ?>
+                        </td>
+                       
                         <td>
                             <div class="invoice_card_img">
-                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>"  alt="">
+                                <img src="<?= $BASE_URL ?>assets/home/contas/<?= $invoice->conta_img ?>"  alt="">
                             </div>
                         </td>
 
                         <td>
-                            <?php if ($invoices->notation != "") : ?>
-                                <a href="#!" id="grupos<?= $invoices->id ?>" onclick="openTooltip(<?= $invoices->id ?>)"><img src="<?= $BASE_URL ?>assets/home/dashboard-main/message_alert.gif" alt="message_alert" title="ver observação" width="33" height="30"> </a>
-                                <div class="tooltip_" id="tooltip_<?= $invoices->id ?>">
+                            <?php if ($invoice->notation != "") : ?>
+                                <a href="#!" id="grupos<?= $invoice->id ?>" onclick="openTooltip(<?= $invoice->id ?>)"><img src="<?= $BASE_URL ?>assets/home/dashboard-main/message_alert.gif" alt="message_alert" title="ver observação" width="33" height="30"> </a>
+                                <div class="tooltip_" id="tooltip_<?= $invoice->id ?>">
                                     <div id="conteudo">
                                         <div class="bloco">
                                             <h5>Observação</h5>
-                                            <a href="#!" id="close<?= $invoices->id ?>"><i class="fa-solid fa-xmark"></i></a>
+                                            <a href="#!" id="close<?= $invoice->id ?>"><i class="fa-solid fa-xmark"></i></a>
                                         </div>
                                         <div class="bloco">
                                             <small>
-                                                <?= $invoices->notation ?>
+                                                <?= $invoice->notation ?>
                                             </small>
                                         </div>
                                     </div>
@@ -196,7 +222,7 @@ $total_entry_value = 0;
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="9"> <strong> Total: </strong> R$
+                    <td colspan="10"> <strong> Total: </strong> R$
                         <?= number_format($total_entry_value, 2, ",", "."); ?>
                     </td>
                 </tr>
