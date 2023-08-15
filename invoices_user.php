@@ -182,28 +182,28 @@ $total_entry_value = 0;
                             </td>
                             <?php if ($invoice->invoice_one_status == "PAGO - Baixado" || $invoice->invoice_one_status == "PAGO - Liquidado") : ?>
                                 <td class="bg-success text-white">
-                                    <?= $invoice->invoice_one_status ?>
+                                   <small> <?= $invoice->invoice_one_status ?> 
                                 </td>
                             <?php elseif ($invoice->invoice_one_status == "NAO PAGO - Em Aberto") : ?>
                                 <td class="bg-danger text-white">
-                                    <?= $invoice->invoice_one_status ?>
+                                    <small> <?= $invoice->invoice_one_status ?> </small>
                                 </td>
                             <?php else : ?>
                                 <td class="">
-                                    <?= $invoice->invoice_one_status ?>
+                                  <small>  <?= $invoice->invoice_one_status ?> </small>
                                 </td>
                             <?php endif ?>
                             <?php if ($invoice->invoice_two_status == "PAGO - Baixado" || $invoice->invoice_two_status == "PAGO - Liquidado") : ?>
                                 <td class="bg-success text-white">
-                                    <?= $invoice->invoice_two_status ?>
+                                   <small> <?= $invoice->invoice_two_status ?> </small>
                                 </td>
                             <?php elseif ($invoice->invoice_two_status == "NAO PAGO - Em Aberto") : ?>
                                 <td class="bg-danger text-white">
-                                    <?= $invoice->invoice_two_status ?>
+                                  <small>  <?= $invoice->invoice_two_status ?> </small>
                                 </td>
                             <?php else : ?>
                                 <td class="">
-                                    <?= $invoice->invoice_two_status ?>
+                                   <small> <?= $invoice->invoice_two_status ?> </small>
                                 </td>
                             <?php endif ?>
                             <td>

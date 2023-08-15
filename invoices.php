@@ -173,8 +173,8 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
     <div class="table_report my-3" id="latest_moviments">
         <hr class="hr">
         <div class="row my-2 px-2">
-            <div class="col-lg-12 d-flex justify-content-end">
-                <a href="<?= $BASE_URL ?>invoices_paid.php" class="btn btn-md btn-outline-dark mr-3" id="limparCampos" title="Limpa todos os campos"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
+            <div class="col-lg-12 d-flex justify-content-end  ml-3">
+                <a href="<?= $BASE_URL ?>invoices_paid.php" class="btn btn-md btn-outline-dark mr-3" id="faturas pagas" title="Limpa todos os campos"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
             </div>
         </div>
         <h3 class="text-center text-secondary">Resultados:</h3>
@@ -182,8 +182,8 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
         <div class="row d-block text-right my-2 px-3 info">
             <div class=" d-flex justify-content-end  my-2 info">
                 <!-- <div> <i class="fa-solid fa-copy fa-2x text-info"></i> <span> Copiar </span> </div> -->
-                <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
-                <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div>
+                <!-- <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
+                <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div> -->
                 <div> <i class="fa-solid fa-check-double text-info"></i> <span> Informar Pgto.</span> </div>
                 <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
                 <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
@@ -291,7 +291,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="11">Total valor pago R$ <?= number_format($total_paid, 2, ",", ".") ?> 
+                    <td colspan="11"> <strong> Total valor pago </strong> R$ <?= number_format($total_paid, 2, ",", ".") ?> 
                     </td>
                 </tr>
             </tfoot>

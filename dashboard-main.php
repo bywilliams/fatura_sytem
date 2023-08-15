@@ -66,7 +66,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                 <h1 class="card-title pricing-card-title text-success" id="revenue_h1">+ R$ <?= $totalCashInflow ?> </h1>
                                 <small class="text-muted"><strong>Menor receita</strong> <br>
                                     <?php foreach ($lowerRevenueUser as $lowerRevenue) : ?>
-                                        <?= $lowerRevenue->reference ?> <?= $lowerRevenue->value ?>
+                                        <?= $lowerRevenue->reference ?> <?= number_format($lowerRevenue->value, 2, ",", ".") ?>
                                     <?php endforeach ?>
                                     <?php if (count($lowerRevenueUser) < 1) {
                                         echo 'Não há dados registrados';
@@ -74,7 +74,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                     <br>
                                     <strong>Maior receita</strong> <br>
                                     <?php foreach ($biggestRevenueUser as $biggestRevenue) : ?>
-                                        <?= $biggestRevenue->reference ?> <?= $biggestRevenue->value ?>
+                                        <?= $biggestRevenue->reference ?> <?= number_format($biggestRevenue->value, 2, ",", ".") ?>
                                     <?php endforeach ?>
                                     <?php if (count($biggestRevenueUser) <  1) {
                                         echo 'Não há dados registrados';
@@ -325,31 +325,31 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                             <td>
                                                 <?= $invoice->emission ?>
                                             </td>
-                                            <?php if($invoice->invoice_one_status == "PAGO - Baixado" || $invoice->invoice_one_status == "PAGO - Liquidado") : ?>
-                                            <td class="bg-success text-white">
-                                                <?= $invoice->invoice_one_status ?>
-                                            </td>
-                                            <?php elseif($invoice->invoice_one_status == "NAO PAGO - Em Aberto"): ?>
-                                            <td class="bg-danger text-white">
-                                                <?= $invoice->invoice_one_status ?>
-                                            </td>
-                                            <?php else: ?>
-                                            <td class="">
-                                                <?= $invoice->invoice_one_status ?>
-                                            </td>
+                                            <?php if ($invoice->invoice_one_status == "PAGO - Baixado" || $invoice->invoice_one_status == "PAGO - Liquidado") : ?>
+                                                <td class="bg-success text-white">
+                                                    <small> <?= $invoice->invoice_one_status ?> </small>
+                                                </td>
+                                            <?php elseif ($invoice->invoice_one_status == "NAO PAGO - Em Aberto") : ?>
+                                                <td class="bg-danger text-white">
+                                                    <small> <?= $invoice->invoice_one_status ?></small>
+                                                </td>
+                                            <?php else : ?>
+                                                <td class="">
+                                                    <small> <?= $invoice->invoice_one_status ?></small>
+                                                </td>
                                             <?php endif ?>
-                                            <?php if($invoice->invoice_two_status == "PAGO - Baixado" || $invoice->invoice_two_status == "PAGO - Liquidado") : ?>
-                                            <td class="bg-success text-white">
-                                                <?= $invoice->invoice_two_status ?>
-                                            </td>
-                                            <?php elseif($invoice->invoice_two_status == "NAO PAGO - Em Aberto"): ?>
-                                            <td class="bg-danger text-white">
-                                                <?= $invoice->invoice_two_status ?>
-                                            </td>
-                                            <?php else: ?>
-                                            <td class="">
-                                                <?= $invoice->invoice_two_status ?>
-                                            </td>
+                                            <?php if ($invoice->invoice_two_status == "PAGO - Baixado" || $invoice->invoice_two_status == "PAGO - Liquidado") : ?>
+                                                <td class="bg-success text-white">
+                                                    <small> <?= $invoice->invoice_two_status ?> </small>
+                                                </td>
+                                            <?php elseif ($invoice->invoice_two_status == "NAO PAGO - Em Aberto") : ?>
+                                                <td class="bg-danger text-white">
+                                                    <small> <?= $invoice->invoice_two_status ?> </small>
+                                                </td>
+                                            <?php else : ?>
+                                                <td class="">
+                                                    <small> <?= $invoice->invoice_two_status ?> </small>
+                                                </td>
                                             <?php endif ?>
                                             <td>
                                                 <?= $invoice->reference ?>
@@ -358,7 +358,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                 R$ <?= number_format($invoice->value, 2, ",", ".") ?>
                                             </td>
                                             <td>
-                                                R$ <?= number_format($invoice->ammount_paid, 2, ",", ".") ?> 
+                                                R$ <?= number_format($invoice->ammount_paid, 2, ",", ".") ?>
                                             </td>
                                             <td>
                                                 <?= $invoice->dt_expired ?>

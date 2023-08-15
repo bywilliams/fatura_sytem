@@ -327,7 +327,7 @@
             $stmt = $this->conn->prepare("SELECT MAX(VALUE) AS 'value', reference FROM invoices 
                 WHERE MONTH(emission) = '$mes' 
                 AND user_id = :user_id 
-                GROUP BY value LIMIT 1
+                GROUP BY value DESC LIMIT 1
             ");
 
             $stmt->bindParam(":user_id", $id);
@@ -351,7 +351,7 @@
             $stmt = $this->conn->prepare("SELECT MIN(VALUE) AS value, reference FROM invoices 
                 WHERE MONTH(emission) = '$mes' 
                 AND user_id = :user_id 
-                GROUP BY value LIMIT 1
+                GROUP BY value ASC LIMIT 1
             ");
 
             $stmt->bindParam(":user_id", $id);

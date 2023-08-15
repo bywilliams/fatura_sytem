@@ -144,8 +144,10 @@ $total_entry_value = 0;
             </thead>
             <tbody>
                 <?php foreach ($invoicesUser as $invoice) : ?>
-                    <?php $value = $invoice->value;
-                    $total_entry_value += (float) $value; ?>
+                    <?php 
+                    $total_entry_value += (float) $invoice->value;
+                    $total_paid += (float) $invoice->ammount_paid;
+                    ?>
 
                     <tr>
                         <th scope="row">
@@ -222,8 +224,13 @@ $total_entry_value = 0;
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="10"> <strong> Total: </strong> R$
+                    <td colspan="10"> <strong> Total faturas: </strong> R$
                         <?= number_format($total_entry_value, 2, ",", "."); ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="10"> <strong> Total pago: </strong> R$
+                        <?= number_format($total_paid, 2, ",", "."); ?>
                     </td>
                 </tr>
             </tfoot>

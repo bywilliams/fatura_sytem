@@ -78,14 +78,16 @@ if ($type == "create") {
     $bankAccount->pix =  encryptData($data['pix'], $encryptionKey);
     $bankAccount->updated_at =  encryptData($current_date, $encryptionKey);
     $bankAccount->card_color = $data['color'];
+    $bankAccount->banco = $data['banco'];
+
     
     try{
         // faz o update
         $bankAccountDao->updateBankAccount($bankAccount);
     }catch(PDOException $e){ 
         // Apresenta um erro generico
-        echo "Erro ao atualizar conta, consulte o adminsitrado do sistema";
-        //echo "Erro ao atualizar conta" . $e->getMessage();
+        //echo "Erro ao atualizar conta, consulte o adminsitrado do sistema";
+        echo "Erro ao atualizar conta" . $e->getMessage();
     }
 
 } else if ($type == "delete") {

@@ -92,6 +92,7 @@ $accounts = $bankAccountsDao->getAllBankAccounts();
                     <form action="<?= $BASE_URL ?>account_process.php" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id" value="<?= $account->id ?>">
                         <input type="hidden" name="type" value="update">
+                        <input type="hidden" name="banco" value="<?= $account->banco ?>">
                         <div class="form-group">
                             <label for="razao">Razão Social:</label>
                             <input type="text" name="razao" id="razap" class="form-control" value="<?= decryptData($account->razao_social, $encryptionKey) ?>">
