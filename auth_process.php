@@ -63,44 +63,77 @@ if ($type === "register") {
                         echo "Houve um erro ao cadastrar informações, consulte o administrador do site";
                         //echo "Error: " . $e->getMessage();
                     }
-
-                }else {
+                } else {
                     // envia mensagem de erro, usuário já existe
                     $message->setMessage("O e-mail: $email já existe em nosso sistema, tente outro e-mail.", "error", "back");
                 }
-               
             } else {
                 $message->setMessage("A senha deve possuir ao menos 8 caracteres, sendo pelo menos 1 letra maiúscula, 1 minúscula, 1 número e 1 simbolo.", "error", "back");
             }
-
         } else {
             $message->setMessage("As senhas não são iguais.", "error", "back");
         }
     } else {
         $message->setMessage("Preencha todos os dados.", "error", "back");
     }
-
 } else if ($type === "login") {
-   
+
     $email = filter_input(INPUT_POST, "email_login");
     $password = filter_input(INPUT_POST, "password");
 
     // Tenta atenticar usuário
     if ($userDao->authenticatorUser($email, $password)) {
-       // echo "atenticou"; exit;
+
         $_SESSION['email_login'] = "";
-        $_SESSION['last_login'] = time();
+
+        // Define o caminho para o arquivo de log
+        $log_file = 'logins_log.txt';
+
+        // Bloco de códigos abaixo salva logs de acesso dos funcionários
+        if ($log_file) {
+
+            $usuario = $userDao->findByEmail($email);
+
+            // Lê o conteúdo do arquivo de log
+            $log_content = file_get_contents($log_file);
+
+            // Obtém a data atual
+            $current_date = date('Y-m-d');
+
+            // Verifica se é o primeiro login do usuário no dia
+            if (strpos($log_content, "$usuario->name,$current_date") === false) {
+
+                // Primeiro login do usuário no dia, registra o horário
+                $first_login_time = date('H:i:s');
+                $log_content .= "$usuario->name,$current_date,$first_login_time\n";
+            }
+
+            // Atualiza o último login do usuário no dia
+            $last_login_time = date('H:i:s');
+            $log_lines = explode("\n", $log_content);
+            foreach ($log_lines as &$line) {
+                $fields = explode(',', $line);
+                if ($fields[0] === $usuario->name && $fields[1] === $current_date) {
+                    $fields[3] = $last_login_time;
+                    $line = implode(',', $fields);
+                    break;
+                }
+            }
+            $log_content = implode("\n", $log_lines);
+
+            // Escreve o conteúdo de log atualizado de volta no arquivo
+            file_put_contents($log_file, $log_content, LOCK_EX);
+        }
 
         // Dá as boas vindas para o usuário que efetuou o login
         $message->setMessage("Seja bem-vindo!", "success", "dashboard.php");
-    }else {
+    } else {
 
-         // envia msg de erro, usuário ou senha não encontrados
-         $message->setMessage("E-mail e/ou senha inválidos.", "error", "back");
+        // envia msg de erro, usuário ou senha não encontrados
+        $message->setMessage("E-mail e/ou senha inválidos.", "error", "back");
     }
+} else {
 
-}else {
-
-     // se tentar algo estranho expulsa para a index
-     $message->setMessage("Informações inválidas.", "error", "index.php");
+    // se tentar algo estranho expulsa para a index
+    $message->setMessage("Informações inválidas.", "error", "index.php");
 }

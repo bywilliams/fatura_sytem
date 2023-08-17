@@ -17,10 +17,9 @@ $invoiceDao = new InvoicesDao($conn, $BASE_URL);
 
 // Traz o array com os dados de entradas da query personalizada para modal
 $sql = "";
-// $getEntryReports = $financialMovimentDao->getReports($sql, 1, $userData->id);
 
 // Paginação do relatório
-$totalRegistros = count($invoiceDao->countAllInvoicesPaidForAdmin());
+$totalRegistros = $invoiceDao->countAllInvoicesPaidForAdmin();
 
 $resultsPerPage = 10;
 $numberPages = ceil($totalRegistros / $resultsPerPage);
@@ -31,10 +30,14 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 // calcula o indice do primeiro registro da página atual
 $offset = ($page - 1) * $resultsPerPage;
 
+// para usuário logado ver as faturas pagas
+if (isset($_GET['pagas_user'])) {
+    $pagas_user_id = $_GET['pagas_user'];
+    $sql = " AND user_id = '$pagas_user_id' ";
+}
 
 if ($_POST) {
-    //echo "pesquisa enviada";
-    $sql = "";
+
     $totalRegistros = 0;
 
     if (isset($_POST['invoice_id']) && $_POST['invoice_id'] != '') {
@@ -135,27 +138,20 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
                         <h4 class="font-weight-normal">Por vencimento:</h4>
                         <input class="form-control" type="date" name="dt_expired" id="dt_expired" value="<?= $dt_expired ?>">
                     </div>
-                    <!-- <div class="form-group">
-                        <h4 class="font-weight-normal">Por mês:</h4>
-                        <select class="form-control" name="month_invoice" id="">
-                            <option value="">Selecione</option>
-                            <?php foreach ($meses as $index => $mes) : ?>
-                                <option value="<?= $index ?>" <?= $index == $month_invoice ? "selected" : ""; ?>><?= $mes ?></option>
-                            <?php endforeach ?>
-                        </select>
-                    </div> -->
                 </div>
-                <div class="col-lg-2 col-sm-6">
-                    <div class="form-group">
-                        <h4 class="font-weight-normal">Por usuário:</h4>
-                        <select class="form-control" name="user_id" id="">
-                            <option value="">Selecione</option>
-                            <?php foreach ($allUsers as $user) : ?>
-                                <option value="<?= $user->id ?>" <?= $user->id == $user_id ? "selected" : ""; ?>><?= $user->getFullName($user) ?></option>
-                            <?php endforeach ?>
-                        </select>
+                <?php if ($userData->levels_access_id == 1) : ?>
+                    <div class="col-lg-2 col-sm-6">
+                        <div class="form-group">
+                            <h4 class="font-weight-normal">Por usuário:</h4>
+                            <select class="form-control" name="user_id" id="">
+                                <option value="">Selecione</option>
+                                <?php foreach ($allUsers as $user) : ?>
+                                    <option value="<?= $user->id ?>" <?= $user->id == $user_id ? "selected" : ""; ?>><?= $user->getFullName($user) ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
                     </div>
-                </div>
+                <?php endif ?>
                 <div class="col-md-1">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
                     <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
@@ -165,150 +161,159 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
     </div>
 
     <!-- table div thats receive all entrys without customize inputs parameters  -->
-    <div class="table_report my-3" id="latest_moviments">
-        <hr class="hr">
-        
-        <h3 class="text-center text-secondary">Resultados:</h3>
-        <hr class="hr">
-        <div class="row d-block text-right my-2 px-3 info">
-            <div class=" d-flex justify-content-end  my-2 info">
-                <!-- <div> <i class="fa-solid fa-copy fa-2x text-info"></i> <span> Copiar </span> </div> -->
-                <div> <i class="fa-solid fa-check-double text-info"></i> <span> Informar Pgto.</span> </div>
-                <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
-                <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
-                <div> <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
+    <?php if (count($allInvoicesUsers) > 0) : ?>
+        <div class="table_report my-3" id="latest_moviments">
+            <hr class="hr">
+            <h3 class="text-center text-secondary">Resultados:</h3>
+            <hr class="hr">
+            <div class="row d-block text-right my-2 px-3 info">
+                <div class=" d-flex justify-content-end  my-2 info">
+                    <?php if ($userData->levels_access_id == 1) : ?>
+                        <div> <i class="fa-solid fa-check-double text-info"></i> <span> Informar Pgto.</span> </div>
+                    <?php endif ?>
+                    <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
+                    <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
+                    <div> <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
+                </div>
             </div>
-        </div>
-        <table class="table table-hover table-striped table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Data</th>
-                    <th scope="col">Referência</th>
-                    <th scope="col">Valor da fatura</th>
-                    <th scope="col">Valor pago</th>
-                    <th scope="col">Vencimento</th>
-                    <th scope="col">Checada</th>
-                    <th scope="col">Conta</th>
-                    <th scope="col">Anotação</th>
-                    <th scope="col">Funcionário</th>
-                    <th scope="col" class="report-action">Ação</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($allInvoicesUsers as $invoices) : ?>
-                    <?php
-                    $total_value += (float)$invoices->value;
-                    $total_paid += (float) $invoices->ammount_paid;
-                    ?>
-
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="thead-dark">
                     <tr>
-                        <th scope="row">
-                            <?= $invoices->id ?>
-                        </th>
-                        <td>
-                            <?= $invoices->emission ?>
-                        </td>
-                        <td>
-                            <?= $invoices->reference ?>
-                        </td>
-                        <td>
-                            <?= number_format($invoices->value, 2, ",", "."); ?>
-                        </td>
-                        <td>
-                            <?= number_format($invoices->ammount_paid, 2, ",", ".") ?>
-                        </td>
-                        <td>
-                            <?= $invoices->dt_expired ?>
-                        </td>
-                        <td class="info">
-                            <?php if ($invoices->invoice_one_status != "Não checado" || $invoices->invoice_two_status != "Não checado") : ?>
-                                <i class="fa-regular fa-square-check text-success"></i>
-                            <?php else : ?>
-                                <i class="fa-regular fa-square-check text-secondary"></i>
-                            <?php endif ?>
-                        </td>
-                        <td>
-                            <div class="invoice_card_img px-2">
-                                <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>" alt="">
-                                <span class="ml-2 text-center"></span> <?= decryptData($invoices->razao_social, $encryptionKey) ?> </span>
-                            </div>
-                        </td>
+                        <th scope="col">Id</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Referência</th>
+                        <th scope="col">Valor da fatura</th>
+                        <th scope="col">Valor pago</th>
+                        <th scope="col">Vencimento</th>
+                        <th scope="col">Checada</th>
+                        <th scope="col">Conta</th>
+                        <th scope="col">Anotação</th>
+                        <th scope="col">Funcionário</th>
+                        <th scope="col" class="report-action">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($allInvoicesUsers as $invoices) : ?>
+                        <?php
+                        $total_value += (float)$invoices->value;
+                        $total_paid += (float) $invoices->ammount_paid;
+                        ?>
 
-                        <td>
-                            <?php if ($invoices->notation != "") : ?>
-                                <a href="#!" id="grupos<?= $invoices->id ?>" onclick="openTooltip(<?= $invoices->id ?>)"><img src="<?= $BASE_URL ?>assets/home/dashboard-main/message_alert.gif" alt="message_alert" title="ver observação" width="33" height="30"> </a>
-                                <div class="tooltip_" id="tooltip_<?= $invoices->id ?>">
-                                    <div id="conteudo">
-                                        <div class="bloco">
-                                            <h5>Observação</h5>
-                                            <a href="#!" id="close<?= $invoices->id ?>"><i class="fa-solid fa-xmark"></i></a>
-                                        </div>
-                                        <div class="bloco">
-                                            <small>
-                                                <?= $invoices->notation ?>
-                                            </small>
+                        <tr>
+                            <th scope="row">
+                                <?= $invoices->id ?>
+                            </th>
+                            <td>
+                                <?= $invoices->emission ?>
+                            </td>
+                            <td>
+                                <?= $invoices->reference ?>
+                            </td>
+                            <td>
+                                <?= number_format($invoices->value, 2, ",", "."); ?>
+                            </td>
+                            <td>
+                                <?= number_format($invoices->ammount_paid, 2, ",", ".") ?>
+                            </td>
+                            <td>
+                                <?= $invoices->dt_expired ?>
+                            </td>
+                            <td class="info">
+                                <?php if ($invoices->invoice_one_status != "Não checado" || $invoices->invoice_two_status != "Não checado") : ?>
+                                    <i class="fa-regular fa-square-check text-success"></i>
+                                <?php else : ?>
+                                    <i class="fa-regular fa-square-check text-secondary"></i>
+                                <?php endif ?>
+                            </td>
+                            <td>
+                                <div class="invoice_card_img px-2">
+                                    <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoices->conta_img ?>" alt="">
+                                    <span class="ml-2 text-center"></span> <?= decryptData($invoices->razao_social, $encryptionKey) ?> </span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <?php if ($invoices->notation != "") : ?>
+                                    <a href="#!" id="grupos<?= $invoices->id ?>" onclick="openTooltip(<?= $invoices->id ?>)"><img src="<?= $BASE_URL ?>assets/home/dashboard-main/message_alert.gif" alt="message_alert" title="ver observação" width="33" height="30"> </a>
+                                    <div class="tooltip_" id="tooltip_<?= $invoices->id ?>">
+                                        <div id="conteudo">
+                                            <div class="bloco">
+                                                <h5>Observação</h5>
+                                                <a href="#!" id="close<?= $invoices->id ?>"><i class="fa-solid fa-xmark"></i></a>
+                                            </div>
+                                            <div class="bloco">
+                                                <small>
+                                                    <?= $invoices->notation ?>
+                                                </small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <?= $invoices->user_name ?>
-                        </td>
-                        <td id="latest_moviments" class="report-action">
-                            <a href="#" data-toggle="modal" data-target="#updateInvoiceUserAdmin<?= $invoices->id ?>" title="Editar">
-                                <i class="fa-solid fa-check-double"></i>
-                            </a>
-                            <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoices->id ?>">
-                                <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
-                            </a>
-                            <a href="#" data-toggle="modal" data-target="#editInvoiceModal<?= $invoices->id ?>" title="Editar">
-                                <i class="fa-solid fa-file-pen"></i>
-                            </a>
-                            <a href="#" data-toggle="modal" data-target="#del_latest_invoice<?= $invoices->id ?>" title="Deletar">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </a>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?= $invoices->user_name ?>
+                            </td>
+                            <td id="latest_moviments" class="report-action">
+                                <?php if ($invoices->ammount_paid <= 0 && $userData->levels_access_id == 1) : ?>
+                                    <a href="#" data-toggle="modal" data-target="#updateInvoiceUserAdmin<?= $invoices->id ?>" title="Informe pagamento">
+                                        <i class="fa-solid fa-check-double"></i>
+                                    </a>
+                                <?php endif; ?>
+                                <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoices->id ?>" title="Checar status">
+                                    <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
+                                </a>
+                                <a href="#" data-toggle="modal" data-target="#editInvoiceModal<?= $invoices->id ?>" title="Editar">
+                                    <i class="fa-solid fa-file-pen"></i>
+                                </a>
+                                <a href="#" data-toggle="modal" data-target="#del_latest_invoice<?= $invoices->id ?>" title="Deletar">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="11"> <strong> Total valor fatura: </strong> R$
+                            <?= number_format($total_value, 2, ",", "."); ?>
                         </td>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="11"> <strong> Total valor fatura: </strong> R$
-                        <?= number_format($total_value, 2, ",", "."); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="11"> <strong> Total valor pago </strong> R$ <?= number_format($total_paid, 2, ",", ".") ?> 
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+                    <tr>
+                        <td colspan="11"> <strong> Total valor pago </strong> R$ <?= number_format($total_paid, 2, ",", ".") ?>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
 
-        <!-- Pagination buttons -->
-        <?php if (count($allInvoicesUsers) > 10) : ?>
-            <div class="row justify-content-center">
-                <nav aria-label="...">
-                    <ul class="pagination pagination-lg">
-                        <?php for ($i = 1; $i <= $numberPages; $i++) : ?>
-                            <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
+            <!-- Pagination buttons -->
+            <?php if ($totalRegistros > 10) : ?>
+                <div class="row justify-content-center">
+                    <nav aria-label="...">
+                        <ul class="pagination pagination-lg">
+                            <?php for ($i = 1; $i <= $numberPages; $i++) : ?>
+                                <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
 
-                            <li class="page-item <?= $active ?>">
-                                <a class="page-link" href="<?= $BASE_URL ?>financial_entry_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
-                            </li>
+                                <li class="page-item <?= $active ?>">
+                                    <a class="page-link" href="<?= $BASE_URL ?>invoices_paid.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
+                                </li>
 
-                        <?php endfor ?>
-                    </ul>
-                </nav>
-            </div>
-        <?php endif ?>
+                            <?php endfor ?>
+                        </ul>
+                    </nav>
+                </div>
+            <?php endif ?>
 
-        <!-- End pagination buttons -->
-    </div>
+            <!-- End pagination buttons -->
+        </div>
+    <?php else : ?>
+        <div class="col-md-12">
+            <hr class="hr">
+            <h5 class="py-2 text-center text-info">Ainda não há faturas cadastradas.</h5>
+        </div>
+    <?php endif ?>
 
 
-    <!-- Invoice user edit status modal -->
+    <!-- Invoice user edit paid status modal -->
     <?php foreach ($allInvoicesUsers as $invoices) : ?>
         <div class="modal fade" id="updateInvoiceUserAdmin<?= $invoices->id ?>" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-top" role="document">
@@ -326,17 +331,13 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
                             <div class="form-group">
                                 <label for="need_password">Confirmar pagamento da fatura:?</label>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="invoice_status" id="invoice_status<?= $invoices->id ?>" value="S" <?= $invoices->paid == "S" ? "checked" : ""; ?> onclick="showPaidValue(<?= $invoices->id ?>)">
-                                    <label class="form-check-label" for="inlineCheckbox1">Sim </label>
-                                </div>
-                                <!-- <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="invoice_status" id="invoice_status" value="N" <?= $invoices->paid == "N" ? "checked" : ""; ?>>
-                                    <label class="form-check-label" for="inlineCheckbox2">Não Pago </label>
+                                    <input class="form-check-input" type="checkbox" name="invoice_status" id="invoice_status_total<?= $invoices->id ?>" value="<?= number_format($invoices->value, 2, ",", ".") ?>" onclick="showPaidValue(<?= $invoices->id ?>)">
+                                    <label class="form-check-label" for="inlineCheckbox2">Valor total </label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="invoice_status" id="invoice_status" value="A" <?= $invoices->paid == "A" ? "checked" : ""; ?>>
-                                    <label class="form-check-label" for="inlineCheckbox3">Aguardando</label>
-                                </div> -->
+                                    <input class="form-check-input" type="checkbox" name="invoice_status" id="invoice_status<?= $invoices->id ?>" value="P" onclick="showPaidValue(<?= $invoices->id ?>)">
+                                    <label class="form-check-label" for="inlineCheckbox1">Valor parcial </label>
+                                </div>
                             </div>
                             <div class="form-group" id="paid_value_div<?= $invoices->id; ?>" style="display: none;">
                                 <label for="">Informe o valor pago:</label>
@@ -352,7 +353,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
             </div>
         </div>
     <?php endforeach; ?>
-    <!-- End Invoice user edit status modal -->
+    <!-- End Invoice user edit paid status modal -->
 
     <!-- Invoice moviment modal Edit -->
     <?php foreach ($allInvoicesUsers as $invoice) : ?>
@@ -530,10 +531,23 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
 
             if (isChecked) {
                 $("#paid_value_div" + i).show();
+                $("#value_paid").val(0);
             } else {
                 $("#paid_value_div" + i).hide();
             }
 
+        });
+
+        $("#invoice_status_total" + i).click(function() {
+            var isChecked = $(this).prop("checked");
+            var invoices_total = $("#invoice_status_total" + i).val(); // Correção: troque .value() por .val()
+
+            if (isChecked) {
+                $("#paid_value_div" + i).show();
+                $("#value_paid").val(invoices_total); // Correção: troque .value por .val()
+            } else {
+                $("#paid_value_div" + i).hide();
+            }
         });
 
     }

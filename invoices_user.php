@@ -23,16 +23,10 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 $offset = ($page - 1) * $resultsPerPage;
 
 $sql = "";
-$invoice_id =
-    $name_invoice =
-    $reference_invoice =
-    $account_invoice =
-    $value_invoice =
-    $emission =
-    $month_invoice = "";
+
 
 if ($_POST) {
-    //echo "pesquisa enviada";
+   
     $sql = "";
     $totalRegistros = 0;
 
@@ -66,6 +60,11 @@ if ($_POST) {
         $sql .= " AND MONTH(emission) = '$month_invoice' ";
     }
 
+    if (isset($_POST['dt_de']) && $_POST['dt_de'] != '' && isset($_POST['dt_ate']) && $_POST['dt_ate'] != '') {
+        $dt_de = $_POST['dt_de'];
+        $dt_ate = $_POST['dt_ate'];
+        $sql .= " AND emission BETWEEN '$dt_de' AND '$dt_ate 23:59:59' ";
+    }
     //echo $sql . "<br>";
 }
 
@@ -90,14 +89,14 @@ $total_entry_value = 0;
         <!-- <h3 class="text-secondary mb-3">Pesquisar:</h3> -->
         <form method="POST" id="meuFormulario">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row ">
+            <div class="row d-flex justify-content-center">
                 <div class="col-lg-2 col-md-3">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
                         <input type="number" name="invoice_id" id="invoice_id" class="form-control" placeholder="Ex: 10" value="<?= $invoice_id ?>">
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-5">
+                <div class="col-lg-3 col-md-5 ">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por referência:</h4>
                         <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $reference_invoice ?>">
@@ -117,13 +116,13 @@ $total_entry_value = 0;
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-5">
+                <div class="col-lg-3 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por emissão:</h4>
                         <input class="form-control" type="date" name="emission" id="emission" value="<?= $emission ?>">
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-5">
+                <div class="col-lg-2 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por mês:</h4>
                         <select class="form-control" name="month_invoice" id="">
@@ -134,7 +133,17 @@ $total_entry_value = 0;
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-1 col-md-2">
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-2 col-md-5">
+                    <h4>De:</h4>
+                    <input class="form-control" type="date" name="dt_de" id="dt_de">
+                </div>
+                <div class="col-lg-2 col-md-5">
+                    <h4>Até:</h4>
+                    <input class="form-control" type="date" name="dt_ate" id="dt_ate">
+                </div>
+                <div class="col-lg-1 col-md-2 text-center">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
                     <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
@@ -144,8 +153,14 @@ $total_entry_value = 0;
 
     <!-- table div thats receive all entrys without customize inputs parameters  -->
     <?php if (count($invoicesUser) > 0) : ?>
-        <div class="table_report table-responsive my-3" id="latest_moviments">
+        <div class="table_report my-3" id="latest_moviments">
             <h3 class="text-center text-secondary">Resultados:</h3>
+            <hr class="hr">
+            <div class="row my-2">
+                <div class="col-lg-12 d-flex justify-content-end ">
+                    <a href="<?= $BASE_URL ?>invoices_paid.php?pagas_user=<?=$userData->id?>" class="btn btn-md btn-outline-dark" id="faturas pagas" title="Limpa todos os campos"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
+                </div>
+            </div>
             <hr class="hr">
             <div class=" d-flex justify-content-end  my-2 info">
                 <div> <i class="fa-solid fa-square text-success"></i> <span> Fatura paga </span> </div>
@@ -182,28 +197,28 @@ $total_entry_value = 0;
                             </td>
                             <?php if ($invoice->invoice_one_status == "PAGO - Baixado" || $invoice->invoice_one_status == "PAGO - Liquidado") : ?>
                                 <td class="bg-success text-white">
-                                   <small> <?= $invoice->invoice_one_status ?> 
+                                    <small>F1 - <?= $invoice->invoice_one_status ?> 
                                 </td>
                             <?php elseif ($invoice->invoice_one_status == "NAO PAGO - Em Aberto") : ?>
                                 <td class="bg-danger text-white">
-                                    <small> <?= $invoice->invoice_one_status ?> </small>
+                                    <small>F1 - <?= $invoice->invoice_one_status ?> </small>
                                 </td>
                             <?php else : ?>
                                 <td class="">
-                                  <small>  <?= $invoice->invoice_one_status ?> </small>
+                                    <small>F1 -  <?= $invoice->invoice_one_status ?> </small>
                                 </td>
                             <?php endif ?>
                             <?php if ($invoice->invoice_two_status == "PAGO - Baixado" || $invoice->invoice_two_status == "PAGO - Liquidado") : ?>
                                 <td class="bg-success text-white">
-                                   <small> <?= $invoice->invoice_two_status ?> </small>
+                                    <small>F2 - <?= $invoice->invoice_two_status ?> </small>
                                 </td>
                             <?php elseif ($invoice->invoice_two_status == "NAO PAGO - Em Aberto") : ?>
                                 <td class="bg-danger text-white">
-                                  <small>  <?= $invoice->invoice_two_status ?> </small>
+                                    <small>F2 -  <?= $invoice->invoice_two_status ?> </small>
                                 </td>
                             <?php else : ?>
                                 <td class="">
-                                   <small> <?= $invoice->invoice_two_status ?> </small>
+                                    <small>F2 - <?= $invoice->invoice_two_status ?> </small>
                                 </td>
                             <?php endif ?>
                             <td>
@@ -245,12 +260,14 @@ $total_entry_value = 0;
                             </td>
 
                             <td id="latest_moviments" class="report-action">
-                                <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
-                                    <i class="fa-solid fa-copy text-secondary"></i>
-                                </a>
-                                <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoice->id ?>">
-                                    <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
-                                </a>
+                                <div class="d-flex">
+                                    <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
+                                        <i class="fa-solid fa-copy text-secondary"></i>
+                                    </a>
+                                    <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoice->id ?>">
+                                        <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -310,7 +327,7 @@ $total_entry_value = 0;
                     <div class="form-group">
                         <label for="cnpinvoice_one_copy">Fatura 1</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                            <input type="text" class="form-control" id="invoice_one_copy" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" readonly>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_one_copy">Copiar</button>
                             </div>
@@ -319,7 +336,7 @@ $total_entry_value = 0;
                     <div class="form-group">
                         <label for="invoice_two_copy">Fatura 2</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                            <input type="text" class="form-control" id="invoice_two_copy" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" readonly>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_two_copy">Copiar</button>
                             </div>
@@ -346,14 +363,14 @@ $total_entry_value = 0;
                 <div class="modal-body">
                     <div class="form-group">
                         <form action="<?= $BASE_URL ?>consulta.php" method="post">
-                            <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_one ?>">
+                            <input type="hidden" name="linha_digitavel" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>">
                             <input type="hidden" name="id" value="<?= $invoice->id ?>">
                             <input type="hidden" name="invoice_type" value="invoice_one_status">
                             <input type="hidden" name="current_status" value="<?= $invoice->invoice_one_status ?>">
                             <div class="form-group">
                                 <label for="invoice_one_copy">Fatura 1</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                    <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" readonly>
                                 </div>
                             </div>
 
@@ -363,14 +380,14 @@ $total_entry_value = 0;
 
                     <div class="form-group">
                         <form action="<?= $BASE_URL ?>consulta.php" method="post">
-                            <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_two ?>">
+                            <input type="hidden" name="linha_digitavel" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>">
                             <input type="hidden" name="id" value="<?= $invoice->id ?>">
                             <input type="hidden" name="invoice_type" value="invoice_two_status">
                             <input type="hidden" name="current_status" value="<?= $invoice->invoice_two_status ?>">
                             <div class="form-group">
                                 <label for="invoice_two_copy">Fatura 2</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                    <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" readonly>
                                 </div>
                             </div>
                             <input class="btn btn-success" type="submit" value="Checar">

@@ -63,15 +63,15 @@
             <?php if (count($allReminders) > 0): ?>
                 <?php foreach ($allReminders as $reminder): ?>
                     <div class="col-md-3 reminder-card pb-3">
-                        <div class="card card-reminder mb-3 border-0" style="max-width: 18rem;">
+                        <div class="card card-reminder mb-3 border-0" >
                             <div class="card-header border border-white"><small><?= $reminder->title ?> <br> <?= $reminder->reminder_date ?></small></div>
                             <div class="card-body">
                                 <p class="card-text"><?= $reminder->description ?>.</p>
                             </div>
                         </div>
                         <div class="text-center">
-                           <a href="" title="Editar" data-toggle="modal" data-target="#reminder_modal_edit<?= $reminder->id ?>"> <i class="fa-solid fa-file-pen"></i> </a>
-                           <a href="" data-toggle="modal" data-target="#modal_del_reminder<?= $reminder->id ?>" title="Deletar"> <i class="fa-solid fa-trash-can"></i> </a>
+                            <a href="" title="Editar" data-toggle="modal" data-target="#reminder_modal_edit<?= $reminder->id ?>"> <i class="fa-solid fa-file-pen"></i> </a>
+                            <a href="" data-toggle="modal" data-target="#modal_del_reminder<?= $reminder->id ?>" title="Deletar"> <i class="fa-solid fa-trash-can"></i> </a>
                         </div>
                     </div>
                 <?php endforeach; ?>

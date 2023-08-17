@@ -131,7 +131,15 @@
             $stmt->bindParam(":users_id", $reminder->users_id);
 
             if($stmt->execute()) {
-                $this->message->setMessage("Lembrete inserido com sucesso!", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Lembrete inserido com sucesso! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "success", "back");
             }
             
 
@@ -155,7 +163,15 @@
             
 
             if ($stmt->execute()) {
-                $this->message->setMessage("Lembrete atualziado com sucesso!", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Lembrete atualizado com sucesso! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "success", "back");
             }            
 
         }
@@ -168,13 +184,20 @@
                 $stmt->bindParam(":id", $id);
 
                 if ($stmt->execute()) {
-                    $this->message->setMessage("Lembrete deletado com sucesso!", "success", "back");
+                    $this->message->setMessage("<script>
+                    Swal.fire({
+                        title: 'Informação',
+                        text: ' Lembrete deletado com sucesso! ',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#0B666A', 
+                        cancelButtonText: 'Fechar',
+                    })
+                    ;</script>", "success", "back");
                 }
 
             }
 
 
         }
-       
 
     }

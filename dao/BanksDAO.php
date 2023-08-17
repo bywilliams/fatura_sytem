@@ -59,7 +59,15 @@
             $stmt->bindParam("logo", $bank->logo, PDO::PARAM_STR);
 
             if ($stmt->execute()) {
-                $this->message->setMessage("Banco criado com sucesso!", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Banco criado com sucesso! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "", "back");
             }
 
         }
@@ -76,7 +84,15 @@
                 $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
                 if ($stmt->execute()) {
-                    $this->message->setMessage("Banco deletado com succeso!", "success", "back");
+                    $this->message->setMessage("<script>
+                    Swal.fire({
+                        title: 'Informação',
+                        text: ' Banco deletado com sucesso! ',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#0B666A', 
+                        cancelButtonText: 'Fechar',
+                    })
+                    ;</script>", "", "back");
                 }
 
             }

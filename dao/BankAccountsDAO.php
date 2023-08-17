@@ -82,7 +82,15 @@
             
 
             if($stmt->execute()) {
-                $this->message->setMessage("Conta cadastrada com sucesso!", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Conta cadastrada com sucesso! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "", "back");
             }
 
         }
@@ -113,7 +121,15 @@
             $stmt->bindParam(":id", $bankAccount->id, PDO::PARAM_STR);
 
             if($stmt->execute()) {
-                $this->message->setMessage("Conta atualizada com sucesso", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Conta atualizada com sucesso! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "", "back");
             }            
 
         }
@@ -127,7 +143,15 @@
                 $stmt->bindParam(":id", $id);
 
                 if ($stmt->execute()) {
-                    $this->message->setMessage("Conta deletada com sucesso!", "success", "back");
+                    $this->message->setMessage("<script>
+                    Swal.fire({
+                        title: 'Informação',
+                        text: ' Conta deletada com sucesso! ',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#0B666A', 
+                        cancelButtonText: 'Fechar',
+                    })
+                    ;</script>", "", "back");
                 }
 
             }

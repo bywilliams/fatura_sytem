@@ -18,7 +18,7 @@ iframe {
 }
 
 #iframe-body {
-    overflow: hidden;
+    overflow: auto;
     background-color: #ccc;
 }
 
@@ -423,10 +423,10 @@ hr.dashed {
 #latest_moviments .icon-button {
     border: none;
     background: none;
-   
     cursor: pointer;
     outline: none;
 }
+
 
 #latest_moviments .icon-button i {
     font-size: 2rem; /* Tamanho do ícone */
@@ -667,10 +667,10 @@ table {
 }
 
 .active-pagination .page-link{
-   background-color: #138496;
-   z-index: 3;
-   color: #fff;
-   border-color: #138496;
+    background-color: #138496;
+    z-index: 3;
+    color: #fff;
+    border-color: #138496;
 }
 
 /* ---------------------------------------------------
@@ -802,19 +802,20 @@ table {
 }
 
 .card_results .account-btn:hover {
-   color: green;
-   background: #fff;
-   border: solid 1px #ccc;
+    color: green;
+    background: #fff;
+    border: solid 1px #ccc;
 }
 
 
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
-@media only screen and (min-width: 1920px) {
-    #conteudo {
-        right: 18.4rem;
+@media (max-width: 1440px) { 
+    #iframe-body {
+        overflow: auto;
     }
+
 }
 
 
@@ -822,6 +823,14 @@ table {
     #conteudo {
         right: 8rem;
     }
+    #iframe-body {
+        overflow: auto;
+    }
+
+    #latest_moviments > div > div {
+        justify-content: center !important;
+    }
+    
 }
 
 @media (max-width: 768px) {
@@ -843,6 +852,18 @@ table {
 
     #conteudo {
         right: 5rem;
+    }
+
+    .actions div {
+        margin-bottom: 5px;
+    }
+
+    .actions #type_account  {
+        margin-top: 10px;
+    }
+
+    .actions .btn {
+        text-align: center;
     }
 }
 
@@ -874,6 +895,16 @@ table {
         display: block !important;
         
     }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .font-weight-normal {
+        text-align: center;
+    }
+
+    
 
 }
 

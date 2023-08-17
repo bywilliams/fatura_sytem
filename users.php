@@ -1,5 +1,6 @@
 <?php
 require_once("templates/header_iframe.php");
+require_once("utils/check_levels_acess_admin.php");
 require_once("dao/UserDAO.php");
 
 $userDao = new UserDao($conn, $BASE_URL);

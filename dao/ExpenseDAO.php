@@ -73,7 +73,15 @@ require_once("utils/config.php");
             $stmt->bindParam(":month_reference", $expense->month_reference, PDO::PARAM_STR);
 
             if($stmt->execute()) {
-                $this->message->setMessage("Despesa cadastrada com sucesso!", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Despesa cadastrada com sucesso! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "success", "back");
             }
 
         }
@@ -94,7 +102,15 @@ require_once("utils/config.php");
             $stmt->bindParam(":id", $expense->id, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                $this->message->setMessage("Despesa atualizada com sucesso", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Despesa atualizada com sucesso! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "", "back");
             }
 
         }
@@ -176,12 +192,27 @@ require_once("utils/config.php");
             return $outFinancialMoviments;
         }
 
-        public function countTypeExpensesCurrentMonth($id) {
+        public function countTotalExpensesCurrentMonth() {
 
             $countResults = 0;
 
-            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM tb_expenses 
-            WHERE user_id = $id 
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM tb_expenses  
+            ORDER BY id
+            ");
+            $stmt->execute();
+
+            $countResults = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+            return $countResults;
+
+        }
+
+        public function countTotalExpensesUserCurrentMonth($id) {
+
+            $countResults = 0;
+
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM tb_expenses
+            WHERE user_id = '$id'  
             ORDER BY id
             ");
             $stmt->execute();
@@ -266,7 +297,15 @@ require_once("utils/config.php");
                 $stmt->bindParam(":id", $id);
 
                 if ($stmt->execute()) {
-                    $this->message->setMessage("Despesa deletada com sucesso", "success", "back");
+                    $this->message->setMessage("<script>
+                    Swal.fire({
+                        title: 'Informação',
+                        text: ' Despesa excluída com sucesso!',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#0B666A', 
+                        cancelButtonText: 'Fechar',
+                    })
+                    ;</script>", "", "back");
                 }
 
             }

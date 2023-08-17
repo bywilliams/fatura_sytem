@@ -182,23 +182,23 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                 <form action="<?= $BASE_URL ?>invoice_process.php" method="post">
                     <input type="hidden" name="type" value="create">
                     <div class="row">
-                        <div class="col-lg-3">
+                        <div class="col-lg-3 col-md-6">
                             <h4 class="font-weight-normal">Descriçao</h4>
                             <input type="text" name="invoice_one" id="invoice_one" class="form-control" placeholder="fatura 1" value="<?= $_SESSION['invoice_one'] ?>">
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-2 col-md-6">
                             <h4 class="font-weight-normal">Emissão</h4>
                             <input class="form-control" type="date" name="date_emission" id="emissao" value="<?= $current_date ?>">
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-2 col-md-6">
                             <h4 class="font-weight-normal">Valor</h4>
                             <input type="text" name="value" id="value" class="form-control money" placeholder="Ex: 80,00:" value="<?= $_SESSION['value'] ?>">
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-2 col-md-6">
                             <h4 class="font-weight-normal">Anotação</h4>
                             <input type="text" name="notation" id="notation" class="form-control" placeholder="importante:" value="<?= $_SESSION['notation'] ?>">
                         </div>
-                        <div class="col-lg-3 text-center">
+                        <div class="col-lg-3  text-center" id="type_account">
                             <h4 class="font-weight-normal">Tipo</h4>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="type_paid" value="1" checked>
@@ -215,19 +215,19 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-lg-3">
+                        <div class="col-lg-3 col-md-6">
                             <h4 class="font-weight-normal">Descriçao</h4>
                             <input type="text" name="invoice_two" id="invoice_two" class="form-control" placeholder="fatura 2" value="<?= $_SESSION['invoice_two'] ?>">
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-2 col-md-6">
                             <h4 class="font-weight-normal">Vencimento</h4>
                             <input class="form-control" type="date" name="dt_expired" id="dt_expired" value="<?= $_SESSION['dt_expired'] ?>">
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-3 col-md-6">
                             <h4 class="font-weight-normal">Referência</h4>
                             <input type="text" name="reference" id="reference" class="form-control" placeholder="Ref: 8723434" value="<?= $_SESSION['reference'] ?>">
                         </div>
-                        <div class="col-lg-2" id="category_div_entry">
+                        <div class="col-lg-2 col-md-6" id="category_div_entry">
                             <h4 class="font-weight-normal">Conta</h4>
                             <select class="form-control" name="account" id="account">
                                 <option value="">Selecione</option>
@@ -239,8 +239,8 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                 <?php endforeach ?>
                             </select>
                         </div>
-                        <div class="col-lg-2">
-                            <input type="submit" class="btn btn-lg btn-success" value="Adicionar"></input>
+                        <div class="col-lg-2 text-center">
+                            <input type="submit" class="btn btn-lg btn-success"  value="Adicionar"></input>
                         </div>
                     </div>
 
@@ -318,7 +318,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                 </thead>
                                 <tbody>
                                     <?php foreach ($latestInvoices as $invoice) : ?>
-                                        <tr>
+                                        <tr class="mb-2">
                                             <td>
                                                 <strong> <?= $invoice->id ?></strong>
                                             </td>
@@ -363,13 +363,6 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                             <td>
                                                 <?= $invoice->dt_expired ?>
                                             </td>
-                                            <!-- <td class="info">
-                                                <?php if ($invoice->paid == "S") : ?>
-                                                    <i class="fa-regular fa-square-check text-success"></i>
-                                                <?php else : ?>
-                                                    <i class="fa-regular fa-square-check text-danger"></i>
-                                                <?php endif ?>
-                                            </td> -->
                                             <td class="">
                                                 <div class="invoice_card_img text-left px-2">
                                                     <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoice->conta_img ?>" alt="">
@@ -394,14 +387,15 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                     </div>
                                                 <?php endif; ?>
                                             </td>
-                                            <td>
-                                                <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
-                                                    <i class="fa-solid fa-copy text-secondary"></i>
-                                                </a>
-                                                <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoice->id ?>">
-                                                    <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
-                                                </a>
-
+                                            <td >
+                                                <div class="d-flex">
+                                                    <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
+                                                        <i class="fa-solid fa-copy text-secondary"></i>
+                                                    </a>
+                                                    <a href="#" data-toggle="modal" data-target=".checkStatusInvoice<?= $invoice->id ?>">
+                                                        <i class="fa-solid fa-receipt fa-2x text-sucsess"></i>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -410,24 +404,22 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
 
                         </div>
 
-                        <div class="offset-md-3 col-md-6 pb-3 text-center icons_latest">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-12 my-2 ver_entradas">
+                        
+                            <div class="row d-flex justify-content-center text-center">
+                                <div class="col-lg-3 col-md-5 my-2 ver_entradas">
                                     <a href="<?= $BASE_URL ?>invoices_user.php">
                                         <i class="fa-solid fa-plus"></i>
                                         &nbsp; Ver todas as receitas
                                     </a>
                                 </div>
 
-                                <div class="col-md-6 col-sm-12 my-2 ver_saidas">
+                                <div class="col-lg-3 col-md-5  my-2 ver_saidas">
                                     <a href="<?= $BASE_URL ?>add_expenses.php">
                                         <i class="fa-solid fa-minus"></i>
                                         &nbsp; Ver todas as despesas
                                     </a>
                                 </div>
                             </div>
-
-                        </div>
                     </div>
                 </div>
             </div>
@@ -676,7 +668,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             <div class="form-group">
                                 <label for="cnpinvoice_one_copy">Fatura 1</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                    <input type="text" class="form-control" id="invoice_one_copy" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" readonly>
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_one_copy">Copiar</button>
                                     </div>
@@ -685,7 +677,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             <div class="form-group">
                                 <label for="invoice_two_copy">Fatura 2</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                    <input type="text" class="form-control" id="invoice_two_copy" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" readonly>
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_two_copy">Copiar</button>
                                     </div>
@@ -712,14 +704,14 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         <div class="modal-body">
                             <div class="form-group">
                                 <form action="<?= $BASE_URL ?>consulta.php" method="post">
-                                    <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_one ?>">
+                                    <input type="hidden" name="linha_digitavel" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>">
                                     <input type="hidden" name="id" value="<?= $invoice->id ?>">
                                     <input type="hidden" name="invoice_type" value="invoice_one_status">
                                     <input type="hidden" name="current_status" value="<?= $invoice->invoice_one_status ?>">
                                     <div class="form-group">
                                         <label for="invoice_one_copy">Fatura 1</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                            <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" readonly>
                                         </div>
                                     </div>
 
@@ -729,14 +721,14 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
 
                             <div class="form-group">
                                 <form action="<?= $BASE_URL ?>consulta.php" method="post">
-                                    <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_two ?>">
+                                    <input type="hidden" name="linha_digitavel" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>">
                                     <input type="hidden" name="id" value="<?= $invoice->id ?>">
                                     <input type="hidden" name="invoice_type" value="invoice_two_status">
                                     <input type="hidden" name="current_status" value="<?= $invoice->invoice_two_status ?>">
                                     <div class="form-group">
                                         <label for="invoice_two_copy">Fatura 2</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                            <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" readonly>
                                         </div>
                                     </div>
                                     <input class="btn btn-success" type="submit" value="Checar">
@@ -878,7 +870,13 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
     var clipboard = new ClipboardJS('.copy-btn');
 
     clipboard.on('success', function(event) {
-        alert('Texto copiado com sucesso!');
+        Swal.fire({
+            title: 'Informação',
+            text: ' Código da fatura copiado! ',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#0B666A',
+            cancelButtonText: 'Fechar',
+        });
         event.clearSelection();
     });
 

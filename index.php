@@ -55,43 +55,8 @@ if (!empty($flashMessage)) {
                 </form>
             </div>
             <!-- End Login Form -->
-
-            <!-- Modal password recovery -->
-            <div class="modal fade" id="recoveryModal" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalCenterTitle">Recuperar senha</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="" method="post" id="demo-form">
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="passwrod">Informe o e-mail de login:</label>
-                                    <input type="email" class="form-control" id="recovery_email" name="recovery_email"
-                                        placeholder="Seu Email *">
-                                </div>
-                                <p class="text-center">Você receberá um e-mail com instruções para recuperar a senha, se necessário confira a caixa de spam ou lixo eletrônico.
-                                </p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="6LerVrQlAAAAAGTqG_0Ir32eNErvWsVHEjKp5rjs"
-                                data-callback="onSubmit"
-                                data-action="submit">Recuperar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <!-- End Modal password recovery -->
         </div>
     </div>
 </main>
 
 <?php require_once("templates/footer.php"); ?>
-<script src="js/jquery.min.js"></script>
-<script src="https://www.google.com/recaptcha/api.js"></script>

@@ -1,6 +1,7 @@
 <?php 
     require_once("globals.php");
     require_once("templates/header_iframe.php");
+    require_once("utils/check_levels_acess_admin.php");
     require_once("connection/conn.php");
     require_once("dao/UserDAO.php");
 

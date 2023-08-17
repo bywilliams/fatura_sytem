@@ -6,8 +6,7 @@ require_once("connection/conn.php");
 require_once("models/Message.php");
 require_once("models/User.php");
 require_once("dao/UserDAO.php");
-
-// require_once("utils/check_inactivity.php");
+require_once("utils/check_inactivity.php");
 
 $message = new Message($BASE_URL);
 $user = new User();

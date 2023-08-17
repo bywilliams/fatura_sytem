@@ -1,5 +1,6 @@
 <?php
 require_once("templates/header_iframe.php");
+require_once("utils/check_levels_acess_admin.php");
 require_once("dao/InvoicesDAO.php");
 require_once("dao/UserDAO.php");
 
@@ -24,23 +25,21 @@ $balaceGeneral = $invoiceDao->getBalanceGeneral($sql);
         <i class="fa-solid fa-scale-balanced"></i>
     </h1>
     <h3 class="text-center">Filtrar por funcionário:</h3>
-    <div class="row offset-md-4 my-3">
-   
-        <div class="col-lg-4 ">
+    <div class="row d-flex justify-content-center my-3">
+
+        <div class="col-lg-5 col-md-6 ml-3 mt-2">
             <div class="form-group" id="meuFormulario">
                 <form action="" method="GET">
-                   
                     <select class="form-control" name="user_id" id="user_id" >
                         <option value="">Todos</option>
                         <?php foreach ($allUsers as $user): ?>
                             <option value="<?= trim($user->id) ?>" <?= $user_id == $user->id ? "selected" : ""; ?>> <?= $user->getFullName($user) ?> </option>
                         <?php endforeach ?>
                     </select>
-               
             </div>
         </div>
-        <div class="col-lg-4">
-            <input class="btn btn-md btn-success" type="submit" value="Enviar">
+        <div class="col-lg-3 col-md-6 d-flex justify-content-center">
+            <input class="btn btn-lg btn-success" type="submit" value="Enviar">
             </form>
         </div>
     </div>
@@ -69,12 +68,6 @@ $balaceGeneral = $invoiceDao->getBalanceGeneral($sql);
                 </div>
                 <div class="card-body">
                     <h1 class="card-title pricing-card-title text-success" id="revenue_h1">+ R$ <?= number_format($balaceGeneral[0]['total_invoices'], 2, ",", ".") ?> </h1>
-                    <!-- <small class="text-muted"><strong>Menor receita</strong> <br>
-                         'Não há dados registrados';
-                        <br>
-                        <strong>Maior receita</strong> <br>
-                         'Não há dados registrados';
-                    </small> -->
                 </div>
             </div>
         </div>
@@ -86,12 +79,6 @@ $balaceGeneral = $invoiceDao->getBalanceGeneral($sql);
                 </div>
                 <div class="card-body">
                     <h1 class="card-title pricing-card-title text-success" id="revenue_h1">+ R$ <?= number_format($balaceGeneral[0]['total_paid_invoices'], 2, ",", ".") ?> </h1>
-                    <!-- <small class="text-muted"><strong>Menor receita</strong> <br>
-                         'Não há dados registrados';
-                        <br>
-                        <strong>Maior receita</strong> <br>
-                         'Não há dados registrados';
-                    </small> -->
                 </div>
             </div>
         </div>
@@ -103,12 +90,6 @@ $balaceGeneral = $invoiceDao->getBalanceGeneral($sql);
                 </div>
                 <div class="card-body">
                     <h1 class="card-title pricing-card-title text-danger" id="revenue_h1">- R$ <?= number_format($balaceGeneral[0]['total_expenses'], 2, ",", ".") ?> </h1>
-                    <!-- <small class="text-muted"><strong>Menor receita</strong> <br>
-                         'Não há dados registrados';
-                        <br>
-                        <strong>Maior receita</strong> <br>
-                         'Não há dados registrados';
-                    </small> -->
                 </div>
             </div>
         </div>
@@ -120,12 +101,6 @@ $balaceGeneral = $invoiceDao->getBalanceGeneral($sql);
                 </div>
                 <div class="card-body">
                     <h1 class="card-title pricing-card-title <?= $balaceGeneral[0]['balance'] > 0 ? "text-success" : "text-danger" ?>" id="revenue_h1"> R$ <?= number_format($balaceGeneral[0]['balance'], 2, ",", ".") ?> </h1>
-                    <!-- <small class="text-muted"><strong>Menor receita</strong> <br>
-                         'Não há dados registrados';
-                        <br>
-                        <strong>Maior receita</strong> <br>
-                         'Não há dados registrados';
-                    </small> -->
                 </div>
             </div>
         </div>

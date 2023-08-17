@@ -1,6 +1,7 @@
 <?php
 
 require_once("globals.php");
+require_once("utils/config.php");
 require_once("connection/conn.php");
 require_once("dao/InvoicesDAO.php");
 require_once("dao/UserDAO.php");
@@ -33,19 +34,18 @@ if ($type == "create") {
     $_SESSION['account'] = $data['account'];
 
 
-    if($data) {
+    if ($data) {
 
         $invoice = new Invoices();
-        $invoice->invoice_one = $data['invoice_one'];
+        $invoice->invoice_one = encryptData($data['invoice_one'], $encryptionKey);
         $invoice->emission = $data['emission'];
-        $value = preg_replace("/[^0-9.]+/i","",$data['value']);
-        //echo $value; 
-        $value = str_replace(",",".",$value);
-        //echo $value; 
+        $value = str_replace([".", ","], "", $data['value']); // Remove pontos e vírgulas
+        $value = substr_replace($value, ".", -2, 0); // Insere o ponto na posição correta para as casas decimais
+        //echo $value; exit;
         $invoice->value = $value;
         $invoice->notation = $data['notation'];
         $invoice->type = $data['type_paid'];
-        $invoice->invoice_two = $data['invoice_two'];
+        $invoice->invoice_two = encryptData($data['invoice_two'], $encryptionKey);
         $invoice->dt_expired = $data['dt_expired'];
         $invoice->reference = $data['reference'];
         $invoice->account = $data['account'];
@@ -65,86 +65,76 @@ if ($type == "create") {
             $_SESSION['dt_expired'] = "";
             $_SESSION['reference'] = "";
             $_SESSION['account'] = "";
-
         } catch (PDOException $e) {
             echo "Erro ao cadastrar faturas, consulte o administrador do sistema. <br>";
-            echo "Error: ". $e->getMessage();
-
+            echo "Error: " . $e->getMessage();
         }
-
-    }else {
+    } else {
         $message->setMessage("Preencha os campos necessários!", "error", "back");
     }
-      
+
     // $value = filter_input(INPUT_POST, "value");
     // $value = preg_replace("/[^0-9,]+/i","",$value);
     // $value = str_replace(",",".",$value);
 
 
-    
+
 } else if ($type == "update") {
 
     $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
     if ($data) {
         $invoice = new Invoices();
-    
+
         // Preenche os dados de finança no objeto
-        $invoice->invoice_one = $data['invoice_one'];
-        
-        $value = $data['value'];
-        $value = preg_replace("/[^0-9,]+/i","",$value);
-        $value = str_replace(",",".",$value);
-        //echo $value; exit;
+        $invoice->invoice_one = encryptData($data['invoice_one'], $encryptionKey);
+        $value = str_replace([".", ","], "", $data['value']); // Remove pontos e vírgulas
+        $value = substr_replace($value, ".", -2, 0); // Insere o ponto na posição correta para as casas decimais
+        // echo $value; exit;
         $invoice->value = $value;
         $invoice->type = $data['type_edit'];
         $invoice->notation = $data['notation'];
         $invoice->dt_expired = $data['dt_expired'];
-        $invoice->invoice_two = $data["invoice_two"];
+        $invoice->invoice_two = encryptData($data["invoice_two"], $encryptionKey);
         $invoice->reference = $data['reference'];
         $invoice->account = $data['account'];
         $invoice->id = $data['id'];
-        
+
         try {
             $invoiceDao->updateUserInvoice($invoice);
         } catch (\PDOException $e) {
             // echo "Erro ao atualizar fatura, consulte o administrador do sistena.";
             echo "Error: " . $e->getMessage();
         }
-    }else {
+    } else {
         $message->setMessage("Houve um erro inesperado.", "error", "index.php");
     }
-
-
-    
-} else if ($type == "editInvoiceStatus"){
+} else if ($type == "editInvoiceStatus") {
 
     $invoice_status = filter_input(INPUT_POST, "invoice_status");
     $value_paid = filter_input(INPUT_POST, "value_paid");
-    $value = preg_replace("/[^0-9,]+/i","",$value_paid);
-    $value = str_replace(",",".",$value);
+    $value = preg_replace("/[^0-9,]+/i", "", $value_paid);
+    $value = str_replace(",", ".", $value);
     $invoice_id = filter_input(INPUT_POST, "id");
 
     //echo "$invoice_status, $value_paid, $invoice_id"; exit;
 
     if ($invoice_status) {
-        
+
         $invoice = new Invoices();
         $invoice->value = $value;
         $invoice->id = $invoice_id;
-       
+
         try {
             $invoiceDao->setInvoicePaidAdmin($invoice);
         } catch (PDOException $e) {
             //echo "Erro ao atualizar fatura, consulte o administrado do sistema";
             echo "Error: " . $e->getMessage();
         }
-
-    }else {
+    } else {
         $message->setMessage("Preencha o campo de status!", "error", "back");
     }
-
-} else if($type == "delete"){
+} else if ($type == "delete") {
 
     // Pega id de resgitro para deleção
     $id = filter_input(INPUT_POST, "id");
@@ -157,9 +147,7 @@ if ($type == "create") {
             //echo "Erro ao deletar registro, consulte o administrador do sistema";
             echo "Falha ao deletar registro : {$e->getMessage()}";
         }
-    }else {
+    } else {
         $message->setMessage("Um erro foi encontrado", "error", "index.php");
     }
-    
 }
-

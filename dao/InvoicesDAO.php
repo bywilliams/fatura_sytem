@@ -214,47 +214,30 @@
 
         public function countAllInvoicesForAdmin() {
 
-            $invoices = [];
+            $countResults = 0;
 
-            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM invoices 
-            ");
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM invoices ");
 
             $stmt->execute();
 
-            if ($stmt->rowCount() > 0) {
-                
-                $data = $stmt->fetchAll();
+            $countResults = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-                foreach ($data as $invoice) {
-                    $invoices[] = $this->buildInvoice($invoice);
-                }
-
-            }
-
-            return $invoices;
+            return $countResults;
 
         }
 
         public function countAllInvoicesPaidForAdmin() {
 
-            $invoices = [];
+            $CountRsults = 0;
 
             $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM invoices WHERE paid = 'S'
             ");
 
             $stmt->execute();
 
-            if ($stmt->rowCount() > 0) {
-                
-                $data = $stmt->fetchAll();
+            $CountRsults = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-                foreach ($data as $invoice) {
-                    $invoices[] = $this->buildInvoice($invoice);
-                }
-
-            }
-
-            return $invoices;
+            return $CountRsults;
 
         }
 
@@ -372,7 +355,15 @@
             $stmt->bindParam(":id", $invoice->id);
 
             if ($stmt->execute()) {
-                $this->message->setMessage("Fatura marcada como paga!", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Fatura marcada como paga! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "", "back");
             }
 
         }
@@ -535,7 +526,15 @@
             $stmt->bindParam(":id", $invoice->id);
 
             if ($stmt->execute()) {
-                $this->message->setMessage("Fatura atualizada com sucesso!", "success", "back");
+                $this->message->setMessage("<script>
+                Swal.fire({
+                    title: 'Informação',
+                    text: ' Fatura ataulizada com sucesso! ',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#0B666A', 
+                    cancelButtonText: 'Fechar',
+                })
+                ;</script>", "", "back");
             }
 
         }

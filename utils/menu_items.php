@@ -8,6 +8,9 @@
         </a>
         <ul class="collapse list-unstyled" id="admin">
             <li>
+                <a href="<?= $BASE_URL ?>admin_central.php" target="myFrame">Central</a>
+            </li>
+            <!-- <li>
                 <a href="<?= $BASE_URL ?>add_banks.php" target="myFrame">Bancos</a>
             </li>
             <li>
@@ -30,7 +33,7 @@
             </li>
             <li>
                 <a href="<?= $BASE_URL ?>balance.php" target="myFrame">Balanço</a>
-            </li>
+            </li> -->
         </ul>
     </li>
     <?php endif ?>

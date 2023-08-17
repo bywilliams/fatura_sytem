@@ -21,7 +21,8 @@
         public function updateUserExpense(Expense $expense);
         public function getReports($sql, $id);
         public function getAllExpensesToPagination($id, $sql, $resultsPerPage = "", $offset = "");
-        public function countTypeExpensesCurrentMonth($id);
+        public function countTotalExpensesCurrentMonth();
+        public function countTotalExpensesUserCurrentMonth($user_id);
         public function getBiggestExpense($id);
         public function getLowerExpense($id);
         public function getAllCashOutflow($id);

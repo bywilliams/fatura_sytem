@@ -120,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //echo "Status: " . $current_status; "<br>"; exit;
     // echo $linha_digitavel . "<br>";
     // echo "id: $id"; 
+    
 
     // Formatar a linha digitável
     $linha_digitavel_formatada = formatarLinhaDigitavel($linha_digitavel);

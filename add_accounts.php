@@ -1,5 +1,6 @@
 <?php
 require_once("templates/header_iframe.php");
+require_once("utils/check_levels_acess_admin.php");
 require_once("dao/BanksDAO.php");
 
 $banksDao = new banksDAO($conn, $BASE_URL);
@@ -72,7 +73,7 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
                         <input class="form-control" type="color" name="color" id="color" value="<?= $_SESSION['color'] ?>" required>
                     </div>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-1 text-center">
                     <input type="submit" class="btn btn-lg btn-success" value="Adicionar"></input>
                 </div>
             </div>
@@ -80,8 +81,8 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
     </div>
 
     <!-- Card contaider auto fill -->
-    <div class="card_example pb-3" id="cards-page">
-        <div class="offset-md-4 col-md-4">
+    <div class="row d-flex justify-content-center card_example pb-3" id="cards-page">
+        <div class=" col-lg-4 col-md-6">
             <div class="card-credit px-2" id="card-credit-bg">
 
                 <div class="card_info">

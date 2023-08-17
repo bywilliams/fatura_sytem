@@ -1,5 +1,6 @@
 <?php
 require_once("templates/header_iframe.php");
+require_once("utils/check_levels_acess_admin.php");
 require_once("utils/config.php");
 require_once("dao/ExpenseDAO.php");
 require_once("dao/UserDAO.php");
@@ -10,9 +11,9 @@ $allUsers = $uersDao->findAllUsers();
 $expensesDao = new ExpenseDAO($conn, $BASE_URL);
 
 /* paginação do relatório  */
-$totalRegistros = $expensesDao->countTypeExpensesCurrentMonth($userData->id);
+$totalRegistros = $expensesDao->countTotalExpensesCurrentMonth();
 
-$resultsPerPage = 10;
+$resultsPerPage = 20;
 $numberPages = ceil($totalRegistros / $resultsPerPage);
 
 // Pega numero da página atual
@@ -21,11 +22,6 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 $offset = ($page - 1) * $resultsPerPage;
 
 $sql = "";
-$expense_id = 
-$name_expense = 
-$user_expense =
-$month_expense = "";
-
 
 if ($_POST) {
     //echo "pesquisa enviada";
@@ -68,37 +64,37 @@ $total_out_value = 0;
     <div class="entrys-search" id="entrys-search">
         <form method="POST">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row offset-sm-1">
-                <div class="col-md-2">
+            <div class="row justify-content-center">
+                <div class="col-lg-2 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
                         <input type="number" name="expense_id" id="expense_id" class="form-control" placeholder="Ex: 10" value="<?= $expense_id ?>">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-lg-3 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por nome:</h4>
                         <input type="text" name="name_expense" id="name_expense" class="form-control" placeholder="Ex: salário" value="<?= $name_expense ?>">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-lg-3 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por funcionário:</h4>
                         <select class="form-control" name="user_expense" id="user_expense">
                             <option value="">Selecione</option>
                             <?php foreach($allUsers as $user): ?>
-                                <option value="<?= $user->id ?>"><?= $user->getFullName($user) ?></option>
+                                <option value="<?= $user->id ?>" <?= $user->id == $user_expense ? "selected" : ""; ?>><?= $user->getFullName($user) ?></option>
                             <?php endforeach ?>
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6">
+                <div class="col-lg-2 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por mês:</h4>
                         <input type="month" name="month_expense" id="month_expense" class="form-control" value="<?= $month_expense_input ?>">
                     </div>
                 </div>
-                <div class="col-md-1">
+                <div class="col-lg-1 text-center">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
                     <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
@@ -128,7 +124,7 @@ $total_out_value = 0;
                     $value = str_replace('.', '', $expense->value);
                     $total_out_value += (float) $value; 
                     ?>
-                    <tr>
+                    <tr class="mb-2">
                         <th scope="row"><?= $expense->id ?></th>
                         <td><?= $expense->description ?></td>
                         <td><?= $expense->value ?></td>
@@ -150,7 +146,7 @@ $total_out_value = 0;
                 </tr>
             </tfoot>
         </table>
-        <?php if($totalRegistros > 10): ?>
+        <?php if($totalRegistros > 20): ?>
         <!-- Pagination buttons -->
         <div class="row justify-content-center">
             <nav aria-label="...">
@@ -159,7 +155,7 @@ $total_out_value = 0;
                         <?php $active = ($i == $page) ? "active-pagination" : ""; ?>
 
                         <li class="page-item <?=$active?>">
-                            <a class="page-link" href="<?= $BASE_URL ?>financial_exit_report.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
+                            <a class="page-link" href="<?= $BASE_URL ?>expenses_users.php?page=<?= $i ?>" tabindex="-1"><?= $i ?></a>
                         </li>
 
                     <?php endfor ?>

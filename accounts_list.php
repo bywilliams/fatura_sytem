@@ -1,9 +1,9 @@
 <?php
 require_once("templates/header_iframe.php");
+require_once("utils/check_levels_acess_admin.php");
 require_once("globals.php");
 require_once("utils/config.php");
 require_once("connection/conn.php");
-// require_once("models/BankAccounts.php");
 require_once("dao/BankAccountsDAO.php");
 
 // $bankAccout = new BankAccounts();
@@ -24,7 +24,7 @@ $accounts = $bankAccountsDao->getAllBankAccounts();
         <!-- Each Card  -->
         <div class="row card_example" id="cards-page">
             <?php foreach ($accounts as $account) : ?>
-                <div class="col-md-4  my-3">
+                <div class="col-lg-4 col-md-6  my-3">
                     <div class="card-credit shadow" id="card-credit-bg" style="background: <?= $account->card_color ?>">
 
                         <div class="card_info">

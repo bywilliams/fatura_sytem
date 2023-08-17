@@ -70,12 +70,12 @@ $total_entry_value = 0;
                             <div class="my-3 d-flex justify-content-between">
                                 <div class="text-white">
                                     <img src="<?= $BASE_URL ?>assets/home/contas/<?= $account->bank_logo ?>" alt="">
-                                    <span class="copy-data"> <?= $account->cod . " - " . $account->bank_name ?> </span>
+                                    <span class="copy-data"><?= $account->cod . " - " . $account->bank_name ?> </span>
                                 </div>
                                 <button class="copy-all-btn" data-clipboard-group="<?= $account->id ?>">Tudo</button>
                             </div>
                             <div class="mt-2 d-flex justify-content-between">
-                                <p class="text-white copy-data" id="razao<?= $account->id ?>"> <?= decryptData($account->razao_social, $encryptionKey) ?> </p>
+                                <p class="text-white copy-data" id="razao<?= $account->id ?>"><?= decryptData($account->razao_social, $encryptionKey) ?> </p>
                                 <button class="copy-btn" data-clipboard-target="#razao<?= $account->id ?>">Copiar</button>
                             </div>
                             <div class="card_pix d-flex justify-content-between">
@@ -294,7 +294,7 @@ $(document).ready(function() {
                 var card = $(trigger).closest(".card-credit");
                 var textToCopy = card.find(".copy-data").map(function() {
                     return $(this).text();
-                }).get().join("\n ");
+                }).get().join("\n");
                 return textToCopy;
             }
         });

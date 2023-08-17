@@ -25,13 +25,7 @@ $offset = ($page - 1) * $resultsPerPage;
 $currentDate = date("Y-m-d");
 
 $sql = " AND DATE(dt_expired) = '$currentDate' ";
-$invoice_id =
-    $name_invoice =
-    $account_invoice =
-    $day =
-    $date =
-    $value_invoice =
-    $month_invoice = "";
+
 
 if ($_POST) {
     //echo "pesquisa enviada";
@@ -243,7 +237,6 @@ for ($i = 1; $i <= 31; $i++) {
                                     <span class="ml-2 text-center"></span> <?= decryptData($invoice->razao_social, $encryptionKey) ?> </span>
                                 </div>
                             </td>
-
                             <td>
                                 <?php if ($invoice->notation != "") : ?>
                                     <a href="#!" id="grupos<?= $invoice->id ?>" onclick="openTooltip(<?= $invoice->id ?>)"><img src="<?= $BASE_URL ?>assets/home/dashboard-main/message_alert.gif" alt="message_alert" title="ver observação" width="33" height="30"> </a>
@@ -262,7 +255,6 @@ for ($i = 1; $i <= 31; $i++) {
                                     </div>
                                 <?php endif; ?>
                             </td>
-
                             <td id="latest_moviments" class="report-action">
                                 <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
                                     <i class="fa-solid fa-copy text-info"></i>
@@ -329,14 +321,14 @@ for ($i = 1; $i <= 31; $i++) {
                 <div class="modal-body">
                     <div class="form-group">
                         <form action="<?= $BASE_URL ?>consulta.php" method="post">
-                            <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_one ?>">
+                            <input type="hidden" name="linha_digitavel" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>">
                             <input type="hidden" name="id" value="<?= $invoice->id ?>">
                             <input type="hidden" name="invoice_type" value="invoice_one_status">
                             <input type="hidden" name="current_status" value="<?= $invoice->invoice_one_status ?>">
                             <div class="form-group">
                                 <label for="invoice_one_copy">Fatura 1</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                    <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" readonly>
                                 </div>
                             </div>
 
@@ -346,14 +338,14 @@ for ($i = 1; $i <= 31; $i++) {
 
                     <div class="form-group">
                         <form action="<?= $BASE_URL ?>consulta.php" method="post">
-                            <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_two ?>">
+                            <input type="hidden" name="linha_digitavel" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>">
                             <input type="hidden" name="id" value="<?= $invoice->id ?>">
                             <input type="hidden" name="invoice_type" value="invoice_two_status">
                             <input type="hidden" name="current_status" value="<?= $invoice->invoice_two_status ?>">
                             <div class="form-group">
                                 <label for="invoice_two_copy">Fatura 2</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                    <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" readonly>
                                 </div>
                             </div>
                             <input class="btn btn-success" type="submit" value="Checar">
@@ -381,7 +373,7 @@ for ($i = 1; $i <= 31; $i++) {
                     <div class="form-group">
                         <label for="cnpinvoice_one_copy">Fatura 1</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                            <input type="text" class="form-control" id="invoice_one_copy" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" readonly>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_one_copy">Copiar</button>
                             </div>
@@ -390,7 +382,7 @@ for ($i = 1; $i <= 31; $i++) {
                     <div class="form-group">
                         <label for="invoice_two_copy">Fatura 2</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                            <input type="text" class="form-control" id="invoice_two_copy" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" readonly>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-success copy-btn" data-clipboard-target="#invoice_two_copy">Copiar</button>
                             </div>
