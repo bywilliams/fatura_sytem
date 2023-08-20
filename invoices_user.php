@@ -158,7 +158,7 @@ $total_entry_value = 0;
             <hr class="hr">
             <div class="row my-2">
                 <div class="col-lg-12 d-flex justify-content-end ">
-                    <a href="<?= $BASE_URL ?>invoices_paid.php?pagas_user=<?=$userData->id?>" class="btn btn-md btn-outline-dark" id="faturas pagas" title="Limpa todos os campos"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
+                    <a href="<?= $BASE_URL ?>invoices_paid.php?pagas_user=<?=$userData->id?>" class="btn btn-md btn-outline-dark" id="faturas pagas" title="Ver faturas pagas"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
                 </div>
             </div>
             <hr class="hr">

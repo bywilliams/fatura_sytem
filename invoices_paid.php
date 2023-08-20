@@ -100,7 +100,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
         <!-- <h3 class="text-secondary mb-3">Pesquisar:</h3> -->
         <form method="POST" id="meuFormulario">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row">
+            <div class="row d-flex justify-content-center">
                 <div class="col-lg-1">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
@@ -152,7 +152,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
                         </div>
                     </div>
                 <?php endif ?>
-                <div class="col-md-1">
+                <div class="col-md-1 text-center">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
                     <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
@@ -372,7 +372,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
                             <input type="hidden" name="id" value="<?= $invoice->id ?>">
                             <div class="form-group">
                                 <label for="invoice_one">Descriçao: <small>(fatura 1)</small> </label>
-                                <input class="form-control" type="text" name="invoice_one" id="" value="<?= $invoice->invoice_one ?>" required>
+                                <input class="form-control" type="text" name="invoice_one" id="" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" required>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -409,7 +409,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
                             </div>
                             <div class="form-group">
                                 <label for="invoice_two">Descriçao: <small>(fatura 2)</small> </label>
-                                <input class="form-control" type="text" name="invoice_two" id="" value="<?= $invoice->invoice_two ?>" required>
+                                <input class="form-control" type="text" name="invoice_two" id="" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" required>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -479,7 +479,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
                     <div class="modal-body">
                         <div class="form-group">
                             <form action="<?= $BASE_URL ?>consulta_admin.php" method="post">
-                                <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_one ?>">
+                                <input type="hidden" name="linha_digitavel" value="<?= decryptData($invoice->invoice_one, 2) ?>">
                                 <input type="hidden" name="id" value="<?= $invoice->id ?>">
                                 <input type="hidden" name="invoice_type" value="invoice_one_status">
                                 <input type="hidden" name="current_status" value="<?= $invoice->invoice_one_status ?>">
@@ -487,7 +487,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
                                     <label for="invoice_one_copy">Fatura 1</label>
                                     <small class="bg-secondary text-white px-2 rounded">Status atual no sistema: <?= $invoice->invoice_one_status ?> </small>
                                     <div class="input-group">
-                                        <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= $invoice->invoice_one ?>" readonly>
+                                        <input type="text" class="form-control <?= $invoice->invoice_one_status == "S" ? "bg-success" : ($invoice->invoice_one_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_one_copy" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" readonly>
                                     </div>
                                 </div>
 
@@ -497,7 +497,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
 
                         <div class="form-group">
                             <form action="<?= $BASE_URL ?>consulta_admin.php" method="post">
-                                <input type="hidden" name="linha_digitavel" value="<?= $invoice->invoice_two ?>">
+                                <input type="hidden" name="linha_digitavel" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>">
                                 <input type="hidden" name="id" value="<?= $invoice->id ?>">
                                 <input type="hidden" name="invoice_type" value="invoice_two_status">
                                 <input type="hidden" name="current_status" value="<?= $invoice->invoice_two_status ?>">
@@ -505,7 +505,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
                                     <label for="invoice_two_copy">Fatura 2</label>
                                     <small class="bg-secondary text-white px-2 rounded">Status atual no sistema: <?= $invoice->invoice_two_status ?> </small>
                                     <div class="input-group">
-                                        <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= $invoice->invoice_two ?>" readonly>
+                                        <input type="text" class="form-control <?= $invoice->invoice_two_status == "S" ? "bg-success" : ($invoice->invoice_two_status == "N" ? "text-white bg-danger" : "") ?>" id="invoice_two_copy" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" readonly>
                                     </div>
                                 </div>
                                 <input class="btn btn-success" type="submit" value="Checar">

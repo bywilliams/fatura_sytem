@@ -102,7 +102,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
         <form method="POST" id="meuFormulario">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
             <div class="row d-flex justify-content-center">
-                <div class="col-lg-1 col-md-6">
+                <div class="col-lg-1 col-md-2">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
                         <input type="number" name="invoice_id" id="invoice_id" class="form-control" placeholder="Ex: 10" value="<?= $invoice_id ?>">
@@ -114,7 +114,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                         <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $reference_invoice ?>">
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-lg-2 col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por conta:</h4>
                         <select class="form-control" name="account_invoice" id="account_invoice">
@@ -140,7 +140,9 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                         <input class="form-control" type="date" name="dt_expired" id="dt_expired" value="<?= $dt_expired ?>">
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-6">
+            </div>
+            <div class="row d-flex justify-content-center">
+            <div class="col-lg-2 col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por usuário:</h4>
                         <select class="form-control" name="user_id" id="">
@@ -151,13 +153,11 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="row d-flex justify-content-center">
-                <div class="col-lg-2 col-md-6">
+                <div class="col-lg-2 col-md-4">
                     <h4>De:</h4>
                     <input class="form-control" type="date" name="dt_de" id="dt_de">
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-lg-2 col-md-4">
                     <h4>Até:</h4>
                     <input class="form-control" type="date" name="dt_ate" id="dt_ate">
                 </div>
@@ -387,7 +387,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                             <input type="hidden" name="id" value="<?= $invoice->id ?>">
                             <div class="form-group">
                                 <label for="invoice_one">Descriçao: <small>(fatura 1)</small> </label>
-                                <input class="form-control" type="text" name="invoice_one" id="" value="<?= $invoice->invoice_one ?>" required>
+                                <input class="form-control" type="text" name="invoice_one" id="" value="<?= decryptData($invoice->invoice_one, $encryptionKey) ?>" required>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -424,7 +424,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                             </div>
                             <div class="form-group">
                                 <label for="invoice_two">Descriçao: <small>(fatura 2)</small> </label>
-                                <input class="form-control" type="text" name="invoice_two" id="" value="<?= $invoice->invoice_two ?>" required>
+                                <input class="form-control" type="text" name="invoice_two" id="" value="<?= decryptData($invoice->invoice_two, $encryptionKey) ?>" required>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">

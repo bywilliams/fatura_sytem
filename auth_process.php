@@ -85,6 +85,7 @@ if ($type === "register") {
     if ($userDao->authenticatorUser($email, $password)) {
 
         $_SESSION['email_login'] = "";
+        $_SESSION['last_login'] = time();
 
         // Define o caminho para o arquivo de log
         $log_file = 'logins_log.txt';

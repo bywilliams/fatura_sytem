@@ -27,7 +27,7 @@ $balaceGeneral = $invoiceDao->getBalanceGeneral($sql);
     <h3 class="text-center">Filtrar por funcionário:</h3>
     <div class="row d-flex justify-content-center my-3">
 
-        <div class="col-lg-5 col-md-6 ml-3 mt-2">
+        <div class="col-lg-4 col-md-6 ml-3 mt-2">
             <div class="form-group" id="meuFormulario">
                 <form action="" method="GET">
                     <select class="form-control" name="user_id" id="user_id" >
@@ -38,7 +38,7 @@ $balaceGeneral = $invoiceDao->getBalanceGeneral($sql);
                     </select>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 d-flex justify-content-center">
+        <div class="col-lg-2 col-md-6 d-flex justify-content-center">
             <input class="btn btn-lg btn-success" type="submit" value="Enviar">
             </form>
         </div>

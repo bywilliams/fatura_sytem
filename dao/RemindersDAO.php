@@ -163,15 +163,7 @@
             
 
             if ($stmt->execute()) {
-                $this->message->setMessage("<script>
-                Swal.fire({
-                    title: 'Informação',
-                    text: ' Lembrete atualizado com sucesso! ',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#0B666A', 
-                    cancelButtonText: 'Fechar',
-                })
-                ;</script>", "success", "back");
+                $this->message->setMessage("", "", "back");
             }            
 
         }
