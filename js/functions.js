@@ -38,8 +38,8 @@ function openTooltip(i) {
     });
 
 
-     // Limpa inputs dos formulário
-     document.addEventListener('DOMContentLoaded', function() {
+    // Limpa inputs dos formulário
+    document.addEventListener('DOMContentLoaded', function() {
         const formulario = document.getElementById('meuFormulario');
         const limparBotao = document.getElementById('limparCampos');
 

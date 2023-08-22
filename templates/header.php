@@ -17,6 +17,7 @@
 
     <!-- CSS Local  -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.css.map">
     <link rel="stylesheet" href="css/print.css">
 
     <!-- SweeetAlert 2 para avisos internos na plataforma -->

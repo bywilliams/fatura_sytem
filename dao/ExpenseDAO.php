@@ -81,7 +81,7 @@ require_once("utils/config.php");
                     confirmButtonColor: '#0B666A', 
                     cancelButtonText: 'Fechar',
                 })
-                ;</script>", "success", "back");
+                ;</script>", "", "back");
             }
 
         }
@@ -146,7 +146,7 @@ require_once("utils/config.php");
 
             $stmt = $this->conn->query("SELECT 
             id, description, value, dt_registered, dt_expense, dt_updated 
-            FROM tb_expenses 
+            FROM tb_expenses AS exp 
             WHERE user_id = '$id' $sql
             ORDER BY id 
             DESC LIMIT $resultsPerPage OFFSET $offset");
@@ -171,10 +171,12 @@ require_once("utils/config.php");
             $outFinancialMoviments = [];
 
             $stmt = $this->conn->query("SELECT 
-            tb_expenses.id, description, value, dt_registered, dt_expense, dt_updated,  CONCAT( users.name, ' ',  users.lastname) AS user_name
-            FROM tb_expenses INNER JOIN users ON users.id = tb_expenses.user_id 
+            expe.id, expe.description, expe.value, expe.dt_registered, expe.dt_expense, expe.dt_updated,  
+            CONCAT( usr.name, ' ',  usr.lastname) AS user_name
+            FROM tb_expenses as expe 
+            INNER JOIN users AS usr ON usr.id = expe.user_id 
             WHERE user_id > 0 $sql
-            ORDER BY id 
+            ORDER BY expe.id 
             DESC LIMIT $resultsPerPage OFFSET $offset;");
 
             $stmt->execute();

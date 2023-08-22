@@ -45,12 +45,13 @@
             $invoices = [];
 
             $stmt = $this->conn->prepare("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, ammount_paid, invoice_one_status, invoice_two_status,  
-            bank_accounts.razao_social, banks.logo
-            FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
-           	INNER JOIN banks ON bank_accounts.banco = banks.cod
+            inv.id, inv.invoice_one, inv.emission, inv.value, inv.notation, inv.type, inv.invoice_two, inv.dt_expired,
+            inv.reference, inv.ammount_paid, inv.invoice_one_status, inv.invoice_two_status,  
+            acc.razao_social, bank.logo
+            FROM invoices AS inv INNER JOIN bank_accounts AS acc ON inv.account = acc.id
+            INNER JOIN banks AS bank ON acc.banco = bank.cod
             WHERE user_id = :user_id 
-            ORDER BY id DESC LIMIT 5");
+            ORDER BY inv.id DESC LIMIT 5");
             $stmt->bindParam(":user_id", $user_id);
 
             $stmt->execute();
@@ -69,42 +70,17 @@
 
         }
 
-        // public function getAllUserInvoices($user_id) {
-
-        //     $invoices = [];
-
-        //     $stmt = $this->conn->prepare("SELECT 
-        //     id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, account, user_id, invoice_one_status 
-        //     WHERE user_id = :user_id");
-        //     $stmt->bindParam(":usert_id", $user_id);
-
-        //     $stmt->execute();
-
-        //     if ($stmt->rowCount() > 0) {
-                
-        //         $data = $stmt->fetchAll();
-
-        //         foreach ($data as $invoice) {
-        //             $invoices[] = $this->buildInvoice($invoice);
-        //         }
-
-        //     }
-
-        //     return $invoices;
-
-        // }
-
         public function getAllInvoicesUserToPagination($id, $sql, $resultsPerPage = "", $offset = "") {
             
             $outFinancialMoviments = [];
 
             $stmt = $this->conn->query("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, reference, ammount_paid, invoice_one_status, invoice_two_status,  
-            bank_accounts.razao_social, banks.logo
-            FROM invoices INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
-           	INNER JOIN banks ON bank_accounts.banco = banks.cod
+            inv.id, inv.invoice_one, inv.emission, inv.value, inv.notation, inv.type, inv.invoice_two, inv.dt_expired, inv.reference, 
+            inv.ammount_paid, inv.invoice_one_status, inv.invoice_two_status, acc.razao_social, bank.logo
+            FROM invoices AS inv INNER JOIN bank_accounts AS acc ON inv.account = acc.id
+            INNER JOIN banks AS bank ON acc.banco = bank.cod
             WHERE user_id = '$id' $sql
-            ORDER BY id 
+            ORDER BY inv.id 
             DESC LIMIT $resultsPerPage OFFSET $offset");
 
             $stmt->execute();
@@ -246,12 +222,15 @@
             $invoices = [];
 
             $stmt = $this->conn->prepare("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, ammount_paid, reference, account, invoice_one_status, invoice_two_status, user_id,
-             CONCAT( users.name, ' ',  users.lastname) AS user_name, banks.logo, bank_accounts.razao_social
-            FROM invoices INNER JOIN users ON users.id = invoices.user_id INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
-            INNER JOIN banks ON bank_accounts.banco = banks.cod
-            WHERE invoices.id <> 0 $sql
-            ORDER BY invoices.id
+            inv.id, inv.invoice_one, inv.emission, inv.value, inv.notation, inv.type, inv.invoice_two, inv.dt_expired, inv.ammount_paid, inv.reference, 
+            inv.account, inv.invoice_one_status, inv.invoice_two_status, inv.user_id,
+            CONCAT( usr.name, ' ',  usr.lastname) AS user_name, bank.logo, acc.razao_social
+            FROM invoices AS inv 
+            INNER JOIN users AS usr ON usr.id = inv.user_id 
+            INNER JOIN bank_accounts AS acc ON inv.account = acc.id
+            INNER JOIN banks AS bank ON acc.banco = bank.cod
+            WHERE inv.id <> 0 $sql
+            ORDER BY inv.id
             DESC LIMIT $resultsPerPage OFFSET $offset
             ");
 
@@ -276,12 +255,15 @@
             $invoices = [];
 
             $stmt = $this->conn->prepare("SELECT 
-            invoices.id, invoice_one, emission, value, notation, type, invoice_two, dt_expired, ammount_paid, reference, account, invoice_one_status, invoice_two_status, user_id,
-             CONCAT( users.name, ' ',  users.lastname) AS user_name, banks.logo, bank_accounts.razao_social
-            FROM invoices INNER JOIN users ON users.id = invoices.user_id INNER JOIN bank_accounts ON invoices.account = bank_accounts.id
-            INNER JOIN banks ON bank_accounts.banco = banks.cod
-            WHERE invoices.id <> 0 AND invoices.paid = 'S' $sql
-            ORDER BY invoices.id
+            inv.id, inv.invoice_one, inv.emission, inv.value, inv.notation, inv.type, inv.invoice_two, inv.dt_expired, inv.ammount_paid, inv.reference, inv.account, 
+			inv.invoice_one_status, inv.invoice_two_status, inv.user_id,
+            CONCAT( usr.name, ' ',  usr.lastname) AS user_name, bank.logo, acc.razao_social
+            FROM invoices AS inv 
+            INNER JOIN users AS usr ON usr.id = inv.user_id 
+            INNER JOIN bank_accounts AS acc ON inv.account = acc.id
+            INNER JOIN banks AS bank ON acc.banco = bank.cod
+            WHERE inv.id <> 0 AND inv.paid = 'S' $sql
+            ORDER BY inv.id
             DESC LIMIT $resultsPerPage OFFSET $offset
             ");
 

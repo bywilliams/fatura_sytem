@@ -139,7 +139,7 @@
                     confirmButtonColor: '#0B666A', 
                     cancelButtonText: 'Fechar',
                 })
-                ;</script>", "success", "back");
+                ;</script>", "", "back");
             }
             
 
@@ -184,7 +184,7 @@
                         confirmButtonColor: '#0B666A', 
                         cancelButtonText: 'Fechar',
                     })
-                    ;</script>", "success", "back");
+                    ;</script>", "", "back");
                 }
 
             }

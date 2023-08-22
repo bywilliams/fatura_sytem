@@ -89,20 +89,20 @@ $total_entry_value = 0;
         <!-- <h3 class="text-secondary mb-3">Pesquisar:</h3> -->
         <form method="POST" id="meuFormulario">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row d-flex justify-content-center">
-                <div class="col-lg-2 col-md-3">
+            <div class="row d-flex justify-content-center px-3">
+                <div class="col-lg-3 col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
                         <input type="number" name="invoice_id" id="invoice_id" class="form-control" placeholder="Ex: 10" value="<?= $invoice_id ?>">
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-5 ">
+                <div class="col-lg-3 col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por referência:</h4>
                         <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $reference_invoice ?>">
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4">
+                <div class="col-lg-3 col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por conta:</h4>
                         <select class="form-control" name="account_invoice" id="account_invoice">
@@ -122,6 +122,7 @@ $total_entry_value = 0;
                         <input class="form-control" type="date" name="emission" id="emission" value="<?= $emission ?>">
                     </div>
                 </div>
+            
                 <div class="col-lg-2 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por mês:</h4>
@@ -133,21 +134,18 @@ $total_entry_value = 0;
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="row d-flex justify-content-center">
-                <div class="col-lg-2 col-md-5">
-                    <h4>De:</h4>
+                <div class="col-lg-2 col-md-6">
+                    <h4 class="font-weight-normal">De:</h4>
                     <input class="form-control" type="date" name="dt_de" id="dt_de">
                 </div>
-                <div class="col-lg-2 col-md-5">
-                    <h4>Até:</h4>
+                <div class="col-lg-2 col-md-6">
+                    <h4 class="font-weight-normal">Até:</h4>
                     <input class="form-control" type="date" name="dt_ate" id="dt_ate">
                 </div>
                 <div class="col-lg-1 col-md-2 text-center">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
                     <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
-            </div>
         </form>
     </div>
 
@@ -156,7 +154,7 @@ $total_entry_value = 0;
         <div class="table_report my-3" id="latest_moviments">
             <h3 class="text-center text-secondary">Resultados:</h3>
             <hr class="hr">
-            <div class="row my-2">
+            <div class="row">
                 <div class="col-lg-12 d-flex justify-content-end ">
                     <a href="<?= $BASE_URL ?>invoices_paid.php?pagas_user=<?=$userData->id?>" class="btn btn-md btn-outline-dark" id="faturas pagas" title="Ver faturas pagas"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
                 </div>

@@ -5,12 +5,15 @@ include_once("utils/sessions_forms.php");
 require_once("dao/ExpenseDAO.php");
 require_once("dao/InvoicesDAO.php");
 require_once("dao/RemindersDAO.php");
+require_once("dao/BanksDAO.php");
 require_once("dao/BankAccountsDAO.php");
+
+$banksDao = new BanksDAO($conn, $BASE_URL);
+$allBanks = $banksDao->getAllbanks();
 
 // ---> Objeto contas e seus processos -------  //
 $bankAccountsDao = new BankAccountsDAO($conn, $BASE_URL);
 $accounts = $bankAccountsDao->getAllBankAccounts();
-
 // ---> Objeto contas <-------  //
 
 // --- Objeto Despesas e seus processos <------ //
@@ -36,6 +39,7 @@ $latestInvoices = $invoiceDao->getLatestInvoices($userData->id);
 $totalCashInflow = $invoiceDao->getAllCashInflow($userData->id);
 // Traz a maior receita do usuário
 $biggestRevenueUser = $invoiceDao->getBiggestInvoiceValueUser($userData->id);
+
 // Traz a menor receita do usuário
 $lowerRevenueUser = $invoiceDao->getLowerInvoiceValueUser($userData->id);
 
@@ -66,19 +70,19 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                 <h1 class="card-title pricing-card-title text-success" id="revenue_h1">+ R$ <?= $totalCashInflow ?> </h1>
                                 <small class="text-muted"><strong>Menor receita</strong> <br>
                                     <?php foreach ($lowerRevenueUser as $lowerRevenue) : ?>
-                                        <?= $lowerRevenue->reference ?> <?= number_format($lowerRevenue->value, 2, ",", ".") ?>
+                                        <?= $lowerRevenue->reference ?> R$ <?= number_format($lowerRevenue->value, 2, ",", ".") ?>
                                     <?php endforeach ?>
-                                    <?php if (count($lowerRevenueUser) < 1) {
-                                        echo 'Não há dados registrados';
-                                    } ?>
+                                    <?php if (count($lowerRevenueUser) < 1): ?>
+                                        Não há dados registrados
+                                    <?php endif ?>
                                     <br>
                                     <strong>Maior receita</strong> <br>
                                     <?php foreach ($biggestRevenueUser as $biggestRevenue) : ?>
-                                        <?= $biggestRevenue->reference ?> <?= number_format($biggestRevenue->value, 2, ",", ".") ?>
+                                        <?= $biggestRevenue->reference ?> R$ <?= number_format($biggestRevenue->value, 2, ",", ".") ?>
                                     <?php endforeach ?>
-                                    <?php if (count($biggestRevenueUser) <  1) {
-                                        echo 'Não há dados registrados';
-                                    } ?>
+                                    <?php if (count($biggestRevenueUser) <  1): ?>
+                                        Não há dados registrados
+                                    <?php endif ?>
                                 </small>
 
                             </div>
@@ -95,13 +99,13 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                     <strong>Menor despesa</strong> <br>
 
                                     <?php foreach ($lowersExpense as $lowerExpense) : ?>
-                                        <?= $lowerExpense->description ?> <?= $lowerExpense->value ?>
+                                        <?= $lowerExpense->description ?> R$ <?= $lowerExpense->value ?>
                                     <?php endforeach ?>
                                     <?= count($lowersExpense) == 0 ? 'Não há dados registrados' : ""; ?>
                                     <br>
                                     <strong>Maior despesa</strong> <br>
                                     <?php foreach ($biggetsExpense as $bigExpense) : ?>
-                                        <?= $bigExpense->description ?> <?= $bigExpense->value ?>
+                                        <?= $bigExpense->description ?> R$ <?= $bigExpense->value ?>
                                     <?php endforeach ?>
                                     <?= count($biggetsExpense) == 0 ? 'Não há dados registrados' : ""; ?>
                                 </small>
@@ -515,6 +519,15 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                         <form action="<?= $BASE_URL ?>account_process.php?id=" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="type" value="create">
                             <div class="form-group">
+                                <label for="razao">Banco:</label>
+                                <select class="form-control" name="banco" id="banco">
+                                    <option value="">Selecione</option>
+                                    <?php foreach ($allBanks as $bank): ?>
+                                        <option value="<?= $bank->cod ?>"><?= $bank->cod ?> - <?= $bank->name ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="razao">Razão Social:</label>
                                 <input type="text" name="razao" id="razap" class="form-control" value="<?= $_SESSION['razao'] ?>">
                             </div>
@@ -546,7 +559,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="color">Cor:</label>
-                                        <input type="color" name="color" id="color" class="form-control" value="">
+                                        <input type="color" name="color" id="color" class="form-control" >
                                     </div>
                                 </div>
                             </div>
@@ -752,11 +765,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
 </body>
 <?php require_once("templates/footer.php"); ?>
 <script>
-    // tooltip
-    $(function() {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
-
+    
     // para modal cadastro de contas
     // Referência para o input do tipo "number"
     var inputNumber1 = $("#cc");

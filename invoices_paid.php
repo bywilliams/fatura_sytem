@@ -168,9 +168,6 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $r
             <hr class="hr">
             <div class="row d-block text-right my-2 px-3 info">
                 <div class=" d-flex justify-content-end  my-2 info">
-                    <?php if ($userData->levels_access_id == 1) : ?>
-                        <div> <i class="fa-solid fa-check-double text-info"></i> <span> Informar Pgto.</span> </div>
-                    <?php endif ?>
                     <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
                     <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
                     <div> <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>

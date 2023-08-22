@@ -43,8 +43,10 @@
             $accounts = [];
 
             $stmt = $this->conn->prepare("SELECT 
-            bank_accounts.id, razao_social, cnpj, agencia, conta, pix, banco, card_color, banks.cod, banks.logo AS 'bank_logo', banks.name as 'bank_name'
-            FROM bank_accounts INNER JOIN banks ON bank_accounts.banco = banks.cod
+            acc.id, acc.razao_social, acc.cnpj, acc.agencia, acc.conta, acc.pix, acc.banco, acc.card_color, 
+            bank.cod, bank.logo AS 'bank_logo', bank.name as 'bank_name'
+            FROM bank_accounts AS acc 
+            INNER JOIN banks AS bank ON acc.banco = bank.cod
             ORDER BY banco ASC");
 
             $stmt->execute();

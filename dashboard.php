@@ -143,7 +143,7 @@ $popup = $popupDao->popupInvoice();
 </div>
 
 <?php require_once("templates/footer.php"); ?>
-
+<script src="js/showtime.js" type="text/javascript" async></script>
 <script>
     // deixar item do menu clicado como active
     $(document).ready(function() {

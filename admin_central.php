@@ -16,6 +16,7 @@ require_once("utils/check_levels_acess_admin.php");
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><a href="<?= $BASE_URL ?>add_users.php"><i class="fa-solid fa-user-tie"></i> Cadastar Funcionários</a></li>
                     <li class="list-group-item"><a href="<?= $BASE_URL ?>users.php"><i class="fa-solid fa-user-group"></i> Ver funcionários</a></li>
+                    <li class="list-group-item"><a href="<?= $BASE_URL ?>logins_log.txt" download><i class="fa-solid fa-download"></i> Baixar Log de logins</a></li>
                 </ul>
             </div>
         </div>
@@ -43,6 +44,7 @@ require_once("utils/check_levels_acess_admin.php");
                 </ul>
             </div>
         </div>
+        
     </div>
 </div>
 
