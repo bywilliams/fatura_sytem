@@ -179,7 +179,7 @@ Class UserDAO implements UserDAOInterface{
                         $this->update($user, false); 
                         return true;
 
-                    } catch (\PDOException $e) { 
+                    } catch (PDOException $e) { 
 
                         //echo "Falha ao cadastrar o cartao : {$e->getMessage()}";
                         return false;
@@ -190,7 +190,6 @@ Class UserDAO implements UserDAOInterface{
                 }
             }else {
 
-                //echo "entrou no if user"; exit;
                 $this->message->setMessage("Sua assinatura foi suspensa, entre em contato com o administrador do sistema!", "error","index.php"); exit;
             }
             
@@ -260,7 +259,7 @@ Class UserDAO implements UserDAOInterface{
 
         $usersArray = [];
         $stmt = $this->conn->query("SELECT 
-        id, name, lastname,email, password, image, token, sits_user_id, levels_access_id, register_date 
+        id, name, lastname,email, password, image, bio, token, sits_user_id, levels_access_id, register_date 
         FROM users");
 
         $stmt->execute();

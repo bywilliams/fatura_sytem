@@ -160,14 +160,6 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                 </a>
                                             </span>
                                         </li>
-                                        <!-- <li class="list-group-item d-flex ">
-                                            <strong>Cadastrar usuário: </strong>
-                                            <span class="badge d-block position-absolute" style="right: 10px; top: 8px">
-                                                <a href="" data-toggle="modal" data-target="" title="Editar menu">
-                                                    <i class="fa-regular fa-square-plus fa-2x text-success"></i>
-                                                </a>
-                                            </span>
-                                        </li> -->
                                     <?php endif ?>
                                 </ul>
                             </div>
@@ -297,11 +289,6 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                             <div> <i class="fa-solid fa-square text-danger"></i> <span> Fatura não paga </span> </div>
                             <div> <i class="fa-solid fa-receipt fa-2x text-sucsess"></i> <span> Status da fatura</span> </div>
                             <div> <i class="fa-solid fa-copy fa-2x text-secondary"></i> <span> Copiar </span> </div>
-                            <!-- <div> <i class="fa-solid fa-copy fa-2x text-secondary"></i> <span> Copiar </span> </div> -->
-                            <!-- <?php if ($userData->levels_access_id == 1) :  ?>
-                            <div> <i class="fa-solid fa-file-pen fa-2x"></i></a> <span> Editar </span> </div>
-                            <div> <i class="fa-solid fa-trash-can fa-2x"></i></a> <span> Deletar </span> </div>
-                            <?php endif ?> -->
                         </div>
 
                         <div class="table-responsive">
@@ -367,8 +354,8 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                             <td>
                                                 <?= $invoice->dt_expired ?>
                                             </td>
-                                            <td class="">
-                                                <div class="invoice_card_img text-left px-2">
+                                            <td>
+                                                <div class="invoice_card_img text-center px-2">
                                                     <img clss="" src="<?= $BASE_URL ?>assets/home/contas/<?= $invoice->conta_img ?>" alt="">
                                                     <strong class="pl-2"></strong> <?= decryptData($invoice->razao_social, $encryptionKey) ?> </strong>
                                                 </div>
@@ -392,7 +379,7 @@ $latestReminders = $reminderDao->getLatestReminders($userData->id);
                                                 <?php endif; ?>
                                             </td>
                                             <td >
-                                                <div class="d-flex">
+                                                <div class="">
                                                     <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
                                                         <i class="fa-solid fa-copy text-secondary"></i>
                                                     </a>

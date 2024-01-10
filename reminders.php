@@ -4,14 +4,14 @@
     require_once("connection/conn.php");
     require_once("dao/RemindersDAO.php");
 
-    $reminderDao = new RemindersDAO($conn, $url);
+    $reminderDao = new RemindersDAO($conn, $BASE_URL);
 
     $allReminders = $reminderDao->getAllReminders($userData->id);
 
     // Mantem ou limpa inputs preenchidos
-    isset($_SESSION['title']) ? $_SESSION['title'] : "" ;
-    isset($_SESSION['description']) ? $_SESSION['description'] : "" ;
-    isset($_SESSION['reminder_date']) ? $_SESSION['reminder_date'] : "";
+    isset($_SESSION['title']) ? $_SESSION['title'] : $_SESSION['title'] = null ;
+    isset($_SESSION['description']) ? $_SESSION['description'] : $_SESSION['description'] = null ;
+    isset($_SESSION['reminder_date']) ? $_SESSION['reminder_date'] : $_SESSION['reminder_date'] = null;
 
     require_once("utils/check_reminders.php");
 ?>

@@ -13,7 +13,7 @@ $expensesDao = new ExpenseDAO($conn, $BASE_URL);
 /* paginação do relatório  */
 $totalRegistros = $expensesDao->countTotalExpensesCurrentMonth();
 
-$resultsPerPage = 20;
+$resultsPerPage = 15;
 $numberPages = ceil($totalRegistros / $resultsPerPage);
 
 // Pega numero da página atual
@@ -24,13 +24,12 @@ $offset = ($page - 1) * $resultsPerPage;
 $sql = "";
 
 if ($_POST) {
-    //echo "pesquisa enviada";
     $sql = "";
     $totalRegistros = 0;
 
     if (isset($_POST['expense_id']) && $_POST['expense_id'] != '') { 
         $expense_id = $_POST['expense_id'];
-        $sql .= "AND tb_expenses.id = $expense_id";
+        $sql .= "AND expe.id = $expense_id";
     }
 
     if (isset($_POST['name_expense']) && $_POST['name_expense'] != '') {
@@ -49,12 +48,15 @@ if ($_POST) {
         $sql .= " AND MONTH(dt_registered) = '$month_querie' ";
     }
 
-    //echo $sql . "<br>";
 }
 
-// Traz total de saídas do usuário default ou com paginação
-$expensesUser = $expensesDao->getAllExpensesAdminToPagination( $sql, $resultsPerPage, $offset);
-//print_r($expensesUser);
+try {
+    // Traz total de saídas do usuário default ou com paginação
+    $expensesUser = $expensesDao->getAllExpensesAdminToPagination( $sql, $resultsPerPage, $offset);
+} catch (PDOException $e) {
+    //echo  $e->getMessage();
+    echo "Erro na pesquisa consulte o administrador do sistema.";
+}
 $total_out_value = 0;
 
 ?>
@@ -74,7 +76,7 @@ $total_out_value = 0;
                 <div class="col-lg-3 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por nome:</h4>
-                        <input type="text" name="name_expense" id="name_expense" class="form-control" placeholder="Ex: salário" value="<?= $name_expense ?>">
+                        <input type="text" name="name_expense" id="name_expense" class="form-control" placeholder="Ex: salário" value="<?= isset($name_expense) ? $name_expense : null ?>">
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
@@ -162,7 +164,7 @@ $total_out_value = 0;
                 </ul>
             </nav>
         </div>
-         <!-- End pagination buttons -->
+        <!-- End pagination buttons -->
         <?php endif ?>
     </div>
     <!-- table div thats receive all expenses without customize inputs parameters  -->

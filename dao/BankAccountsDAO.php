@@ -43,7 +43,7 @@
             $accounts = [];
 
             $stmt = $this->conn->prepare("SELECT 
-            acc.id, acc.razao_social, acc.cnpj, acc.agencia, acc.conta, acc.pix, acc.banco, acc.card_color, 
+            acc.id, acc.razao_social, acc.cnpj, acc.agencia, acc.conta, acc.pix, acc.banco, acc.card_color, acc.created_at, 
             bank.cod, bank.logo AS 'bank_logo', bank.name as 'bank_name'
             FROM bank_accounts AS acc 
             INNER JOIN banks AS bank ON acc.banco = bank.cod

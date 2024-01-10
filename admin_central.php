@@ -4,7 +4,7 @@ require_once("utils/check_levels_acess_admin.php");
 ?>
 
 <div class="container my-5">
-    <h1 class="text-center mb-5 text-secondary"> Central de Links <i class="fa-solid fa-rectangle-list"></i></h1>
+    <h1 class="text-center mb-5 text-secondary"> Administrativo <i class="fa-solid fa-rectangle-list"></i></h1>
     <!-- <h4>Área dedicada a</h4> -->
 
     <div class="row">

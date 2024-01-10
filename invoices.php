@@ -31,7 +31,7 @@ $offset = ($page - 1) * $resultsPerPage;
 
 $sql = "";
 if ($_POST) {
-    //echo "pesquisa enviada";
+
     $sql = "";
     $totalRegistros = 0;
 
@@ -76,13 +76,13 @@ if ($_POST) {
         $sql .= " AND emission BETWEEN '$dt_de' AND '$dt_ate 23:59:59' ";
     }
 
-     //echo $sql . "<br>";
+    //echo $sql . "<br>";
 }
 
 // Traz total de Entradas do usuário default e páginação 
 $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resultsPerPage, $offset);
-//echo count($allInvoicesUsers);
-
+$total_value = 0;
+$total_paid = 0;
 ?>
 
 <div class="container-fluid">
@@ -97,7 +97,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
         </div>
     </div>
 
-    <div class="entrys-search" id="entrys-search">
+    <div class="entrys-search text-center" id="entrys-search">
         <!-- <h3 class="text-secondary mb-3">Pesquisar:</h3> -->
         <form method="POST" id="meuFormulario">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
@@ -111,7 +111,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                 <div class="col-lg-2 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por referência:</h4>
-                        <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $reference_invoice ?>">
+                        <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= isset($reference_invoice) ? $reference_invoice : null ?>">
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4">
@@ -142,7 +142,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                 </div>
             </div>
             <div class="row d-flex justify-content-center">
-            <div class="col-lg-2 col-md-4">
+                <div class="col-lg-3 col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por usuário:</h4>
                         <select class="form-control" name="user_id" id="">
@@ -153,11 +153,11 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4">
+                <div class="col-lg-3 col-md-4">
                     <h4>De:</h4>
                     <input class="form-control" type="date" name="dt_de" id="dt_de">
                 </div>
-                <div class="col-lg-2 col-md-4">
+                <div class="col-lg-3 col-md-4">
                     <h4>Até:</h4>
                     <input class="form-control" type="date" name="dt_ate" id="dt_ate">
                 </div>
@@ -268,7 +268,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                                 <?= $invoices->user_name ?>
                             </td>
                             <td id="latest_moviments" class="report-action">
-                                <div class="d-flex">
+                                <div class="">
                                     <?php if ($invoices->ammount_paid <= 0) : ?>
                                         <a href="#" data-toggle="modal" data-target="#updateInvoiceUserAdmin<?= $invoices->id ?>" title="Informe pagamento">
                                             <i class="fa-solid fa-check-double"></i>
@@ -290,12 +290,12 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="11"> <strong> Total valor fatura: </strong> R$
+                        <td colspan="11"> <strong> Valor total faturas: </strong> R$
                             <?= number_format($total_value, 2, ",", "."); ?>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="11"> <strong> Total valor pago: </strong> R$ <?= number_format($total_paid, 2, ",", ".") ?>
+                        <td colspan="11"> <strong> Valor total pago: </strong> R$ <?= number_format($total_paid, 2, ",", ".") ?>
                         </td>
                     </tr>
                 </tfoot>
@@ -356,7 +356,7 @@ $allInvoicesUsers = $invoiceDao->getAllInvoicesForAdminToPagination($sql, $resul
                             </div>
                             <div class="form-group" id="paid_value_div<?= $invoices->id; ?>" style="display: none;">
                                 <label for="">Informe o valor pago:</label>
-                                <input class="form-control money" type="text" name="value_paid" id="value_paid<?=$invoices->id?>">
+                                <input class="form-control money" type="text" name="value_paid" id="value_paid<?= $invoices->id ?>">
                             </div>
                             <input type="submit" value="Atualizar" class="btn btn-lg btn-success">
                         </form>

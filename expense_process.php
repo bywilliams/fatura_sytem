@@ -21,8 +21,6 @@ $type = filter_input(INPUT_POST, "type");
 
 if ($type == "create") {
 
-    //echo "form create"; exit;
-
     $data = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
     $_SESSION['description'] = $data['description'];
@@ -41,7 +39,6 @@ if ($type == "create") {
         $expense->month_reference = date("Y/m/d", strtotime($data['date_expense']));
         
         try{
-           
             // insere despesa no BD
             $expenseDao->createUserExpense($expense);
             $_SESSION['description'] = "";
@@ -69,7 +66,6 @@ if ($type == "create") {
     $expense->dt_expense = $data['date_expense'];
     $expense->id = $data['id'];
 
-    //echo "$expense->description, $expense->value, $expense->dt_expense";
     try{
         $expenseDao->updateUserExpense($expense);
     }catch (PDOException $e) {
@@ -86,8 +82,8 @@ if ($type == "create") {
         $expenseDao->destroyUserExpense($id);
 
     }catch(PDOException $e) {
-        //echo "erro ao deletar despesesa, consulte o administrador do sistema";
-        echo "erro ao deletar conta " . $e->getMessage();
+        echo "erro ao deletar despesesa, consulte o administrador do sistema";
+        //echo "erro ao deletar conta " . $e->getMessage();
     }
 
 }

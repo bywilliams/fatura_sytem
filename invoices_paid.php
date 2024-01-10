@@ -42,7 +42,7 @@ if ($_POST) {
 
     if (isset($_POST['invoice_id']) && $_POST['invoice_id'] != '') {
         $invoice_id = $_POST['invoice_id'];
-        $sql .= "AND invoices.id = $invoice_id";
+        $sql .= "AND inv.id = $invoice_id";
     }
 
     if (isset($_POST['reference_invoice']) && $_POST['reference_invoice'] != '') {
@@ -75,11 +75,15 @@ if ($_POST) {
         $sql .= " AND user_id = '$user_id' ";
     }
 
-    // echo $sql . "<br>";
 }
 
-// Traz total de Entradas do usuário default e páginação 
-$allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $resultsPerPage, $offset);
+try {
+    // Traz total de Entradas do usuário default e páginação 
+    $allInvoicesUsers = $invoiceDao->getAllInvoicesPaidForAdminToPagination($sql, $resultsPerPage, $offset);
+} catch (PDOException $e) {
+    echo "Erro ao efetuar pesquisa, consulte o administrador do sistema";
+    //echo $e->getMessage();
+}
 
 
 ?>

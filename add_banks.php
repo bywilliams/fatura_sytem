@@ -8,8 +8,8 @@ $banksDao = new banksDAO($conn, $BASE_URL);
 $allBanks = $banksDao->getAllBanks();
 
 
-isset($_SESSION['cod']) ? $_SESSION['cod'] : "";
-isset($_SESSION['name']) ? $_SESSION['name'] : "";
+isset($_SESSION['cod']) ? $_SESSION['cod'] : $_SESSION['cod'] = null;
+isset($_SESSION['name']) ? $_SESSION['name'] : $_SESSION['name'] = null;
 
 
 ?>
@@ -21,7 +21,7 @@ isset($_SESSION['name']) ? $_SESSION['name'] : "";
             <h1 class="text-center mb-5 text-secondary">Adicionar banco <i class="fa-solid fa-building-columns"></i></h1>
             <form action="<?= $BASE_URL ?>bank_process.php" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="type" value="create">
-                <div class="row d-flex justify-content-center">
+                <div class="row d-flex justify-content-center text-center">
                     <div class="col-lg-2 col-md-6">
                         <div class="form-group">
                             <h4 class="font-weight-normal">Codigo:</h4>

@@ -9,7 +9,7 @@ $allUsers = $uersDao->findAllUsers();
 
 $user_id = "";
 $sql = "";
-if ($_GET['user_id'] != "") {
+if (isset($_GET['user_id']) &&  $_GET['user_id'] != "") {
     $user_id = $_GET['user_id'];
     $sql = " AND user_id = $user_id";
 }

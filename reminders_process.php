@@ -45,8 +45,9 @@
                 $_SESSION['description'] = "";
                 $_SESSION['reminder_date'] = "";
 
-            } catch (\Throwable $e) {
-                echo "Falha ao cadastrar o lembrete : {$e->getMessage()}";
+            } catch (PDOException $e) {
+                echo "Falha ao cadastrar o lembrete, consulte o administrador do sistema";
+                // echo "Falha ao cadastrar o lembrete : {$e->getMessage()}";
             }
 
         } else {
@@ -61,8 +62,6 @@
         $reminder_date = filter_input(INPUT_POST, "reminder_date");
         $visualized = filter_input(INPUT_POST, "visualized");
 
-        //echo "$title $description $reminder_date"; exit;
-
         $reminder = new Reminders();
         $reminder->id = $id;
         $reminder->title = $title;
@@ -75,8 +74,9 @@
 
             $reminderDao->updateReminder($reminder);
         
-        } catch (\Exception $e) {
-            echo "Falha ao editar o lembrete : {$e->getMessage()}";
+        } catch (PDOException $e) {
+            echo "Falha ao atualizar lembrete, consulte o administrador do sistema.";
+            // echo "Falha ao editar o lembrete : {$e->getMessage()}";
         }
 
 

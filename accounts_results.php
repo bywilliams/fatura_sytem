@@ -41,7 +41,6 @@ if ($_GET) {
         $account_id = $_GET['account_id'];
         $sql .= "AND account = $account_id";
     }
-    //echo $sql . "<br>"; 
 }
 
 // Traz total de saídas do usuário default ou com paginação

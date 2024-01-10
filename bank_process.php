@@ -70,8 +70,8 @@ if ($type == "create") {
             $_SESSION['name'] = "";
 
         } catch (PDOException $e) {
-            //echo "Erro ao cadastrar banco, consulte o administrador do sistema";
-            echo "Error: ". $e->getMessage();
+            echo "Erro ao cadastrar banco, consulte o administrador do sistema";
+            //echo "Error: ". $e->getMessage();
         }
 
         
@@ -87,8 +87,8 @@ if ($type == "create") {
     try {
         $banksDao->deleteBank($id);
     } catch (PDOException $e) {
-        //echo "Erro ao deletar banco, consulte o administrador";
-        echo "Error: " . $e->getMessage();
+        echo "Erro ao deletar banco, consulte o administrador";
+        //echo "Error: " . $e->getMessage();
     }
 
 }

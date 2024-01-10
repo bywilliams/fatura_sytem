@@ -44,8 +44,6 @@ if ($type == "create") {
         $bankAccount->pix =  encryptData($data['pix'], $encryptionKey);
         $bankAccount->card_color = $data['color'];
         $bankAccount->banco = $data['banco'];
-        // echo $encryptionKey . "<br>";
-        // echo $bankAccount->decryptData($bankAccount->razao_social, $encryptionKey); exit;
 
         try {
             $bankAccountDao->createbankAccount($bankAccount);
@@ -56,8 +54,8 @@ if ($type == "create") {
             $_SESSION['pix'] = "";
             $_SESSION['color'] = "";
         } catch (PDOException $e) {
-            //echo "Erro ao cadastrar conta, consulte o administrador do sistema";
-            echo "Erro ao cadastrar conta: ".$e->getMessage();
+            echo "Erro ao cadastrar conta, consulte o administrador do sistema";
+            //echo "Erro ao cadastrar conta: ".$e->getMessage();
         }
 
     } else {
@@ -85,16 +83,14 @@ if ($type == "create") {
         // faz o update
         $bankAccountDao->updateBankAccount($bankAccount);
     }catch(PDOException $e){ 
-        // Apresenta um erro generico
-        //echo "Erro ao atualizar conta, consulte o adminsitrado do sistema";
-        echo "Erro ao atualizar conta" . $e->getMessage();
+        echo "Erro ao atualizar conta, consulte o adminsitrado do sistema";
+        //echo "Erro ao atualizar conta" . $e->getMessage();
     }
 
 } else if ($type == "delete") {
 
     $id = filter_input(INPUT_POST, "id");
 
-   
     try{
         
         // PEGA NOME DA IMAGEM E CAMINHO

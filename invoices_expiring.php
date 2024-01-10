@@ -28,7 +28,7 @@ $sql = " AND DATE(dt_expired) = '$currentDate' ";
 
 
 if ($_POST) {
-    //echo "pesquisa enviada";
+
     $sql = "";
     $totalRegistros = 0;
 
@@ -62,12 +62,10 @@ if ($_POST) {
         $sql .= " AND MONTH(dt_expired) = '$month_invoice_input' ";
     }
 
-    // echo $sql . "<br>";
 }
 
 // Traz total de saídas do usuário default ou com paginação
 $invoicesUser = $invoiceDao->getAllInvoicesUserExpiringToPagination($userData->id, $sql, $resultsPerPage, $offset);
-//echo $totalRegistros;
 $total_entry_value = 0;
 
 $dias = [];
@@ -93,7 +91,7 @@ for ($i = 1; $i <= 31; $i++) {
         <!-- <h3 class="text-secondary mb-3">Pesquisar:</h3> -->
         <form method="POST" id="meuFormulario">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row ">
+            <div class="row text-center">
                 <div class="col-lg-1">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
@@ -103,7 +101,7 @@ for ($i = 1; $i <= 31; $i++) {
                 <div class="col-lg-2">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por referência:</h4>
-                        <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= $invoice_expense ?>">
+                        <input type="text" name="reference_invoice" id="reference_invoice" class="form-control" placeholder="Ex: REF: 10" value="<?= isset($invoice_expense) ? $invoice_expense : null ?>">
                     </div>
                 </div>
                 <div class="col-lg-2">

@@ -21,7 +21,7 @@ $offset = ($page - 1) * $resultsPerPage;
 $sql = "";
 
 if ($_POST) {
-    //echo "pesquisa enviada";
+    
     $sql = "";
     $totalRegistros = 0;
 
@@ -46,12 +46,10 @@ if ($_POST) {
         $sql .= " AND MONTH(month_reference) = '$month_querie' ";
     }
 
-    //echo $sql . "<br>";
 }
 
 // Traz total de saídas do usuário default ou com paginação
 $expensesUser = $expensesDao->getAllExpensesToPagination($userData->id, $sql, $resultsPerPage, $offset);
-//echo count($expensesUser);
 $total_out_value = 0;
 
 // Sessions
@@ -67,7 +65,7 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
     <!-- Expense form  -->
     <section>
 
-        <div class="actions p-5 mb-4 bg-light rounded-3 shadow-sm">
+        <div class="actions p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
             <form action="<?= $BASE_URL ?>expense_process.php" method="post">
                 <input type="hidden" name="type" value="create">
                 <input type="hidden" name="type_action" value="1">
@@ -84,7 +82,7 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
                         <h4>Data</h4>
                         <input type="date" class="form-control" name="date_expense" id="date_expense" value="<?= $_SESSION['date_expense'] ?>" required>
                     </div>
-                    <div class="col-md-1 text-center button">
+                    <div class="col-md-1 button">
                         <label for="submit">
                             <i class="fa-regular fa-square-plus fa-3x" title="Adicionar"></i>
                         </label>
@@ -106,7 +104,7 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
     <div class="entrys-search" id="entrys-search">
         <form method="POST">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row">
+            <div class="row mb-5">
                 <div class="col-lg-2 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
@@ -119,7 +117,7 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
                         <input type="text" name="name_expense" id="name_expense" class="form-control" placeholder="Ex: salário" value="<?= $name_expense ?>">
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-5">
+                <div class="col-lg-2 col-md-5">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por valor:</h4>
                         <select class="form-control" name="value_expense" id="value_expense">
@@ -136,7 +134,7 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
                         <input type="month" name="month_expense" id="month_expense" class="form-control" value="<?= $month_expense_input ?>">
                     </div>
                 </div>
-                <div class="col-lg-1 col-md-2 text-center">
+                <div class="col-lg-2 col-md-2 text-center">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
                     <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
@@ -144,11 +142,9 @@ isset($_SESSION['date_expense']) ? $_SESSION['date_expense'] : "";
         </form>
     </div>
 
-    <div class="table_report my-3" id="search_exit"></div>
-
     <!-- table div thats receive all expenses without customize inputs parameters  -->
     <?php if (count($expensesUser) > 0) : ?>
-        <div class="table_report" id="table_report_exit">
+        <div class="table_report my-3" id="table_report_exit">
             <h3 class="text-center text-secondary">Resultados:</h3>
             <table class="table table-hover table-striped table-bordered">
                 <thead class="thead-dark">

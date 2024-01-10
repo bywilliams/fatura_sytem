@@ -26,7 +26,7 @@ $sql = "";
 
 
 if ($_POST) {
-   
+
     $sql = "";
     $totalRegistros = 0;
 
@@ -65,7 +65,6 @@ if ($_POST) {
         $dt_ate = $_POST['dt_ate'];
         $sql .= " AND emission BETWEEN '$dt_de' AND '$dt_ate 23:59:59' ";
     }
-    //echo $sql . "<br>";
 }
 
 // Traz total de saídas do usuário default ou com paginação
@@ -79,17 +78,19 @@ $total_entry_value = 0;
         <img src="<?= $BASE_URL ?>assets/home/dashboard-main/full-wallet.png" width="64" height="64" alt="">
     </h1>
 
-    <div class="row my-2 px-2">
-        <div class="col-lg-12 d-flex justify-content-end">
-            <button class="btn btn-lg btn-outline-secondary" id="limparCampos" title="Limpa todos os campos">Limpar</button>
+    <div class="container">
+        <div class="row my-2 px-2">
+            <div class="col-lg-12 d-flex justify-content-end">
+                <button class="btn btn-lg btn-outline-secondary" id="limparCampos" title="Limpa todos os campos">Limpar</button>
+            </div>
         </div>
+
     </div>
 
-    <div class=" entrys-search" id="entrys-search">
-        <!-- <h3 class="text-secondary mb-3">Pesquisar:</h3> -->
+    <div class="container entrys-search" id="entrys-search">
         <form method="POST" id="meuFormulario">
             <input type="hidden" name="user_id" id="user_id" value="<?= $userData->id ?>">
-            <div class="row d-flex justify-content-center px-3">
+            <div class="row d-flex justify-content-center">
                 <div class="col-lg-3 col-md-4">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por id:</h4>
@@ -122,8 +123,9 @@ $total_entry_value = 0;
                         <input class="form-control" type="date" name="emission" id="emission" value="<?= $emission ?>">
                     </div>
                 </div>
-            
-                <div class="col-lg-2 col-md-6">
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
                     <div class="form-group">
                         <h4 class="font-weight-normal">Por mês:</h4>
                         <select class="form-control" name="month_invoice" id="">
@@ -134,29 +136,32 @@ $total_entry_value = 0;
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <h4 class="font-weight-normal">De:</h4>
                     <input class="form-control" type="date" name="dt_de" id="dt_de">
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <h4 class="font-weight-normal">Até:</h4>
                     <input class="form-control" type="date" name="dt_ate" id="dt_ate">
                 </div>
-                <div class="col-lg-1 col-md-2 text-center">
+                <div class="col-lg-3 col-md-2 text-center">
                     <input class="btn btn-lg btn-success" type="submit" value="Buscar">
                     <!-- <button class="btn btn-lg btn-secondary" id="print_btn" onclick="print()"> Imprimir</button> -->
                 </div>
+            </div>
         </form>
     </div>
+</div>
+<!-- table div thats receive all entrys without customize inputs parameters  -->
+<div class="container-fluid">
 
-    <!-- table div thats receive all entrys without customize inputs parameters  -->
     <?php if (count($invoicesUser) > 0) : ?>
         <div class="table_report my-3" id="latest_moviments">
             <h3 class="text-center text-secondary">Resultados:</h3>
             <hr class="hr">
             <div class="row">
                 <div class="col-lg-12 d-flex justify-content-end ">
-                    <a href="<?= $BASE_URL ?>invoices_paid.php?pagas_user=<?=$userData->id?>" class="btn btn-md btn-outline-dark" id="faturas pagas" title="Ver faturas pagas"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
+                    <a href="<?= $BASE_URL ?>invoices_paid.php?pagas_user=<?= $userData->id ?>" class="btn btn-md btn-outline-dark" id="faturas pagas" title="Ver faturas pagas"><i class="fa-solid fa-receipt fa-2x text-success"></i> Faturas pagas</a>
                 </div>
             </div>
             <hr class="hr">
@@ -195,7 +200,7 @@ $total_entry_value = 0;
                             </td>
                             <?php if ($invoice->invoice_one_status == "PAGO - Baixado" || $invoice->invoice_one_status == "PAGO - Liquidado") : ?>
                                 <td class="bg-success text-white">
-                                    <small>F1 - <?= $invoice->invoice_one_status ?> 
+                                    <small>F1 - <?= $invoice->invoice_one_status ?>
                                 </td>
                             <?php elseif ($invoice->invoice_one_status == "NAO PAGO - Em Aberto") : ?>
                                 <td class="bg-danger text-white">
@@ -203,7 +208,7 @@ $total_entry_value = 0;
                                 </td>
                             <?php else : ?>
                                 <td class="">
-                                    <small>F1 -  <?= $invoice->invoice_one_status ?> </small>
+                                    <small>F1 - <?= $invoice->invoice_one_status ?> </small>
                                 </td>
                             <?php endif ?>
                             <?php if ($invoice->invoice_two_status == "PAGO - Baixado" || $invoice->invoice_two_status == "PAGO - Liquidado") : ?>
@@ -212,7 +217,7 @@ $total_entry_value = 0;
                                 </td>
                             <?php elseif ($invoice->invoice_two_status == "NAO PAGO - Em Aberto") : ?>
                                 <td class="bg-danger text-white">
-                                    <small>F2 -  <?= $invoice->invoice_two_status ?> </small>
+                                    <small>F2 - <?= $invoice->invoice_two_status ?> </small>
                                 </td>
                             <?php else : ?>
                                 <td class="">
@@ -226,7 +231,7 @@ $total_entry_value = 0;
                                 <?= number_format($invoice->value, 2, ",", ".") ?>
                             </td>
                             <td><?= number_format($invoice->ammount_paid, 2, ",", ".") ?></td>
-                            
+
                             <td>
                                 <?= $invoice->dt_expired ?>
                             </td>
@@ -258,7 +263,7 @@ $total_entry_value = 0;
                             </td>
 
                             <td id="latest_moviments" class="report-action">
-                                <div class="d-flex">
+                                <div class="">
                                     <a href="#" data-toggle="modal" data-target=".copyCodigoBoleto<?= $invoice->id ?>" title="Editar">
                                         <i class="fa-solid fa-copy text-secondary"></i>
                                     </a>
@@ -307,7 +312,6 @@ $total_entry_value = 0;
             <h5 class="py-2 text-center text-info">Ainda não há faturas cadastradas.</h5>
         </div>
     <?php endif ?>
-
 </div>
 
 <!-- Copy Invoice numbers modal -->

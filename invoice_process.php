@@ -41,7 +41,6 @@ if ($type == "create") {
         $invoice->emission = $data['emission'];
         $value = str_replace([".", ","], "", $data['value']); // Remove pontos e vírgulas
         $value = substr_replace($value, ".", -2, 0); // Insere o ponto na posição correta para as casas decimais
-        //echo $value; exit;
         $invoice->value = $value;
         $invoice->notation = $data['notation'];
         $invoice->type = $data['type_paid'];
@@ -90,7 +89,6 @@ if ($type == "create") {
         $invoice->invoice_one = encryptData($data['invoice_one'], $encryptionKey);
         $value = str_replace([".", ","], "", $data['value']); // Remove pontos e vírgulas
         $value = substr_replace($value, ".", -2, 0); // Insere o ponto na posição correta para as casas decimais
-        // echo $value; exit;
         $invoice->value = $value;
         $invoice->type = $data['type_edit'];
         $invoice->notation = $data['notation'];
@@ -103,8 +101,8 @@ if ($type == "create") {
         try {
             $invoiceDao->updateUserInvoice($invoice);
         } catch (\PDOException $e) {
-            // echo "Erro ao atualizar fatura, consulte o administrador do sistena.";
-            echo "Error: " . $e->getMessage();
+            echo "Erro ao atualizar fatura, consulte o administrador do sistena.";
+            //echo "Error: " . $e->getMessage();
         }
     } else {
         $message->setMessage("Houve um erro inesperado.", "error", "index.php");
@@ -117,8 +115,6 @@ if ($type == "create") {
     $value = str_replace(",", ".", $value);
     $invoice_id = filter_input(INPUT_POST, "id");
 
-    //echo "$invoice_status, $value_paid, $invoice_id"; exit;
-
     if ($invoice_status) {
 
         $invoice = new Invoices();
@@ -128,8 +124,8 @@ if ($type == "create") {
         try {
             $invoiceDao->setInvoicePaidAdmin($invoice);
         } catch (PDOException $e) {
-            //echo "Erro ao atualizar fatura, consulte o administrado do sistema";
-            echo "Error: " . $e->getMessage();
+            echo "Erro ao atualizar fatura, consulte o administrado do sistema";
+            //echo "Error: " . $e->getMessage();
         }
     } else {
         $message->setMessage("Preencha o campo de status!", "error", "back");
@@ -144,8 +140,8 @@ if ($type == "create") {
         try {
             $invoiceDao->destroyUserInvoice($id);
         } catch (PDOException $e) {
-            //echo "Erro ao deletar registro, consulte o administrador do sistema";
-            echo "Falha ao deletar registro : {$e->getMessage()}";
+            echo "Erro ao deletar registro, consulte o administrador do sistema";
+            //echo "Falha ao deletar registro : {$e->getMessage()}";
         }
     } else {
         $message->setMessage("Um erro foi encontrado", "error", "index.php");

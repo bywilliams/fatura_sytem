@@ -18,23 +18,23 @@
 
             $invoice = new Invoices();
 
-            $invoice->id = $data['id'];
-            $invoice->invoice_one = $data['invoice_one'];
-            $invoice->emission = date("d-m-Y H:i:s", strtotime($data['emission']));
+            $invoice->id = isset($data['id']) ? $data['id'] : null;
+            $invoice->invoice_one = isset($data['invoice_one']) ? $data['invoice_one'] : null;
+            $invoice->emission = isset($data['emission']) ? date("d-m-Y H:i:s", strtotime($data['emission'])) : null;
             $invoice->value =  $data['value'];
-            $invoice->notation = $data['notation'];
-            $invoice->type = $data['type'];
-            $invoice->invoice_two = $data['invoice_two'];
-            $invoice->dt_expired = date("d-m-Y", strtotime($data['dt_expired']));
+            $invoice->notation = isset($data['notation']) ? $data['notation'] : null;
+            $invoice->type = isset($data['type']) ? $data['type'] : null;
+            $invoice->invoice_two = isset($data['invoice_two']) ? $data['invoice_two'] : null;
+            $invoice->dt_expired = isset($data['dt_expired']) ? date("d-m-Y", strtotime($data['dt_expired'])) : null;
             $invoice->reference = $data['reference'];
-            $invoice->account = $data['account'];
-            $invoice->user_id = $data['user_id'];
-            $invoice->invoice_one_status = $data['invoice_one_status'];
-            $invoice->invoice_two_status = $data['invoice_two_status'];
-            $invoice->ammount_paid = $data['ammount_paid'];
-            $invoice->user_name = $data['user_name'];
-            $invoice->conta_img = $data['logo'];
-            $invoice->razao_social = $data['razao_social'];
+            $invoice->account = isset($data['account']) ? $data['account'] : null;
+            $invoice->user_id = isset($data['user_id']) ? $data['user_id'] : null;
+            $invoice->invoice_one_status = isset($data['invoice_one_status']) ? $data['invoice_one_status'] : null;
+            $invoice->invoice_two_status = isset($data['invoice_two_status']) ? $data['invoice_two_status'] : null;
+            $invoice->ammount_paid = isset($data['ammount_paid']) ? $data['ammount_paid'] : null;
+            $invoice->user_name = isset($data['user_name']) ? $data['user_name'] : null;
+            $invoice->conta_img = isset($data['logo']) ? $data['logo'] : null;
+            $invoice->razao_social = isset($data['razao_social']) ? $data['razao_social'] : null;
 
             return $invoice;
 
@@ -471,8 +471,6 @@
         }
 
         public function updateInvoiceCheckStatus($id, $check_date, $type, $status) {
-
-            //echo "$id, $check_date, $type, $status"; exit;
 
             $stmt = $this->conn->prepare("UPDATE payment_checks SET
                 $check_date = NOW(), $type = '$status'

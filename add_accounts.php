@@ -7,11 +7,12 @@ $banksDao = new banksDAO($conn, $BASE_URL);
 
 $allBanks = $banksDao->getAllBanks();
 
-isset($_SESSION['razao']) ? $_SESSION['razao'] : "";
-isset($_SESSION['cnpj']) ? $_SESSION['cnpj'] : "";
-isset($_SESSION['ag']) ? $_SESSION['ag'] : "";
-isset($_SESSION['cc']) ? $_SESSION['cc'] : "";
-isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
+isset($_SESSION['razao']) ? $_SESSION['razao'] : $_SESSION['razao'] = null;
+isset($_SESSION['cnpj']) ? $_SESSION['cnpj'] : $_SESSION['cnpj'] = null;
+isset($_SESSION['ag']) ? $_SESSION['ag'] : $_SESSION['ag'] = null;
+isset($_SESSION['cc']) ? $_SESSION['cc'] : $_SESSION['cc'] = null;
+isset($_SESSION['pix']) ? $_SESSION['pix'] : $_SESSION['pix'] = null;
+isset ($_SESSION['color']) ? $_SESSION['color'] : $_SESSION['color'] = null;
 
 
 ?>
@@ -19,7 +20,7 @@ isset($_SESSION['pix']) ? $_SESSION['pix'] : "";
 <div class="container-fluid">
 
     <h1 class="text-center my-5 text-secondary">Adicionar conta <i class="fa-solid fa-credit-card"></i></h1>
-    <div class="container actions p-3 mb-4 bg-light rounded-3 shadow-sm">
+    <div class="container actions p-3 mb-4 bg-light rounded-3 shadow-sm text-center">
         <form action="<?= $BASE_URL ?>account_process.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="type" value="create">
             <!-- <input type="hidden" name="csrf_token" value="<?= $token ?>"> -->

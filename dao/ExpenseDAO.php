@@ -20,14 +20,14 @@ require_once("utils/config.php");
 
             $expense = new Expense();
 
-            $expense->id = $data['id'];
+            $expense->id = isset($data['id']) ? $data['id'] : null;
             $expense->description = $data['description'];
             $expense->value = number_format($data['value'], 2, ',', '.');
-            $expense->dt_registered = date("d-m-Y H:i:s", strtotime($data['dt_registered']));
-            $expense->dt_expense = date("d-m-Y", strtotime($data['dt_expense']));
-            $expense->month_reference = $data['month_reference'];
-            $expense->dt_updated = $data['dt_updated'];
-            $expense->user_name = $data['user_name'];
+            $expense->dt_registered =  isset($data['dt_registered']) ? date("d-m-Y H:i:s", strtotime($data['dt_registered'])) : null;
+            $expense->dt_expense =  isset($data['dt_expense']) ? date("d-m-Y", strtotime($data['dt_expense'])) : null;
+            $expense->month_reference = isset($data['month_reference']) ? $data['month_reference'] : null;
+            $expense->dt_updated = isset($data['dt_updated']) ? $data['dt_updated'] : null;
+            $expense->user_name = isset($data['user_name']) ? $data['user_name'] : null;
 
             return $expense;
 
@@ -140,14 +140,14 @@ require_once("utils/config.php");
 
         }
 
-        public function getAllExpensesToPagination($id, $sql, $resultsPerPage = "", $offset = "") {
+        public function getAllExpensesToPagination($user_id, $sql, $resultsPerPage = "", $offset = "") {
             
             $outFinancialMoviments = [];
 
             $stmt = $this->conn->query("SELECT 
             id, description, value, dt_registered, dt_expense, dt_updated 
             FROM tb_expenses AS exp 
-            WHERE user_id = '$id' $sql
+            WHERE user_id = '$user_id' $sql
             ORDER BY id 
             DESC LIMIT $resultsPerPage OFFSET $offset");
 

@@ -38,13 +38,16 @@ $popup = $popupDao->popupInvoice();
 
 <?php require_once("templates/header.php"); ?>
 <!-- Navbar top -->
-<nav class="navbar sticky-top navbar-dark shadow">
+<nav class="navbar sticky-top navbar-dark shadow" id="topo">
     <div class="container-fluid">
         <a class="navbar-brand font-weight-bolder" href="<?= $BASE_URL ?>dashboard.php">
             <i class="fa-solid fa-file-invoice text-white"></i>
             <span>INTRANET</span>
         </a>
-        <ul class="navbar-nav px-3">
+        <ul class="navbar-nav px-3 d-flex flex-row">
+            <span class="nav-item text-nowrap">
+                    <a class="nav-link text-white" href="<?= $BASE_URL ?>edit_profile.php" target="myFrame"><span>Perfil</span><i class="fa-solid fa-user-pen"></i></a>
+                </span>
             <li class="nav-item text-nowrap">
                 <a class="nav-link text-white" href="<?= $BASE_URL ?>logout.php"> <i class="fa-solid fa-right-from-bracket"></i> Sair</a>
             </li>
@@ -64,8 +67,6 @@ $popup = $popupDao->popupInvoice();
                 <?= $fullName ?>
             </h5>
             <!-- User Greet -->
-            <span id="DisplayClock" onload="showTime()"></span>
-            <br>
             <?= $msg_saudacao; ?>
         </div>
 
@@ -89,14 +90,14 @@ $popup = $popupDao->popupInvoice();
 
         <div class="row">
             <div class="container-fluid">
-                <iframe src="dashboard-main.php" name="myFrame" id="myFrame" fullscreen="allow" frameborder="0" width="100%"></iframe>
+                <iframe src="dashboard-main.php" name="myFrame" id="myFrame" frameborder="0" width="100%" scrolling="yes"></iframe>
             </div>
         </div>
     </div>
     <!-- End Page Content  -->
 
 
-    <!-- Section Popup Invoice Epiring message  -->
+    <!-- Section Popup Invoice Expiring message  -->
     <section>
         <?php if (!empty($popup) && !empty($invoicesExpiringUser)) : ?>
             <?php
@@ -143,7 +144,7 @@ $popup = $popupDao->popupInvoice();
 </div>
 
 <?php require_once("templates/footer.php"); ?>
-<script src="js/showtime.js" type="text/javascript" async></script>
+
 <script>
     // deixar item do menu clicado como active
     $(document).ready(function() {
@@ -152,4 +153,5 @@ $popup = $popupDao->popupInvoice();
             $(this).addClass("active_item");
         });
     });
+
 </script>
